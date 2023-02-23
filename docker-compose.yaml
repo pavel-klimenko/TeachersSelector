@@ -18,6 +18,18 @@ services:
       - ./:/var/www/app
     networks:
       - internal
+  pgsql:
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=secret
+    ports:
+      - '5496:5432'
+    networks:
+      - internal
+    volumes:
+      - ./var/db-data:/var/lib/postgresql/data
 
 networks:
   internal:
