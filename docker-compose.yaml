@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: ./docker/nginx/Nginx.Dockerfile
     ports:
-    - "8096:80"
+      - "8096:80"
     networks:
       - internal
     volumes:
