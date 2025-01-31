@@ -4,7 +4,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libpq-dev
 
-#RUN apt-get install -y nodejs npm
+COPY ./docker/unix_socket.conf /usr/local/etc/php-fpm.d/unix_socket.conf
+
 
 RUN curl -sS https://getcomposer.org/installer | php && \
   mv composer.phar /usr/local/bin/composer
@@ -16,6 +17,7 @@ RUN docker-php-ext-install zip \
     pdo_pgsql \
     pgsql
 
-#RUN npm install
-
 WORKDIR /var/www/app
+
+# Запускаем PHP-FPM
+CMD ["php-fpm"]

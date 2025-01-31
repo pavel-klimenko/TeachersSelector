@@ -30,6 +30,29 @@ services:
       - internal
     volumes:
       - ./var/db-data:/var/lib/postgresql/data
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - ./cache:/data/redis
+    networks:
+      - internal
+  memcached:
+    image: memcached
+    restart: always
+    ports:
+      - "11211:11211"
+    command:
+      - --conn-limit=1024
+      - --memory-limit=64
+      - --threads=4
+    volumes:
+      - ./cache:/data/memcached
+    networks:
+      - internal
 
 ###> doctrine/doctrine-bundle ###
   database:
@@ -46,9 +69,6 @@ services:
       start_period: 60s
     volumes:
       - database_data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
 
 networks:
   internal:
