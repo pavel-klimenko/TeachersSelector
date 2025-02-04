@@ -17,4 +17,20 @@ class TestController extends AbstractController
 
         return $this->json(['status' => $result]);
     }
+
+
+    #[Route('/test/debug', name: 'test_debug')]
+    public function testDebug()
+    {
+        phpinfo();
+
+
+        $a = 1;
+        $b = 2;
+
+        dump($a);
+        dump($b);
+
+        exit();
+    }
 }
