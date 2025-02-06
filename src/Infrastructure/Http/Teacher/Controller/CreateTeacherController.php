@@ -6,6 +6,7 @@ namespace App\Infrastructure\Http\Teacher\Controller;
 
 use App\Application\Teacher\CreateTeacherUseCase;
 use App\Infrastructure\Services\TeacherService;
+use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,11 +16,18 @@ class CreateTeacherController extends AbstractController
         private CreateTeacherUseCase $createTeacherUseCase
     ){}
 
-    public function createTeacher(): Response
+    public function createTeacher(Connection $connection)
     {
-        $worker = $this->createTeacherUseCase->execute();
-        dd($worker);
+        $result = $connection->fetchAllAssociative('SELECT version();');
+
+        return $this->json(['status' => $result]);
     }
+
+//    public function createTeacher(): Response
+//    {
+//        $worker = $this->createTeacherUseCase->execute();
+//        dd($worker);
+//    }
 
     public function newMessage(TeacherService $teacherService): Response
     {
