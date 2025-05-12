@@ -7,14 +7,10 @@ namespace App\Infrastructure\Http\Teacher\Controller;
 //use App\Application\Teacher\CreateTeacherUseCase;
 
 use App\Domain\Entity\Teacher;
-use App\Domain\Repository\TeacherRepository;
-use App\Enums\Genders;
-use App\Infrastructure\Services\TeacherService;
-use Doctrine\DBAL\Connection;
-use Doctrine\ORM\EntityManager;
+use App\Domain\Enums\Genders;
+use App\Infrastructure\Repository\TeacherRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 
 class TeacherController extends AbstractController
 {

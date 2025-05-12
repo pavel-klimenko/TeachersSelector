@@ -16,7 +16,6 @@
 -Docker
 -php 8.3+ (использовать балансировщик php-fpm upstream)
 -Symfony 7+
--Vue JS (встроенный в symfony)
 -Webpack
 -Bootstrap
 -PostgreSQL
@@ -27,3 +26,25 @@
 
 -Использовать в проекте 5 паттернов проектирования Gof
 -Использовать индексы
+
+БАЗА ДАННЫХ:
+
+--teachers--
+id, age, gender, name, rating, years_experience,
+country,
+city,
+studying_modes (онлайн, очно, только групповой учитель),
+payment_types (типы оплаты),
+categories (предметы, которым учит),
+rating (рейтинги будут разные),
+best_expertise (то в чем учитель наиболее экспертен),
+rate_per_hour (цена за час),
+teacher_cv_id
+
+
+--students--
+id, age, gender, name
+categories (по каким предметам нужно обучение),
+payment_types (типы оплаты),
+studying_modes (онлайн, очно, только групповой учитель),
+max_rate_per_hour (макс цену за час, которую готов платить ученик),

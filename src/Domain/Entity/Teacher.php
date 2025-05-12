@@ -2,8 +2,8 @@
 
 namespace App\Domain\Entity;
 
-use App\Domain\Repository\TeacherRepository;
-use App\Enums\Genders;
+use App\Domain\Enums\Genders;
+use App\Infrastructure\Repository\TeacherRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TeacherRepository::class)]
