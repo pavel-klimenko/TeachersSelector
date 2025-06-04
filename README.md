@@ -19,6 +19,7 @@
 -Webpack
 -Bootstrap
 -PostgreSQL
+-CI\CD (Kubernaties)
 
 Интегрировать чистую архитектуру
 Использовать профилирощик, Xdebug, PHP Unit (покрыть функционал тестами)
