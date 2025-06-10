@@ -1,0 +1,6 @@
+создать Entity: php bin/console make:entity
+
+
+показать все маршруты: php bin/console debug:router
+накатить миграции: php bin/console doctrine:migrations:migrate
+обновить миграции: php bin/console doctrine:schema:update --force

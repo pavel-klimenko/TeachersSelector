@@ -11,6 +11,7 @@ use App\Domain\Enums\Genders;
 use App\Infrastructure\Repository\TeacherRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
 class TeacherController extends AbstractController
 {
@@ -18,14 +19,18 @@ class TeacherController extends AbstractController
 //        private CreateTeacherUseCase $createTeacherUseCase
 //    ){}
 
+
+    #[Route('/teacher-create', name: 'teacher_create')]
     public function create(EntityManagerInterface $em)
     {
+        //TODO validate POST params
         //TODO move to services and repos
         $teacher = (new Teacher())
             ->setName('Oleg1')
             ->setAge(35)
             ->setGender(Genders::MALE)
-            ->setRating(5);
+            ->setRating(10)
+            ->setYearsExperience(5);
 
         $em->persist($teacher);
         $em->flush();
@@ -78,6 +83,7 @@ class TeacherController extends AbstractController
         exit();
     }
 
+    #[Route('/teachers', name: 'teachers_get_all')]
     public function getAll(TeacherRepository $teacherRepository)
     {
         //TODO move to services and repos

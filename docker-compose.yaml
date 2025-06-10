@@ -10,6 +10,8 @@ services:
       - internal
     volumes:
       - ./:/var/www/app
+    depends_on:
+      - fpm
   fpm:
     build:
       context: .

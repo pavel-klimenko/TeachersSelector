@@ -11,8 +11,8 @@ return function (RoutingConfigurator $routes): void {
         ->methods(['GET']);
 
     //TODO use only POST
-    $routes->add('teacher_create', 'teacher-create')->controller([TeacherController::class, 'create']);
-
+    $routes->add('teacher_create', '/teacher-create')->controller([TeacherController::class, 'create'])
+        ->methods(['POST']);
 
     $routes->add('teacher_update', 'teacher-update/{id}')->controller([TeacherController::class, 'update'])
         ->requirements(['id' => Requirement::DIGITS]);

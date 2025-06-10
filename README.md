@@ -47,8 +47,8 @@ teacher_cv_id
 
 
 --students--
-id, age, gender, name
-categories (по каким предметам нужно обучение),
-payment_types (типы оплаты),
-studying_modes (онлайн, очно, только групповой учитель),
-max_rate_per_hour (макс цену за час, которую готов платить ученик),
+id, age, gender, name, max_rate_per_hour
+studying_categories (по каким предметам нужно обучение) +,
+payment_types (типы оплаты) +,
+studying_modes (онлайн, очно, только групповой учитель) +,
+max_rate_per_hour (макс цену за час, которую готов платить ученик) +,

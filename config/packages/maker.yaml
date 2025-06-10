@@ -3,4 +3,4 @@ when@dev:
   maker:
     root_namespace: 'App\Domain\'
     generate_final_classes: true
-    generate_final_entities: false
+    generate_final_entities: true

@@ -3,34 +3,27 @@
 namespace App\Domain\Entity;
 
 use App\Domain\Enums\Genders;
-use App\Infrastructure\Repository\TeacherRepository;
+use App\Infrastructure\Repository\StudentRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: TeacherRepository::class)]
-#[ORM\Table(name: 'teachers')]
-class Teacher
+#[ORM\Entity(repositoryClass: StudentRepository::class)]
+#[ORM\Table(name: 'students')]
+class Student
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column]
     private ?int $age = null;
-
     #[ORM\Column(nullable: true, enumType: Genders::class)]
     private ?Genders $gender = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
-
     #[ORM\Column(nullable: true)]
-    private ?int $rating = null;
+    private ?float $maxRatePerHour = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $years_experience = null;
-
-    #[ORM\ManyToOne(inversedBy: 'teachers')]
+    #[ORM\ManyToOne(inversedBy: 'students')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Country $country = null;
 
@@ -38,63 +31,43 @@ class Teacher
     {
         return $this->id;
     }
-
     public function getAge(): ?int
     {
         return $this->age;
     }
-
-    public function setAge(?int $age): static
+    public function setAge(int $age): static
     {
         $this->age = $age;
 
         return $this;
     }
-
     public function getGender(): ?Genders
     {
         return $this->gender;
     }
-
     public function setGender(?Genders $gender): static
     {
         $this->gender = $gender;
 
         return $this;
     }
-
     public function getName(): ?string
     {
         return $this->name;
     }
-
     public function setName(?string $name): static
     {
         $this->name = $name;
 
         return $this;
     }
-
-    public function getRating(): ?int
+    public function getMaxRatePerHour(): ?float
     {
-        return $this->rating;
+        return $this->maxRatePerHour;
     }
-
-    public function setRating(?int $rating): static
+    public function setMaxRatePerHour(float $maxRatePerHour): static
     {
-        $this->rating = $rating;
-
-        return $this;
-    }
-
-    public function getYearsExperience(): ?int
-    {
-        return $this->years_experience;
-    }
-
-    public function setYearsExperience(?int $years_experience): static
-    {
-        $this->years_experience = $years_experience;
+        $this->maxRatePerHour = $maxRatePerHour;
         return $this;
     }
 
