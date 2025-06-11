@@ -31,6 +31,9 @@ class Country
     #[ORM\OneToMany(targetEntity: Teacher::class, mappedBy: 'country')]
     private Collection $teachers;
 
+    #[ORM\Column(length: 255)]
+    private ?string $iso_code = null;
+
     public function __construct()
     {
         $this->students = new ArrayCollection();
@@ -109,6 +112,18 @@ class Country
                 $teacher->setCountry(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsoCode(): ?string
+    {
+        return $this->iso_code;
+    }
+
+    public function setIsoCode(string $iso_code): static
+    {
+        $this->iso_code = $iso_code;
 
         return $this;
     }

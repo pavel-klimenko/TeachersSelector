@@ -31,13 +31,7 @@ class Teacher
     private ?int $years_experience = null;
 
     #[ORM\ManyToOne(inversedBy: 'teachers')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Country $country = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    private ?City $city = null;
 
     public function getAge(): ?int
     {
@@ -98,14 +92,14 @@ class Teacher
         return $this;
     }
 
-    public function getCountry(): ?Country
+    public function getCity(): ?City
     {
-        return $this->country;
+        return $this->city;
     }
 
-    public function setCountry(?Country $country): static
+    public function setCity(?City $city): static
     {
-        $this->country = $country;
+        $this->city = $city;
 
         return $this;
     }

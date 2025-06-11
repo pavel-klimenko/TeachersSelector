@@ -35,16 +35,20 @@
 
 --teachers--
 id, age, gender, name, rating, years_experience,
-country,
-city,
-studying_modes (онлайн, очно, только групповой учитель),
-payment_types (типы оплаты),
-categories (предметы, которым учит),
-rating (рейтинги будут разные),
-best_expertise (то в чем учитель наиболее экспертен),
-rate_per_hour (цена за час),
-teacher_cv_id
+country_id,
+city_id,
 
+--city--
+name, code
+
+--expertises--
+code, name
+
+--teacher_cv--
+teacher_id
+rate_per_hour (цена за час),
+personal_characteristics
+experience
 
 --students--
 id, age, gender, name, max_rate_per_hour
@@ -52,3 +56,14 @@ studying_categories (по каким предметам нужно обучен�
 payment_types (типы оплаты) +,
 studying_modes (онлайн, очно, только групповой учитель) +,
 max_rate_per_hour (макс цену за час, которую готов платить ученик) +,
+
+
+
+--teacher_expertises--
+expertise_id
+teacher_id
+rating (1 - 10)
+
+--teacher_studying_categories--
+--teacher_studying_modes--
+--teacher_payment_types--

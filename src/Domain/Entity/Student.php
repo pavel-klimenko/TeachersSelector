@@ -23,9 +23,8 @@ class Student
     #[ORM\Column(nullable: true)]
     private ?float $maxRatePerHour = null;
 
-    #[ORM\ManyToOne(inversedBy: 'students')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Country $country = null;
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?City $city = null;
 
     public function getId(): ?int
     {
@@ -71,15 +70,14 @@ class Student
         return $this;
     }
 
-    public function getCountry(): ?Country
+    public function getCity(): ?City
     {
-        return $this->country;
+        return $this->city;
     }
 
-    public function setCountry(?Country $country): static
+    public function setCity(?City $city): static
     {
-        $this->country = $country;
-
+        $this->city = $city;
         return $this;
     }
 }
