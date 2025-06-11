@@ -4,6 +4,8 @@ namespace App\Domain\Entity;
 
 use App\Domain\Enums\Genders;
 use App\Infrastructure\Repository\TeacherRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TeacherRepository::class)]
@@ -30,8 +32,34 @@ class Teacher
     #[ORM\Column(nullable: true)]
     private ?int $years_experience = null;
 
+    #[ORM\OneToMany(targetEntity: TeacherHasTeacherExpertises::class, mappedBy: 'teachers')]
+    private $hasTeacherExpertises = null;
+
     #[ORM\ManyToOne(inversedBy: 'teachers')]
     private ?City $city = null;
+
+
+    #[ORM\ManyToMany(targetEntity: StudyingCategories::class, inversedBy: 'studying_categories')]
+    #[ORM\JoinTable(name: 'teacher_studying_categories')]
+    private Collection $studyingCategories;
+
+    /**
+     * @var Collection<int, TeacherHasTeacherExpertises>
+     */
+    #[ORM\OneToMany(targetEntity: TeacherHasTeacherExpertises::class, mappedBy: 'teacher')]
+    private Collection $teacherHasTeacherExpertises;
+
+    /**
+     * @var Collection<int, TeacherHasTeacherExpertises>
+     */
+    #[ORM\OneToMany(targetEntity: TeacherHasTeacherExpertises::class, mappedBy: 'teacher')]
+    private Collection $expertise;
+
+    public function __construct()
+    {
+        $this->teacherHasTeacherExpertises = new ArrayCollection();
+        $this->expertise = new ArrayCollection();
+    }
 
     public function getAge(): ?int
     {
@@ -100,6 +128,88 @@ class Teacher
     public function setCity(?City $city): static
     {
         $this->city = $city;
+
+        return $this;
+    }
+
+    public function getStudyingCategories(): Collection
+    {
+        return $this->studyingCategories;
+    }
+
+    public function addStudyingCategory(StudyingCategories $studyingCategory): self
+    {
+        if (!$this->studyingCategories->contains($studyingCategory)) {
+            $this->studyingCategories[] = $studyingCategory;
+            $studyingCategory->addTeacher($this);
+        }
+        return $this;
+    }
+
+    public function removeStudyingCategory(StudyingCategories $studyingCategory): self
+    {
+        if ($this->studyingCategories->removeElement($studyingCategory)) {
+            $studyingCategory->removeTeacher($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TeacherHasTeacherExpertises>
+     */
+    public function getTeacherHasTeacherExpertises(): Collection
+    {
+        return $this->teacherHasTeacherExpertises;
+    }
+
+    public function addTeacherHasTeacherExpertise(TeacherHasTeacherExpertises $teacherHasTeacherExpertise): static
+    {
+        if (!$this->teacherHasTeacherExpertises->contains($teacherHasTeacherExpertise)) {
+            $this->teacherHasTeacherExpertises->add($teacherHasTeacherExpertise);
+            $teacherHasTeacherExpertise->setTeacher($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeacherHasTeacherExpertise(TeacherHasTeacherExpertises $teacherHasTeacherExpertise): static
+    {
+        if ($this->teacherHasTeacherExpertises->removeElement($teacherHasTeacherExpertise)) {
+            // set the owning side to null (unless already changed)
+            if ($teacherHasTeacherExpertise->getTeacher() === $this) {
+                $teacherHasTeacherExpertise->setTeacher(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TeacherHasTeacherExpertises>
+     */
+    public function getExpertise(): Collection
+    {
+        return $this->expertise;
+    }
+
+    public function addExpertise(TeacherHasTeacherExpertises $expertise): static
+    {
+        if (!$this->expertise->contains($expertise)) {
+            $this->expertise->add($expertise);
+            $expertise->setTeacher($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExpertise(TeacherHasTeacherExpertises $expertise): static
+    {
+        if ($this->expertise->removeElement($expertise)) {
+            // set the owning side to null (unless already changed)
+            if ($expertise->getTeacher() === $this) {
+                $expertise->setTeacher(null);
+            }
+        }
 
         return $this;
     }

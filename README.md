@@ -58,12 +58,13 @@ studying_modes (онлайн, очно, только групповой учит
 max_rate_per_hour (макс цену за час, которую готов платить ученик) +,
 
 
-
 --teacher_expertises--
 expertise_id
 teacher_id
 rating (1 - 10)
++
 
---teacher_studying_categories--
+//TODO - доделать (через добавление связей в сущности!)
+--teacher_studying_categories-- +
 --teacher_studying_modes--
 --teacher_payment_types--
