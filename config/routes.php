@@ -7,6 +7,8 @@ use Symfony\Component\Routing\Requirement\Requirement;
 return function (RoutingConfigurator $routes): void {
     $routes->add('app_login', '/login')->controller([\App\Infrastructure\Http\Security\Controller\LoginController::class, 'index']);
     $routes->add('app_register', '/register')->controller([\App\Infrastructure\Http\Security\Controller\RegistrationController::class, 'register']);
+    $routes->add('app_verify_email', '/verify/email')->controller([\App\Infrastructure\Http\Security\Controller\RegistrationController::class, 'verifyUserEmail']);
+
 
 
     $routes->add('teachers_get_all', '/teachers')->controller([TeacherController::class, 'getAll'])->methods(['GET']);
