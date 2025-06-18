@@ -68,3 +68,5 @@ rating (1 - 10)
 --teacher_studying_categories-- +
 --teacher_studying_modes--
 --teacher_payment_types--
+
+Реализовать SQL views
