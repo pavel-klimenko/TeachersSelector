@@ -13,7 +13,7 @@ final class IsoCode
     }
 
     private function assertIsoCodeIsValid($input) {
-        //TODO validate using ISO List Array
+        //TODO validate using ISO List Array (src/Domain/Json/countries_iso_codes.json)
 //        if (!preg_match('/^[a-z0-9]+$/', $input)) {
 //            throw new \InvalidArgumentException('Code is invalid');
 //        }

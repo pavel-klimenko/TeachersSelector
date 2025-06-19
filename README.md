@@ -66,7 +66,7 @@ rating (1 - 10)
 
 //TODO - доделать (через добавление связей в сущности!)
 --teacher_studying_categories-- +
---teacher_studying_modes--
---teacher_payment_types--
+--teacher_studying_modes-- +
+--teacher_payment_types-- +
 
 Реализовать SQL views
