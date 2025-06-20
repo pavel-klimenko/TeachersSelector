@@ -28,6 +28,8 @@
     "symfonycasts/verify-email-bundle": "^1.17"
   },
   "require-dev": {
+    "doctrine/data-fixtures": "^2.0",
+    "doctrine/doctrine-fixtures-bundle": "^4.1",
     "symfony/maker-bundle": "^1.62"
   },
   "config": {
