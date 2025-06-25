@@ -4,31 +4,61 @@ services:
     build:
       context: .
       dockerfile: ./docker/nginx/Nginx.Dockerfile
+    image: balance/nginx
+    container_name: balancer-nginx
     ports:
       - "8096:80"
     networks:
       - internal
     volumes:
       - ./:/var/www/app
-    depends_on:
-      - fpm
-  fpm:
+  fpm1:
     build:
       context: .
       dockerfile: ./docker/php/Fpm.Dockerfile
+    image: balance/php
+    container_name: fpm1
     volumes:
       - ./:/var/www/app
       - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
     networks:
       - internal
-    links:
-      - redis
     environment:
       PHP_IDE_CONFIG: teachers.selector.local
-#      XDEBUG_MODE: debug
-#      XDEBUG_CONFIG: client_host=host.docker.internal
-#      XDEBUG_TRIGGER: yes
-
+      XDEBUG_MODE: debug
+      XDEBUG_CONFIG: client_host=host.docker.internal
+      XDEBUG_TRIGGER: 'yes'
+  fpm2:
+    build:
+      context: .
+      dockerfile: ./docker/php/Fpm.Dockerfile
+    image: balance/php
+    container_name: fpm2
+    volumes:
+      - ./:/var/www/app
+      - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
+    networks:
+      - internal
+    environment:
+      PHP_IDE_CONFIG: teachers.selector.local
+      XDEBUG_MODE: debug
+      XDEBUG_CONFIG: client_host=host.docker.internal
+      XDEBUG_TRIGGER: 'yes'
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./docker/rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins
+      - ./docker/rabbitmq/config/rabbitmq.config:/etc/rabbitmq/rabbitmq.config
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "check_running" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
   pgsql:
     build:
       context: .
@@ -73,7 +103,6 @@ services:
 
 networks:
   internal:
-
 
 volumes:
 ###> doctrine/doctrine-bundle ###

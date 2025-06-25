@@ -12,14 +12,26 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-
-
         //TODO clen architecture and ValueObject, Factories
-        $expertise = new Expertise();
 
-        $expertise->setName('Math')
-            ->setCode('math');
-        $manager->persist($expertise);
+        $math = new Expertise();
+        $math->setName('Math')->setCode('math');
+        $manager->persist($math);
+        $manager->flush();
+
+        $english = new Expertise();
+        $english->setName('English')->setCode('english');
+        $manager->persist($english);
+        $manager->flush();
+
+        $compScience = new Expertise();
+        $compScience->setName('Computer science')->setCode('computer_science');
+        $manager->persist($compScience);
+        $manager->flush();
+
+        $phpDevelopment = new Expertise();
+        $phpDevelopment->setName('PHP Development')->setCode('php_development');
+        $manager->persist($phpDevelopment);
         $manager->flush();
     }
 }
