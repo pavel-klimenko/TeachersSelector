@@ -39,10 +39,6 @@ class Teacher
     private ?City $city = null;
 
 
-    #[ORM\ManyToMany(targetEntity: StudyingCategories::class, inversedBy: 'studying_categories')]
-    #[ORM\JoinTable(name: 'teacher_studying_categories')]
-    private Collection $studyingCategories;
-
     /**
      * @var Collection<int, TeacherHasTeacherExpertises>
      */
@@ -129,28 +125,6 @@ class Teacher
     {
         $this->city = $city;
 
-        return $this;
-    }
-
-    public function getStudyingCategories(): Collection
-    {
-        return $this->studyingCategories;
-    }
-
-    public function addStudyingCategory(StudyingCategories $studyingCategory): self
-    {
-        if (!$this->studyingCategories->contains($studyingCategory)) {
-            $this->studyingCategories[] = $studyingCategory;
-            $studyingCategory->addTeacher($this);
-        }
-        return $this;
-    }
-
-    public function removeStudyingCategory(StudyingCategories $studyingCategory): self
-    {
-        if ($this->studyingCategories->removeElement($studyingCategory)) {
-            $studyingCategory->removeTeacher($this);
-        }
         return $this;
     }
 

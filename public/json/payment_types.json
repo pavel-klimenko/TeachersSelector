@@ -1,0 +1,14 @@
+[
+  {
+    "code": "card",
+    "name": "Credit card"
+  },
+  {
+    "code": "cash",
+    "name": "Cash"
+  },
+  {
+    "code": "yandex_money",
+    "name": "Yandex money"
+  }
+]

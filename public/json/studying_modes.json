@@ -1,0 +1,10 @@
+[
+  {
+    "code": "online",
+    "name": "Online"
+  },
+  {
+    "code": "offline",
+    "name": "Offline"
+  }
+]

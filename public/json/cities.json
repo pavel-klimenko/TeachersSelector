@@ -1,0 +1,21 @@
+[
+  {
+    "code": "minsk",
+    "name": "Minsk",
+    "country_iso_code": "BY"
+  },
+  {
+    "code": "moscow",
+    "name": "Moscow",
+    "country_iso_code": "RU"
+  },
+  {
+    "code": "belgrad",
+    "name": "Belgrad",
+    "country_iso_code": "RS"
+  },
+  {
+    "code": "tashkent",
+    "name": "Tashkent",
+    "country_iso_code": "UZ"
+  }]

@@ -1,0 +1,17 @@
+[
+  {
+    "code": "math",
+    "name": "Math"
+  },
+  {
+    "code": "english",
+    "name": "English"
+  },
+  {
+    "code": "computer_science",
+    "name": "Computer science"
+  },
+  {
+    "code": "php_development",
+    "name": "PHP Development"
+  }]

@@ -10,6 +10,14 @@ services:
         autowire: true
         public: true
         tags: [ 'doctrine.repository_service' ]
+    App\Domain\Repository\CityRepository:
+        autowire: true
+        public: true
+        tags: [ 'doctrine.repository_service' ]
+    App\Domain\Repository\CountryRepository:
+        autowire: true
+        public: true
+        tags: [ 'doctrine.repository_service' ]
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
