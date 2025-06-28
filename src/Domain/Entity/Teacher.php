@@ -51,6 +51,9 @@ class Teacher
     #[ORM\OneToMany(targetEntity: TeacherHasTeacherExpertises::class, mappedBy: 'teacher')]
     private Collection $expertise;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?User $related_user = null;
+
     public function __construct()
     {
         $this->teacherHasTeacherExpertises = new ArrayCollection();
@@ -184,6 +187,18 @@ class Teacher
                 $expertise->setTeacher(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRelatedUser(): ?User
+    {
+        return $this->related_user;
+    }
+
+    public function setRelatedUser(?User $related_user): static
+    {
+        $this->related_user = $related_user;
 
         return $this;
     }

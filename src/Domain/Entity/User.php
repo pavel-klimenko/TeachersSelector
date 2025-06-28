@@ -37,6 +37,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $isVerified = false;
 
+    #[ORM\OneToOne(mappedBy: 'related_user', cascade: ['persist', 'remove'])]
+    private ?Student $student = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -69,13 +72,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @return list<string>
      */
-    public function getRoles(): array
+    public function getAllRoles(): array
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
+        //TODO use ENUM!
         $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_TEACHER';
+        $roles[] = 'ROLE_STUDENT';
 
         return array_unique($roles);
+    }
+
+    public function getRoles(): array
+    {
+        return $this->roles;
     }
 
     /**
@@ -120,6 +131,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getStudent(): ?Student
+    {
+        return $this->student;
+    }
+
+    public function setStudent(?Student $student): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($student === null && $this->student !== null) {
+            $this->student->setRelatedUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($student !== null && $student->getRelatedUser() !== $this) {
+            $student->setRelatedUser($this);
+        }
+
+        $this->student = $student;
 
         return $this;
     }

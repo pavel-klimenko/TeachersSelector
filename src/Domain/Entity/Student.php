@@ -23,7 +23,10 @@ class Student
     #[ORM\Column(nullable: true)]
     private ?float $maxRatePerHour = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'student', cascade: ['persist', 'remove'])]
+    private ?User $related_user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'students')]
     private ?City $city = null;
 
     public function getId(): ?int
@@ -70,6 +73,18 @@ class Student
         return $this;
     }
 
+    public function getRelatedUser(): ?User
+    {
+        return $this->related_user;
+    }
+
+    public function setRelatedUser(?User $related_user): static
+    {
+        $this->related_user = $related_user;
+
+        return $this;
+    }
+
     public function getCity(): ?City
     {
         return $this->city;
@@ -78,6 +93,7 @@ class Student
     public function setCity(?City $city): static
     {
         $this->city = $city;
+
         return $this;
     }
 }
