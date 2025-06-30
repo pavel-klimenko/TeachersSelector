@@ -1,23 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+ {% block title %}Registration{% endblock %}
 
-{% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
+ {% block body %}
+     {% include 'header.html.twig' %}
 
-    <h1>Register</h1>
+     {% for flash_error in app.flashes('verify_email_error') %}
+         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+     {% endfor %}
 
-    {{ form_errors(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+     <form name="form-signin" method="post">
+         <img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72"
+              height="72">
+         <h1 class="h3 mb-3 font-weight-normal">Registration</h1>
+         <div class="field">
+             <input type="email" name="registration_form[email]" id="inputEmail" class="form-control"
+                    placeholder="Email address" required="" autofocus="">
+         </div>
+         <div class="field">
+             <input type="password" id="inputPassword" name="registration_form[plainPassword]" class="form-control"
+                    placeholder="Password" required="">
+         </div>
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
-{% endblock %}
+         <div class="form-check d-flex justify-content-center mb-5">
+             <input class="form-check-input me-2" name="registration_form[agreeTerms]" type="checkbox"
+                    required="required" value="1" id="registration_form_agreeTerms"/>
+             <label class="form-check-label" for="registration_form_agreeTerms">
+                 I agree all statements in <a href="#!">Terms of service</a>
+             </label>
+         </div>
+
+         <button type="submit" class="btn btn-lg btn-primary btn-block">Register</button>
+         <input type="hidden" id="registration_form__token" name="registration_form[_token]"
+                data-controller="csrf-protection" value="csrf-token"></form>
+
+     {% include 'footer.html.twig' %}
+ {% endblock %}
