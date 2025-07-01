@@ -8,10 +8,30 @@
     "name": "English"
   },
   {
+    "code": "geography",
+    "name": "Geography"
+  },
+  {
+    "code": "java_development",
+    "name": "Java development"
+  },
+  {
+    "code": "philosophy",
+    "name": "Philosophy"
+  },
+  {
+    "code": "physics",
+    "name": "Physics"
+  },
+  {
+    "code": "marketing",
+    "name": "Marketing"
+  },
+  {
     "code": "computer_science",
     "name": "Computer science"
   },
   {
     "code": "php_development",
-    "name": "PHP Development"
+    "name": "PHP development"
   }]

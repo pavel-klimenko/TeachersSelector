@@ -20,84 +20,80 @@ class TeacherController extends AbstractController
 //    ){}
 
 
-    #[Route('/teacher-create', name: 'teacher_create')]
-    public function create(EntityManagerInterface $em)
-    {
-        //TODO validate POST params
-        //TODO move to services and repos
-        $teacher = (new Teacher())
-            ->setName('Oleg1')
-            ->setAge(35)
-            ->setGender(Genders::MALE)
-            ->setRating(10)
-            ->setYearsExperience(5);
+//    #[Route('/teacher-create', name: 'teacher_create')]
+//    public function create(EntityManagerInterface $em)
+//    {
+//        //TODO validate POST params
+//        //TODO move to services and repos
+//        $teacher = (new Teacher())
+//            ->setName('Oleg1')
+//            ->setAge(35)
+//            ->setGender(Genders::MALE)
+//            ->setRating(10)
+//            ->setYearsExperience(5);
+//
+//        $em->persist($teacher);
+//        $em->flush();
+//
+//        exit();
+//    }
+//    public function update(TeacherRepository $teacherRepository, EntityManagerInterface $em, int $id)
+//    {
+//        $teacher = $teacherRepository->findOneBy(['id' => $id]);
+//
+//        if (!$teacher) {
+//            throw new \RuntimeException("Teacher with id = $id not found");
+//        }
+//
+//        $name = 'Ivan';
+//        $age = 55;
+//        $gender = Genders::FEMALE;
+//        $rating = 10;
+//
+//        $teacher->setName($name)
+//            ->setAge($age)
+//            ->setGender($gender)
+//            ->setRating($rating);
+//
+//        $em->flush();
+//
+//        exit();
+//    }
+//    public function delete(TeacherRepository $teacherRepository, EntityManagerInterface $em, int $id)
+//    {
+//        $teacher = $teacherRepository->findOneBy(['id' => $id]);
+//        if (!$teacher) {
+//            throw new \RuntimeException("Teacher with id = $id not found");
+//        }
+//
+//        $em->remove($teacher);
+//        $em->flush();
+//
+//        exit();
+//    }
 
-        $em->persist($teacher);
-        $em->flush();
-
-        exit();
-    }
-    public function update(TeacherRepository $teacherRepository, EntityManagerInterface $em, int $id)
-    {
-        $teacher = $teacherRepository->findOneBy(['id' => $id]);
-
-        if (!$teacher) {
-            throw new \RuntimeException("Teacher with id = $id not found");
-        }
-
-        $name = 'Ivan';
-        $age = 55;
-        $gender = Genders::FEMALE;
-        $rating = 10;
-
-        $teacher->setName($name)
-            ->setAge($age)
-            ->setGender($gender)
-            ->setRating($rating);
-
-        $em->flush();
-
-        exit();
-    }
-    public function delete(TeacherRepository $teacherRepository, EntityManagerInterface $em, int $id)
-    {
-        $teacher = $teacherRepository->findOneBy(['id' => $id]);
-        if (!$teacher) {
-            throw new \RuntimeException("Teacher with id = $id not found");
-        }
-
-        $em->remove($teacher);
-        $em->flush();
-
-        exit();
-    }
     public function getById(TeacherRepository $teacherRepository, int $id)
     {
-        //TODO move to services and repos
-
-
         $teacher = $teacherRepository->findOneBy(['id' => $id]);
 
-        //echo $wewe;
+        dd($teacher);
 
-        exit();
+        return $this->render('teachers/detail.html.twig', [
+            'title' => 'CV - '.$teacher->getName(),
+            'teacher' => $teacher,
+        ]);
     }
 
     #[Route('/teachers', name: 'teachers_get_all')]
     public function getAll(TeacherRepository $teacherRepository)
     {
-        //TODO move to services and repos
-
         $allTeaches = $teacherRepository->findAll();
 
-        //echo $wewe;
+        dump($allTeaches);
 
-        exit();
+        return $this->render('teachers/list.html.twig', [
+            'title' => 'Our teachers',
+            'teachers' => $allTeaches,
+        ]);
     }
-
-
-//    public function getTeachersList(): Response
-//    {
-//        return $this->render('teachers.html.twig');
-//    }
 }

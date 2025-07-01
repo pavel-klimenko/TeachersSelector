@@ -4,12 +4,15 @@ namespace App\Infrastructure\Http;
 
 use App\Domain\Entity\Country;
 use App\Domain\Entity\Student;
+use App\Domain\Entity\TeacherHasTeacherExpertises;
 use App\Domain\Entity\User;
 use App\Domain\Enums\Genders;
-use App\Domain\Repository\CityRepository;
+use App\Infrastructure\Repository\CityRepository;
 use App\Domain\Services\HelperService;
 use App\Infrastructure\Repository\CountryRepository;
+use App\Infrastructure\Repository\ExpertiseRepository;
 use App\Infrastructure\Repository\StudentRepository;
+use App\Infrastructure\Repository\TeacherRepository;
 use App\Infrastructure\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -25,6 +28,8 @@ final class TestController extends AbstractController
 {
 
     public function __construct(
+        private ExpertiseRepository $expertiseRepository,
+        private TeacherRepository $teacherRepository,
         private UserRepository $userRepository,
         private StudentRepository $studentRepository,
         private CountryRepository $countryRepository,
@@ -37,57 +42,55 @@ final class TestController extends AbstractController
     #[Route('/test', name: 'test')]
     public function index(): Response
     {
-        $arUsers = $this->userRepository->findAll();
 
-        $minskCity = $this->cityRepository->findOneBy(['code' => 'minsk']);
+        //Getting up to four random teacher`s expertises
+        $arAllExpertisesIds = $this->expertiseRepository->findAll();
+        if (!empty($arAllExpertisesIds)) {
+            $min = 0;
+            $max = count($arAllExpertisesIds) - 1;
 
-        foreach ($arUsers as $user) {
-            dump($user);
-            //dd($user->getRoles());
-
-            if (in_array('ROLE_STUDENT', $user->getRoles())) {
-                $student = new Student();
-
-                $student->setCity($minskCity)
-                    ->setName('asdasd')
-                    ->setAge(30)
-                    ->setGender(Genders::MALE)
-                    ->setMaxRatePerHour(20)
-                    ->setRelatedUser($user);
-
-                $this->entityManager->persist($student);
-                $this->entityManager->flush();
+            $arRandomExpertises = [];
+            for ($i = 0; $i < 4; $i++) {
+                $arRandomExpertises[] = $arAllExpertisesIds[rand($min, $max)];
             }
         }
 
-//            $student = new Student();
-//
-//            $student->setCity()
+        $arTeachers = $this->teacherRepository->findAll();
+        foreach ($arTeachers as $teacher) {
+            $arAttachedExpertises = [];
+            foreach ($arRandomExpertises as $expertise) {
+
+                $expertiseId = $expertise->getId();
+                if (!in_array($expertiseId, $arAttachedExpertises)) {
+
+                    $teacherHasTeacherExpertises = new TeacherHasTeacherExpertises();
+                    $teacherHasTeacherExpertises
+                        ->setExpertise($expertise)
+                        ->setTeacher($teacher)
+                        ->setRating(5);
+
+                    $this->entityManager->persist($teacherHasTeacherExpertises);
+                    $this->entityManager->flush();
+
+                    $arAttachedExpertises[] = $expertiseId;
+                }
+            }
+        }
+
+        exit();
 
 
-//            $this->entityManager->persist($user);
-//            $this->entityManager->flush();
-
-//            // generate a signed url and email it to the user
-//            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-//                (new TemplatedEmail())
-//                    ->from(new Address('teacherSelectorMailer@mail.com', 'TeacherSelector'))
-//                    ->to((string) $user->getEmail())
-//                    ->subject('Please Confirm your Email')
-//                    ->htmlTemplate('registration/confirmation_email.html.twig')
-//            );
-//
-//            // do anything else you need here, like send an email
-//
-//            return $this->redirectToRoute('teachers_get_all');
-
-            exit();
-    }
 
 
-    function getCountries()
-    {
 
+
+//        $randomteacher = $this->expertiseRepository->findBy(['code' => 'math']);
+//        $mathExpertise = reset($mathExpertise);
+
+
+
+
+        dd(1212);
     }
 
 }

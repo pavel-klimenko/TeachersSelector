@@ -2,7 +2,7 @@
 
 namespace App\Domain\Entity;
 
-use App\Domain\Repository\CVRepository;
+use App\Infrastructure\Repository\CVRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,7 +14,9 @@ class CV
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+
+    #[ORM\OneToOne(inversedBy: 'cv', targetEntity: Teacher::class)]
+    #[ORM\JoinColumn(name: 'teacher_id', referencedColumnName: 'id')]
     private ?Teacher $teacher = null;
 
     #[ORM\Column]

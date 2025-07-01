@@ -6,19 +6,19 @@
 parameters:
 
 services:
-    App\Domain\Repository\ExpertiseRepository:
+    App\Infrastructure\Repository\ExpertiseRepository:
         autowire: true
         public: true
         tags: [ 'doctrine.repository_service' ]
-    App\Domain\Repository\CityRepository:
+    App\Infrastructure\Repository\CityRepository:
         autowire: true
         public: true
         tags: [ 'doctrine.repository_service' ]
-    App\Domain\Repository\CountryRepository:
+    App\Infrastructure\Repository\CountryRepository:
         autowire: true
         public: true
         tags: [ 'doctrine.repository_service' ]
-    App\Domain\Repository\CVRepository:
+    App\Infrastructure\Repository\CVRepository:
         autowire: true
         public: true
         tags: [ 'doctrine.repository_service' ]

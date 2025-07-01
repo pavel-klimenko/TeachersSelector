@@ -8,22 +8,26 @@ use App\Domain\Entity\Expertise;
 use App\Domain\Entity\PaymentTypes;
 use App\Domain\Entity\Student;
 use App\Domain\Entity\StudyingModels;
+use App\Domain\Entity\TeacherHasTeacherExpertises;
 use App\Domain\Enums\Genders;
 use App\Domain\Factory\CVFactory;
 use App\Domain\Factory\StudentFactory;
 use App\Domain\Factory\TeacherFactory;
+use App\Domain\Factory\TeacherHasTeacherExpertisesFactory;
 use App\Domain\Factory\UserFactory;
 use App\Domain\Services\HelperService;
 use App\Infrastructure\Repository\CountryRepository;
+use App\Infrastructure\Repository\ExpertiseRepository;
 use App\Infrastructure\Repository\TeacherRepository;
 use App\Infrastructure\Repository\UserRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use App\Domain\Repository\CityRepository;
+use App\Infrastructure\Repository\CityRepository;
 
 class AppFixtures extends Fixture
 {
     public function __construct(
+        private ExpertiseRepository $expertiseRepository,
         private CountryRepository $countryRepository,
         private HelperService $helperService,
         private UserRepository $userRepository,
@@ -121,6 +125,35 @@ class AppFixtures extends Fixture
             CVFactory::createOne([
                 'teacher' => $teacher,
             ]);
+        }
+
+
+
+        //Getting up to four random teacher`s expertises
+        $arAllExpertisesIds = $this->expertiseRepository->findAll();
+        if (!empty($arAllExpertisesIds)) {
+            $min = 0;
+            $max = count($arAllExpertisesIds) - 1;
+
+            $arRandomExpertises = [];
+            for ($i = 0; $i < 3; $i++) {
+                $arRandomExpertises[] = $arAllExpertisesIds[rand($min, $max)];
+            }
+        }
+
+        $arTeachers = $this->teacherRepository->findAll();
+        foreach ($arTeachers as $teacher) {
+            $arAttachedExpertises = [];
+            foreach ($arRandomExpertises as $expertise) {
+                $expertiseId = $expertise->getId();
+                if (!in_array($expertiseId, $arAttachedExpertises)) {
+                    TeacherHasTeacherExpertisesFactory::createOne([
+                        'teacher' => $teacher,
+                        'expertise' => $expertise,
+                    ]);
+                    $arAttachedExpertises[] = $expertiseId;
+                }
+            }
         }
     }
 }

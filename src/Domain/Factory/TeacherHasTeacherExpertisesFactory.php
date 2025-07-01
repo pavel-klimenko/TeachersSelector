@@ -2,13 +2,13 @@
 
 namespace App\Domain\Factory;
 
-use App\Domain\Entity\CV;
+use App\Domain\Entity\TeacherHasTeacherExpertises;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<CV>
+ * @extends PersistentProxyObjectFactory<TeacherHasTeacherExpertises>
  */
-final class CVFactory extends PersistentProxyObjectFactory
+final class TeacherHasTeacherExpertisesFactory extends PersistentProxyObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -21,7 +21,7 @@ final class CVFactory extends PersistentProxyObjectFactory
 
     public static function class(): string
     {
-        return CV::class;
+        return TeacherHasTeacherExpertises::class;
     }
 
     /**
@@ -32,9 +32,7 @@ final class CVFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'experience' => self::faker()->text(),
-            'personal_characteristics' => self::faker()->text(),
-            'rate_per_hour' => round(self::faker()->randomFloat(null, 10, 30)),
+            'rating' => self::faker()->numberBetween(1, 5),
         ];
     }
 
@@ -44,7 +42,7 @@ final class CVFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(CV $cV): void {})
+            // ->afterInstantiate(function(TeacherHasTeacherExpertises $teacherHasTeacherExpertises): void {})
         ;
     }
 }

@@ -38,6 +38,8 @@ class Teacher
     #[ORM\ManyToOne(inversedBy: 'teachers')]
     private ?City $city = null;
 
+    #[ORM\OneToOne(mappedBy: 'teacher', targetEntity: CV::class, cascade: ['persist', 'remove'])]
+    private ?CV $cv = null;
 
     /**
      * @var Collection<int, TeacherHasTeacherExpertises>
@@ -58,6 +60,17 @@ class Teacher
     {
         $this->teacherHasTeacherExpertises = new ArrayCollection();
         $this->expertise = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(?int $id): static
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getAge(): ?int
@@ -127,7 +140,17 @@ class Teacher
     public function setCity(?City $city): static
     {
         $this->city = $city;
+        return $this;
+    }
 
+    public function getCv(): ?CV
+    {
+        return $this->cv;
+    }
+
+    public function setCv(?CV $cv): static
+    {
+        $this->cv = $cv;
         return $this;
     }
 

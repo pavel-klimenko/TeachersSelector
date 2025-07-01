@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Repository;
+namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Expertise;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -14,6 +14,21 @@ class ExpertiseRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Expertise::class);
+    }
+
+    public function getAllIds(): array
+    {
+        $arAllExpertises = $this->createQueryBuilder('e')
+            ->select('e.id')
+            ->getQuery()
+            ->getResult();
+
+        $arIds = [];
+        foreach ($arAllExpertises as $expertise) {
+            $arIds[] = $expertise['id'];
+        }
+
+        return $arIds;
     }
 
     //    /**
