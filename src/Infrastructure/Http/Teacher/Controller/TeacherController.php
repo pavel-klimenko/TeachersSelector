@@ -76,11 +76,16 @@ class TeacherController extends AbstractController
     {
         $teacher = $teacherRepository->findOneBy(['id' => $id]);
 
-        dd($teacher);
+        $arExpertises = [];
+        foreach ($teacher->getTeacherHasTeacherExpertises() as $expertise) {
+            $arExpertises[$expertise->getExpertise()->getName()] = $expertise->getRating();
+        }
 
         return $this->render('teachers/detail.html.twig', [
-            'title' => 'CV - '.$teacher->getName(),
+            'title' => 'CV - '.$teacher->getRelatedUser()->getName(),
             'teacher' => $teacher,
+            'expertises' => $arExpertises,
+            'max_teacher_expertise_rating' => 5, //TODO CONST
         ]);
     }
 
@@ -94,6 +99,7 @@ class TeacherController extends AbstractController
         return $this->render('teachers/list.html.twig', [
             'title' => 'Our teachers',
             'teachers' => $allTeaches,
+            'max_teacher_common_rating' => 10 //TODO const
         ]);
     }
 }

@@ -32,8 +32,6 @@ final class TeacherFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'name' => self::faker()->name(),
-            'age' => self::faker()->numberBetween(25, 60),
             'rating' => self::faker()->numberBetween(1, 10),
             'years_experience' => self::faker()->numberBetween(3, 25),
         ];

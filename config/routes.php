@@ -5,6 +5,12 @@ use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Component\Routing\Requirement\Requirement;
 
 return function (RoutingConfigurator $routes): void {
+
+
+
+    $routes->add('homepage', '/')->controller([\App\Infrastructure\Http\HomePageController::class, 'index'])
+        ->methods(['GET']);
+
     $routes->add('test', '/test')->controller([\App\Infrastructure\Http\TestController::class, 'index'])
         ->methods(['GET']);
 

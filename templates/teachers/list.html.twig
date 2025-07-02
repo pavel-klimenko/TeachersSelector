@@ -14,15 +14,23 @@
                  <div class="col">
                      <div class="card mb-4 rounded-3 shadow-sm">
                          <div class="card-header py-3">
-                             <h4 class="my-0 fw-normal">{{ teacher.name }}</h4>
+                             <h4 class="my-0 fw-normal">{{ teacher.RelatedUser.name }}</h4>
                          </div>
                          <div class="card-body">
                              <h1 class="card-title pricing-card-title">${{ teacher.cv.RatePerHour }}<small class="text-muted fw-light">/hour</small></h1>
                              <ul class="list-unstyled mt-3 mb-4" style="text-align: start;">
-                                 <li><b>City:</b> {{ teacher.city.name }}</li>
-                                 <li><b>Gender:</b> {{ teacher.gender.name }}</li>
-                                 <li><b>Rating:</b> {{ teacher.rating }}</li>
+                                 <li><b>City:</b> {{ teacher.RelatedUser.city.name  }}</li>
+                                 <li><b>Gender:</b> {{ teacher.RelatedUser.gender.name }}</li>
+                                 <li><b>Teacher`s common Rating:</b> {{ teacher.rating }} from {{ max_teacher_common_rating }}</li>
                              </ul>
+
+                             <p>EXPERTISES:</p>
+                             <ol class="list-unstyled mt-3 mb-4" style="text-align: start; margin-top: 3%">
+                                 {% for expertise in teacher.TeacherHasTeacherExpertises %}
+                                     <li> - <b>{{ expertise.expertise.name }}</b></li>
+                                 {% endfor %}
+                             </ol>
+
                              <a href="/teachers/{{ teacher.id }}" class="w-100 btn btn-lg btn-outline-primary">Open CV</a>
                          </div>
                      </div>

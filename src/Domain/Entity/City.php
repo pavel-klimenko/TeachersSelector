@@ -24,22 +24,17 @@ class City
     /**
      * @var Collection<int, Teacher>
      */
-    #[ORM\OneToMany(targetEntity: Teacher::class, mappedBy: 'city')]
-    private Collection $teachers;
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'city')]
+    private Collection $user;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Country $country = null;
 
-    /**
-     * @var Collection<int, Student>
-     */
-    #[ORM\OneToMany(targetEntity: Student::class, mappedBy: 'city')]
-    private Collection $students;
+
 
     public function __construct()
     {
-        $this->teachers = new ArrayCollection();
-        $this->students = new ArrayCollection();
+        $this->user = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -72,29 +67,29 @@ class City
     }
 
     /**
-     * @return Collection<int, Teacher>
+     * @return Collection<int, User>
      */
-    public function getTeachers(): Collection
+    public function getUsers(): Collection
     {
-        return $this->teachers;
+        return $this->user;
     }
 
-    public function addTeacher(Teacher $teacher): static
+    public function addUser(User $user): static
     {
-        if (!$this->teachers->contains($teacher)) {
-            $this->teachers->add($teacher);
-            $teacher->setCity($this);
+        if (!$this->user->contains($user)) {
+            $this->user->add($user);
+            $user->setCity($this);
         }
 
         return $this;
     }
 
-    public function removeTeacher(Teacher $teacher): static
+    public function removeUser(User $user): static
     {
-        if ($this->teachers->removeElement($teacher)) {
+        if ($this->user->removeElement($user)) {
             // set the owning side to null (unless already changed)
-            if ($teacher->getCity() === $this) {
-                $teacher->setCity(null);
+            if ($user->getCity() === $this) {
+                $user->setCity(null);
             }
         }
 
@@ -109,36 +104,6 @@ class City
     public function setCountry(?Country $country): static
     {
         $this->country = $country;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Student>
-     */
-    public function getStudents(): Collection
-    {
-        return $this->students;
-    }
-
-    public function addStudent(Student $student): static
-    {
-        if (!$this->students->contains($student)) {
-            $this->students->add($student);
-            $student->setCity($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStudent(Student $student): static
-    {
-        if ($this->students->removeElement($student)) {
-            // set the owning side to null (unless already changed)
-            if ($student->getCity() === $this) {
-                $student->setCity(null);
-            }
-        }
 
         return $this;
     }

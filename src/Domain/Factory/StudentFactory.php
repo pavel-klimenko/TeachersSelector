@@ -32,8 +32,6 @@ final class StudentFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'name' => self::faker()->name(),
-            'age' => self::faker()->numberBetween(16, 30),
             'max_rate_per_hour' => self::faker()->numberBetween(10, 30),
         ];
     }

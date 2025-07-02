@@ -3,6 +3,8 @@
 namespace App\Domain\Factory;
 
 use App\Domain\Entity\User;
+use App\Domain\Enums\Genders;
+use App\Infrastructure\Repository\CityRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
@@ -16,9 +18,11 @@ final class UserFactory extends PersistentProxyObjectFactory
      *
      * @todo inject services if required
      */
-    public function __construct(private UserPasswordHasherInterface $userPasswordHasher)
-    {
-    }
+    public function __construct(
+        private UserPasswordHasherInterface $userPasswordHasher,
+        private CityRepository $cityRepository
+    )
+    {}
 
     public static function class(): string
     {
@@ -32,11 +36,18 @@ final class UserFactory extends PersistentProxyObjectFactory
      */
     protected function defaults(): array|callable
     {
+        //TODO different cities (Random order)
+        $minskCity = $this->cityRepository->findOneBy(['code' => 'minsk']);
+
         return [
+            'city' => $minskCity, //TODO random cities
             'email' => self::faker()->email(),
             'isVerified' => true,
             'password' => $this->userPasswordHasher->hashPassword((new User()), 'almaz'),
             'roles' => ['ROLE_USER'],
+            'name' => self::faker()->name(),
+            'age' => self::faker()->numberBetween(25, 60),
+            'gender' =>  Genders::MALE,
         ];
     }
 

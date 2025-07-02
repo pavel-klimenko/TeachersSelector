@@ -18,15 +18,6 @@ class Teacher
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $age = null;
-
-    #[ORM\Column(nullable: true, enumType: Genders::class)]
-    private ?Genders $gender = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $name = null;
-
-    #[ORM\Column(nullable: true)]
     private ?int $rating = null;
 
     #[ORM\Column(nullable: true)]
@@ -34,9 +25,6 @@ class Teacher
 
     #[ORM\OneToMany(targetEntity: TeacherHasTeacherExpertises::class, mappedBy: 'teachers')]
     private $hasTeacherExpertises = null;
-
-    #[ORM\ManyToOne(inversedBy: 'teachers')]
-    private ?City $city = null;
 
     #[ORM\OneToOne(mappedBy: 'teacher', targetEntity: CV::class, cascade: ['persist', 'remove'])]
     private ?CV $cv = null;
@@ -73,42 +61,6 @@ class Teacher
         return $this;
     }
 
-    public function getAge(): ?int
-    {
-        return $this->age;
-    }
-
-    public function setAge(?int $age): static
-    {
-        $this->age = $age;
-
-        return $this;
-    }
-
-    public function getGender(): ?Genders
-    {
-        return $this->gender;
-    }
-
-    public function setGender(?Genders $gender): static
-    {
-        $this->gender = $gender;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(?string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     public function getRating(): ?int
     {
         return $this->rating;
@@ -129,17 +81,6 @@ class Teacher
     public function setYearsExperience(?int $years_experience): static
     {
         $this->years_experience = $years_experience;
-        return $this;
-    }
-
-    public function getCity(): ?City
-    {
-        return $this->city;
-    }
-
-    public function setCity(?City $city): static
-    {
-        $this->city = $city;
         return $this;
     }
 

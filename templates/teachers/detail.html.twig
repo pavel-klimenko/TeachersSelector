@@ -10,16 +10,27 @@
              <div class="container-fluid py-5">
                  <h1 class="display-5 fw-bold">{{ title }}</h1>
 
-                 <ul class="list-group" style="text-align: start;">
+                 <ul class="list-group" style="text-align: start; margin:3%;">
                      <li class="list-group-item"><b>RATE PER HOUR:</b> {{ teacher.cv.RatePerHour }}$</li>
-                     <li class="list-group-item"><b>CITY:</b> {{ teacher.city.name }}</li>
-                     <li class="list-group-item"><b>GENDER:</b> {{ teacher.gender.name }}</li>
-                     <li class="list-group-item"><b>AGE:</b> {{ teacher.age }}</li>
+                     <li class="list-group-item"><b>CITY:</b> {{ teacher.RelatedUser.city.name }}</li>
+                     <li class="list-group-item"><b>GENDER:</b> {{ teacher.RelatedUser.gender.name }}</li>
+                     <li class="list-group-item"><b>AGE:</b> {{ teacher.RelatedUser.age }}</li>
                      <li class="list-group-item"><b>YEARS EXPERIENCE:</b> {{ teacher.yearsExperience }}</li>
                      <li class="list-group-item"><b>RATING:</b> {{ teacher.rating }}</li>
                  </ul>
 
-                 <div class="row align-items-md-stretch" style="margin-top: 3%">
+                 <h4 class="display-5 fw-bold">Teacher`s expertises:</h4>
+                 <ol class="list-group" style="text-align: start; margin:3%">
+                     {% for expertise, rating in expertises %}
+                        <li class="list-group-item">
+                            <p><b>Expertise:</b> {{ expertise }}</p>
+                            <p><b>Rating:</b> {{ rating }} from {{ max_teacher_expertise_rating }}</p>
+                        </li>
+                     {% endfor %}
+                 </ol>
+
+
+                 <div class="row align-items-md-stretch" style="margin: 3%">
                      <div class="col-md-6">
                          <div class="h-100 p-5 text-white bg-dark rounded-3">
                              <h2>Personal characteristics</h2>

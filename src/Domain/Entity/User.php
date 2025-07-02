@@ -2,6 +2,7 @@
 
 namespace App\Domain\Entity;
 
+use App\Domain\Enums\Genders;
 use App\Infrastructure\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -35,10 +36,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column]
-    private bool $isVerified = false;
+    private bool $isVerified = true;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $age = null;
+
+    #[ORM\Column(nullable: true, enumType: Genders::class)]
+    private ?Genders $gender = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $name = null;
+
+    #[ORM\ManyToOne(inversedBy: 'user')]
+    private ?City $city = null;
 
     #[ORM\OneToOne(mappedBy: 'related_user', cascade: ['persist', 'remove'])]
     private ?Student $student = null;
+
+    #[ORM\OneToOne(mappedBy: 'related_user', cascade: ['persist', 'remove'])]
+    private ?Teacher $teacher = null;
 
     public function getId(): ?int
     {
@@ -54,6 +70,53 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->email = $email;
 
+        return $this;
+    }
+
+    public function getAge(): ?int
+    {
+        return $this->age;
+    }
+
+    public function setAge(?int $age): static
+    {
+        $this->age = $age;
+
+        return $this;
+    }
+
+    public function getGender(): ?Genders
+    {
+        return $this->gender;
+    }
+
+    public function setGender(?Genders $gender): static
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCity(): ?City
+    {
+        return $this->city;
+    }
+
+    public function setCity(?City $city): static
+    {
+        $this->city = $city;
         return $this;
     }
 
@@ -153,6 +216,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->student = $student;
+
+        return $this;
+    }
+
+    public function getTeacher(): ?Teacher
+    {
+        return $this->teacher;
+    }
+
+    public function setTeacher(?Teacher $teacher): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($teacher === null && $this->teacher !== null) {
+            $this->teacher->setRelatedUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($teacher !== null && $teacher->getRelatedUser() !== $this) {
+            $teacher->setRelatedUser($this);
+        }
+
+        $this->teacher = $teacher;
 
         return $this;
     }
