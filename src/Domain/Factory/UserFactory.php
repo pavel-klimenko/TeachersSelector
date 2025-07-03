@@ -4,6 +4,7 @@ namespace App\Domain\Factory;
 
 use App\Domain\Entity\User;
 use App\Domain\Enums\Genders;
+use App\Domain\Enums\UserRoles;
 use App\Infrastructure\Repository\CityRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
@@ -44,7 +45,7 @@ final class UserFactory extends PersistentProxyObjectFactory
             'email' => self::faker()->email(),
             'isVerified' => true,
             'password' => $this->userPasswordHasher->hashPassword((new User()), 'almaz'),
-            'roles' => ['ROLE_USER'],
+            'roles' => [UserRoles::ROLE_USER->name],
             'name' => self::faker()->name(),
             'age' => self::faker()->numberBetween(25, 60),
             'gender' =>  Genders::MALE,

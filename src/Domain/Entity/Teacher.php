@@ -2,7 +2,6 @@
 
 namespace App\Domain\Entity;
 
-use App\Domain\Enums\Genders;
 use App\Infrastructure\Repository\TeacherRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -19,9 +18,6 @@ class Teacher
 
     #[ORM\Column(nullable: true)]
     private ?int $rating = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $years_experience = null;
 
     #[ORM\OneToMany(targetEntity: TeacherHasTeacherExpertises::class, mappedBy: 'teachers')]
     private $hasTeacherExpertises = null;
@@ -44,10 +40,24 @@ class Teacher
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?User $related_user = null;
 
+    /**
+     * @var Collection<int, StudyingModels>
+     */
+    #[ORM\ManyToMany(targetEntity: StudyingModels::class, inversedBy: 'teachers')]
+    private Collection $studying_modes;
+
+    /**
+     * @var Collection<int, PaymentTypes>
+     */
+    #[ORM\ManyToMany(targetEntity: PaymentTypes::class, inversedBy: 'teachers')]
+    private Collection $payment_types;
+
     public function __construct()
     {
         $this->teacherHasTeacherExpertises = new ArrayCollection();
         $this->expertise = new ArrayCollection();
+        $this->studying_modes = new ArrayCollection();
+        $this->payment_types = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -70,17 +80,6 @@ class Teacher
     {
         $this->rating = $rating;
 
-        return $this;
-    }
-
-    public function getYearsExperience(): ?int
-    {
-        return $this->years_experience;
-    }
-
-    public function setYearsExperience(?int $years_experience): static
-    {
-        $this->years_experience = $years_experience;
         return $this;
     }
 
@@ -163,6 +162,54 @@ class Teacher
     public function setRelatedUser(?User $related_user): static
     {
         $this->related_user = $related_user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, StudyingModels>
+     */
+    public function getStudyingModes(): Collection
+    {
+        return $this->studying_modes;
+    }
+
+    public function addStudyingMode(StudyingModels $studyingMode): static
+    {
+        if (!$this->studying_modes->contains($studyingMode)) {
+            $this->studying_modes->add($studyingMode);
+        }
+
+        return $this;
+    }
+
+    public function removeStudyingMode(StudyingModels $studyingMode): static
+    {
+        $this->studying_modes->removeElement($studyingMode);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PaymentTypes>
+     */
+    public function getPaymentTypes(): Collection
+    {
+        return $this->payment_types;
+    }
+
+    public function addPaymentType(PaymentTypes $paymentType): static
+    {
+        if (!$this->payment_types->contains($paymentType)) {
+            $this->payment_types->add($paymentType);
+        }
+
+        return $this;
+    }
+
+    public function removePaymentType(PaymentTypes $paymentType): static
+    {
+        $this->payment_types->removeElement($paymentType);
 
         return $this;
     }

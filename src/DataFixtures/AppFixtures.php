@@ -6,7 +6,9 @@ use App\Domain\Entity\City;
 use App\Domain\Entity\Country;
 use App\Domain\Entity\Expertise;
 use App\Domain\Entity\PaymentTypes;
+use App\Domain\Entity\Student;
 use App\Domain\Entity\StudyingModels;
+use App\Domain\Enums\UserRoles;
 use App\Domain\Factory\CVFactory;
 use App\Domain\Factory\StudentFactory;
 use App\Domain\Factory\TeacherFactory;
@@ -15,6 +17,8 @@ use App\Domain\Factory\UserFactory;
 use App\Domain\Services\HelperService;
 use App\Infrastructure\Repository\CountryRepository;
 use App\Infrastructure\Repository\ExpertiseRepository;
+use App\Infrastructure\Repository\PaymentTypesRepository;
+use App\Infrastructure\Repository\StudyingModelsRepository;
 use App\Infrastructure\Repository\TeacherRepository;
 use App\Infrastructure\Repository\UserRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -23,6 +27,8 @@ use Doctrine\Persistence\ObjectManager;
 class AppFixtures extends Fixture
 {
     public function __construct(
+        private PaymentTypesRepository $paymentTypesRepository,
+        private StudyingModelsRepository $studyingModelsRepository,
         private ExpertiseRepository $expertiseRepository,
         private CountryRepository $countryRepository,
         private HelperService $helperService,
@@ -88,11 +94,11 @@ class AppFixtures extends Fixture
 
 
         UserFactory::createMany(5, [
-            'roles' => ['ROLE_USER', 'ROLE_STUDENT'],
+            'roles' => [UserRoles::ROLE_USER->name, UserRoles::ROLE_STUDENT->name],
         ]);
 
         UserFactory::createMany(5, [
-            'roles' => ['ROLE_USER', 'ROLE_TEACHER'],
+            'roles' => [UserRoles::ROLE_USER->name, UserRoles::ROLE_TEACHER->name],
         ]);
 
         //TODO get Random row using Doctrine
@@ -100,21 +106,20 @@ class AppFixtures extends Fixture
 
         //TODO random genders
 
+
         foreach ($arUsers as $user) {
-            if (in_array('ROLE_STUDENT', $user->getRoles())) {
-                StudentFactory::createOne(['related_user' => $user]);
-            } elseif (in_array('ROLE_TEACHER', $user->getRoles())) {
+            if (in_array(UserRoles::ROLE_STUDENT->name, $user->getRoles())) {
+                $student = new Student();
+                $student->setRelatedUser($user);
+                $manager->persist($student);
+                $manager->flush();
+            } elseif (in_array(UserRoles::ROLE_TEACHER->name, $user->getRoles())) {
                 TeacherFactory::createOne(['related_user' => $user]);
             }
         }
 
 
         $arTeachers = $this->teacherRepository->findAll();
-        foreach ($arTeachers as $teacher) {
-            CVFactory::createOne([
-                'teacher' => $teacher,
-            ]);
-        }
 
         //Getting up to four random teacher`s expertises
         $arAllExpertisesIds = $this->expertiseRepository->findAll();
@@ -128,8 +133,27 @@ class AppFixtures extends Fixture
             }
         }
 
-        $arTeachers = $this->teacherRepository->findAll();
+        $arPaymentTypesRepository = $this->paymentTypesRepository->findAll();
+        $arStudyingModels = $this->studyingModelsRepository->findAll();
+
+
         foreach ($arTeachers as $teacher) {
+            CVFactory::createOne(['teacher' => $teacher]);
+
+            //TODO made more random
+            foreach ($arStudyingModels as $mode) {
+                $teacher->addStudyingMode($mode);
+                $manager->persist($teacher);
+                $manager->flush();
+            }
+
+            //TODO made more random
+            foreach ($arPaymentTypesRepository as $type) {
+                $teacher->addPaymentType($type);
+                $manager->persist($teacher);
+                $manager->flush();
+            }
+
             $arAttachedExpertises = [];
             foreach ($arRandomExpertises as $expertise) {
                 $expertiseId = $expertise->getId();

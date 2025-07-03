@@ -33,6 +33,7 @@ final class CVFactory extends PersistentProxyObjectFactory
     {
         return [
             'experience' => self::faker()->text(),
+            'years_of_experience' => self::faker()->numberBetween(3, 6),
             'personal_characteristics' => self::faker()->text(),
             'rate_per_hour' => round(self::faker()->randomFloat(null, 10, 30)),
         ];

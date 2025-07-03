@@ -14,7 +14,6 @@ class CV
     #[ORM\Column]
     private ?int $id = null;
 
-
     #[ORM\OneToOne(inversedBy: 'cv', targetEntity: Teacher::class)]
     #[ORM\JoinColumn(name: 'teacher_id', referencedColumnName: 'id')]
     private ?Teacher $teacher = null;
@@ -27,6 +26,9 @@ class CV
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $experience = null;
+
+    #[ORM\Column]
+    private ?float $years_of_experience = null;
 
     public function getId(): ?int
     {
@@ -77,6 +79,18 @@ class CV
     public function setExperience(string $experience): static
     {
         $this->experience = $experience;
+
+        return $this;
+    }
+
+    public function getYearsOfExperience(): ?float
+    {
+        return $this->years_of_experience;
+    }
+
+    public function setYearsOfExperience(float $years_of_experience): static
+    {
+        $this->years_of_experience = $years_of_experience;
 
         return $this;
     }

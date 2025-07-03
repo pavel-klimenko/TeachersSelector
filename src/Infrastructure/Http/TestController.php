@@ -7,11 +7,13 @@ use App\Domain\Entity\Student;
 use App\Domain\Entity\TeacherHasTeacherExpertises;
 use App\Domain\Entity\User;
 use App\Domain\Enums\Genders;
+use App\Domain\Enums\UserRoles;
 use App\Infrastructure\Repository\CityRepository;
 use App\Domain\Services\HelperService;
 use App\Infrastructure\Repository\CountryRepository;
 use App\Infrastructure\Repository\ExpertiseRepository;
 use App\Infrastructure\Repository\StudentRepository;
+use App\Infrastructure\Repository\StudyingModelsRepository;
 use App\Infrastructure\Repository\TeacherRepository;
 use App\Infrastructure\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,6 +30,7 @@ final class TestController extends AbstractController
 {
 
     public function __construct(
+        private StudyingModelsRepository $studyingModelsRepository,
         private ExpertiseRepository $expertiseRepository,
         private TeacherRepository $teacherRepository,
         private UserRepository $userRepository,
@@ -43,6 +46,10 @@ final class TestController extends AbstractController
     public function index(): Response
     {
 
+
+
+
+        exit();
         //Getting up to four random teacher`s expertises
         $arAllExpertisesIds = $this->expertiseRepository->findAll();
         if (!empty($arAllExpertisesIds)) {
@@ -55,26 +62,19 @@ final class TestController extends AbstractController
             }
         }
 
+        $arStudyingModels = $this->studyingModelsRepository->findAll();
+
+
+
+
         $arTeachers = $this->teacherRepository->findAll();
         foreach ($arTeachers as $teacher) {
-            $arAttachedExpertises = [];
-            foreach ($arRandomExpertises as $expertise) {
-
-                $expertiseId = $expertise->getId();
-                if (!in_array($expertiseId, $arAttachedExpertises)) {
-
-                    $teacherHasTeacherExpertises = new TeacherHasTeacherExpertises();
-                    $teacherHasTeacherExpertises
-                        ->setExpertise($expertise)
-                        ->setTeacher($teacher)
-                        ->setRating(5);
-
-                    $this->entityManager->persist($teacherHasTeacherExpertises);
-                    $this->entityManager->flush();
-
-                    $arAttachedExpertises[] = $expertiseId;
-                }
+            foreach ($arStudyingModels as $mode) {
+                $teacher->addStudyingMode($mode);
+                $this->entityManager->persist($teacher);
+                $this->entityManager->flush();
             }
+
         }
 
         exit();

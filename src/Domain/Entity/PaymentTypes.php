@@ -4,6 +4,8 @@ namespace App\Domain\Entity;
 
 
 use App\Infrastructure\Repository\PaymentTypesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PaymentTypesRepository::class)]
@@ -20,6 +22,17 @@ class PaymentTypes
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
+
+    /**
+     * @var Collection<int, Teacher>
+     */
+    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'payment_types')]
+    private Collection $teachers;
+
+    public function __construct()
+    {
+        $this->teachers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -46,6 +59,33 @@ class PaymentTypes
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Teacher>
+     */
+    public function getTeachers(): Collection
+    {
+        return $this->teachers;
+    }
+
+    public function addTeacher(Teacher $teacher): static
+    {
+        if (!$this->teachers->contains($teacher)) {
+            $this->teachers->add($teacher);
+            $teacher->addPaymentType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeacher(Teacher $teacher): static
+    {
+        if ($this->teachers->removeElement($teacher)) {
+            $teacher->removePaymentType($this);
+        }
 
         return $this;
     }

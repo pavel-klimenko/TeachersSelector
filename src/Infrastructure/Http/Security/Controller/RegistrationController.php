@@ -2,7 +2,11 @@
 
 namespace App\Infrastructure\Http\Security\Controller;
 
+use App\Domain\Entity\Student;
+use App\Domain\Entity\Teacher;
 use App\Domain\Entity\User;
+use App\Domain\Enums\UserRoles;
+use App\Domain\Factory\CVFactory;
 use App\Infrastructure\Form\RegistrationFormType;
 use App\Infrastructure\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,18 +32,38 @@ class RegistrationController extends AbstractController
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
-        //$teacher = $form->get('teacher')->getData();
-        dd($form);
-
         if ($form->isSubmitted() && $form->isValid()) {
+            $userRoles = array_merge($form->get('roles')->getData(), [UserRoles::ROLE_USER->name]);
+
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
-
             // encode the plain password
-            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+            $user
+                ->setName($form->get('name')->getData())
+                ->setEmail($form->get('email')->getData())
+                ->setAge($form->get('age')->getData())
+                ->setCity($form->get('city')->getData())
+                ->setGender($form->get('gender')->getData())
+                ->setRoles($userRoles)
+                ->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
             $entityManager->persist($user);
             $entityManager->flush();
+
+            if (in_array(UserRoles::ROLE_STUDENT->name, $userRoles)) {
+                $student = new Student();
+                $student->setRelatedUser($user);
+                $entityManager->persist($student);
+                $entityManager->flush();
+            } elseif (in_array(UserRoles::ROLE_TEACHER->name, $userRoles)) {
+                $teacher = new Teacher();
+                $teacher->setRelatedUser($user);
+                $teacher->setRating(1);
+                $entityManager->persist($teacher);
+                $entityManager->flush();
+
+                CVFactory::createOne(['teacher' => $teacher]);
+            }
 
             // generate a signed url and email it to the user
 //            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
@@ -57,6 +81,7 @@ class RegistrationController extends AbstractController
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
+            'title' => 'Registration',
         ]);
     }
 

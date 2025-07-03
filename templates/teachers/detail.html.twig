@@ -19,16 +19,43 @@
                      <li class="list-group-item"><b>RATING:</b> {{ teacher.rating }}</li>
                  </ul>
 
-                 <h4 class="display-5 fw-bold">Teacher`s expertises:</h4>
-                 <ol class="list-group" style="text-align: start; margin:3%">
-                     {% for expertise, rating in expertises %}
-                        <li class="list-group-item">
-                            <p><b>Expertise:</b> {{ expertise }}</p>
-                            <p><b>Rating:</b> {{ rating }} from {{ max_teacher_expertise_rating }}</p>
-                        </li>
-                     {% endfor %}
-                 </ol>
 
+                 {% if expertises|length > 0 %}
+                     <h4 class="display-5 fw-bold">Teacher`s expertises:</h4>
+                     <ol class="list-group" style="text-align: start; margin:3%">
+                         {% for expertise, rating in expertises %}
+                             <li class="list-group-item">
+                                 <p><b>Expertise:</b> {{ expertise }}</p>
+                                 <p><b>Rating:</b> {{ rating }} from {{ max_teacher_expertise_rating }}</p>
+                             </li>
+                         {% endfor %}
+                     </ol>
+                 {% endif %}
+
+
+
+                 {% if studying_modes|length > 0 %}
+                     <h7 class="display-5 fw-bold">Studying modes:</h7>
+                     <ol class="list-group" style="text-align: start; margin:3%">
+                         {% for mode in studying_modes %}
+                             <li class="list-group-item">
+                                 <p><b>{{ mode }}</b></p>
+                             </li>
+                         {% endfor %}
+                     </ol>
+                 {% endif %}
+
+
+                 {% if payment_types|length > 0 %}
+                     <h7 class="display-5 fw-bold">Payment types:</h7>
+                     <ol class="list-group" style="text-align: start; margin:3%">
+                         {% for type in payment_types %}
+                             <li class="list-group-item">
+                                 <p><b>{{ type }}</b></p>
+                             </li>
+                         {% endfor %}
+                     </ol>
+                 {% endif %}
 
                  <div class="row align-items-md-stretch" style="margin: 3%">
                      <div class="col-md-6">

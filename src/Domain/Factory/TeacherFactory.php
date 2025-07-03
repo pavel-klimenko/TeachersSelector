@@ -33,7 +33,6 @@ final class TeacherFactory extends PersistentProxyObjectFactory
     {
         return [
             'rating' => self::faker()->numberBetween(1, 10),
-            'years_experience' => self::faker()->numberBetween(3, 25),
         ];
     }
 

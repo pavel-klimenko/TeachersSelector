@@ -3,6 +3,7 @@
 namespace App\Domain\Entity;
 
 use App\Domain\Enums\Genders;
+use App\Domain\Enums\UserRoles;
 use App\Infrastructure\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -138,12 +139,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getAllRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        //TODO use ENUM!
-        $roles[] = 'ROLE_USER';
-        $roles[] = 'ROLE_TEACHER';
-        $roles[] = 'ROLE_STUDENT';
-
+        foreach (UserRoles::cases() as $role) {
+            $roles[] = $role->name;
+        }
         return array_unique($roles);
     }
 

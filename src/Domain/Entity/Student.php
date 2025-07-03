@@ -13,8 +13,6 @@ class Student
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-    #[ORM\Column(nullable: true)]
-    private ?float $maxRatePerHour = null;
 
     #[ORM\OneToOne(inversedBy: 'student', cascade: ['persist', 'remove'])]
     private ?User $related_user = null;
@@ -22,16 +20,6 @@ class Student
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getMaxRatePerHour(): ?float
-    {
-        return $this->maxRatePerHour;
-    }
-    public function setMaxRatePerHour(float $maxRatePerHour): static
-    {
-        $this->maxRatePerHour = $maxRatePerHour;
-        return $this;
     }
 
     public function getRelatedUser(): ?User

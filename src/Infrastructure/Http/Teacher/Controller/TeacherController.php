@@ -81,10 +81,22 @@ class TeacherController extends AbstractController
             $arExpertises[$expertise->getExpertise()->getName()] = $expertise->getRating();
         }
 
+        $arStudyingModes = [];
+        foreach ($teacher->getStudyingModes() as $mode) {
+            $arStudyingModes[] = $mode->getName();
+        }
+
+        $arPaymentTypes = [];
+        foreach ($teacher->getPaymentTypes() as $type) {
+            $arPaymentTypes[] = $type->getName();
+        }
+
         return $this->render('teachers/detail.html.twig', [
             'title' => 'CV - '.$teacher->getRelatedUser()->getName(),
             'teacher' => $teacher,
             'expertises' => $arExpertises,
+            'studying_modes' => $arStudyingModes,
+            'payment_types' => $arPaymentTypes,
             'max_teacher_expertise_rating' => 5, //TODO CONST
         ]);
     }

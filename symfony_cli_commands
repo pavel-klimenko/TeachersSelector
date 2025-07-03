@@ -1,4 +1,4 @@
-создать Entity: php bin/console make:entity TeacherHasTeacherExpertises
+создать Entity: php bin/console make:entity
 
 показать все маршруты: php bin/console debug:router
 
