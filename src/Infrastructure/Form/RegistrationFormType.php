@@ -6,7 +6,6 @@ use App\Domain\Entity\City;
 use App\Domain\Entity\User;
 use App\Domain\Enums\Genders;
 use App\Domain\Enums\UserRoles;
-use App\Infrastructure\Repository\CityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
@@ -25,18 +24,20 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class RegistrationFormType extends AbstractType
 {
-    public function __construct(
-        private CityRepository $cityRepository,
-    ){}
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $arRoles = [UserRoles::ROLE_STUDENT, UserRoles::ROLE_TEACHER];
 
         $builder
-            ->add('name', TextType::class)
-            ->add('email', EmailType::class)
-            ->add('age', NumberType::class)
+            ->add('name', TextType::class, [
+                'required' => true,
+            ])
+            ->add('email', EmailType::class, [
+                'required' => true,
+            ])
+            ->add('age', NumberType::class, [
+                'required' => true,
+            ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
@@ -44,6 +45,7 @@ class RegistrationFormType extends AbstractType
                         'message' => 'You should agree to our terms.',
                     ]),
                 ],
+                'required' => true,
             ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
@@ -61,6 +63,7 @@ class RegistrationFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
+                'required' => true,
             ])
             ->add('roles', ChoiceType::class, [
                 'choices' => array_combine(
@@ -70,12 +73,14 @@ class RegistrationFormType extends AbstractType
                 'label' => 'User role',
                 'expanded' => false,
                 'multiple' => false,
+                'required' => true,
             ])
             ->add('gender', EnumType::class, [
                 'class' => Genders::class,
                 'label' => 'Gender',
                 'expanded' => false,
-                'multiple' => false
+                'multiple' => false,
+                'required' => true,
             ])
             ->add('city', EntityType::class, [
                 'class' => City::class,

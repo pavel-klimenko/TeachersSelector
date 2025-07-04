@@ -1,0 +1,59 @@
+{% extends '@templates_path/base.html.twig' %}
+
+ {% block title %}Select the teacher{% endblock %}
+
+ {% block body %}
+     {% include '@templates_path/header.html.twig' %}
+
+         <div class="container py-2">
+             <div class="container mt-4">
+                 <div class="col-md-6">
+                     <div class="row justify-content-center">
+                         <h2>Select the teacher</h2>
+                         {{ form_start(selectTeachersForm, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+                         <div class="mb-3">
+                             {{ form_label(selectTeachersForm.rating, null, {'label_attr': {'class': 'form-label'}}) }}
+                             {{ form_widget(selectTeachersForm.rating, {'attr': {'class': 'form-control', 'type': 'number'}}) }}
+                             {{ form_errors(selectTeachersForm.rating) }}
+                         </div>
+
+                         <div class="mb-3">
+                             {{ form_label(selectTeachersForm.yearsExperience, null, {'label_attr': {'class': 'form-label'}}) }}
+                             {{ form_widget(selectTeachersForm.yearsExperience, {'attr': {'class': 'form-control', 'type': 'number'}}) }}
+                             {{ form_errors(selectTeachersForm.yearsExperience) }}
+                         </div>
+
+                         <div class="mb-3">
+                             {{ form_label(selectTeachersForm.maxHourRate, null, {'label_attr': {'class': 'form-label'}}) }}
+                             {{ form_widget(selectTeachersForm.maxHourRate, {'attr': {'class': 'form-control', 'type': 'number'}}) }}
+                             {{ form_errors(selectTeachersForm.maxHourRate) }}
+                         </div>
+
+                         <div class="mb-3">
+                             {{ form_label(selectTeachersForm.expertises, null, {'label_attr': {'class': 'form-label'}}) }}
+                             {{ form_widget(selectTeachersForm.expertises, {'attr': {'class': 'form-select', 'multiple': 'multiple'}}) }}
+                             {{ form_errors(selectTeachersForm.expertises) }}
+                         </div>
+
+                         <div class="mb-3">
+                             {{ form_label(selectTeachersForm.studyingModes, null, {'label_attr': {'class': 'form-label'}}) }}
+                             {{ form_widget(selectTeachersForm.studyingModes, {'attr': {'class': 'form-select', 'multiple': 'multiple'}}) }}
+                             {{ form_errors(selectTeachersForm.studyingModes) }}
+                         </div>
+
+                         <div class="mb-3">
+                             {{ form_label(selectTeachersForm.paymentTypes, null, {'label_attr': {'class': 'form-label'}}) }}
+                             {{ form_widget(selectTeachersForm.paymentTypes, {'attr': {'class': 'form-select', 'multiple': 'multiple'}}) }}
+                             {{ form_errors(selectTeachersForm.paymentTypes) }}
+                         </div>
+
+                         <button type="submit" class="btn btn-primary">Find teachers</button>
+                         {{ form_end(selectTeachersForm) }}
+                     </div>
+                 </div>
+             </div>
+         </div>
+
+     {% include '@templates_path/footer.html.twig' %}
+ {% endblock %}

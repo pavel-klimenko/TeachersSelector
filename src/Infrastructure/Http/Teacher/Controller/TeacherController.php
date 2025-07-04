@@ -8,9 +8,12 @@ namespace App\Infrastructure\Http\Teacher\Controller;
 
 use App\Domain\Entity\Teacher;
 use App\Domain\Enums\Genders;
+use App\Infrastructure\Form\SelectTeachersFormType;
 use App\Infrastructure\Repository\TeacherRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TeacherController extends AbstractController
@@ -123,5 +126,23 @@ class TeacherController extends AbstractController
 //            'teachers' => $allTeaches,
 //            'max_teacher_common_rating' => 10 //TODO const
 //        ]);
+    }
+
+    public function selectTeachers(Request $request): Response
+    {
+        $form = $this->createForm(SelectTeachersFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Обработка данных формы
+            $data = $form->getData();
+            dd($data);
+
+            //return $this->redirectToRoute('some_success_route');
+        }
+
+        return $this->render('student/select_teachers.html.twig', [
+            'selectTeachersForm' => $form->createView(),
+        ]);
     }
 }

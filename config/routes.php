@@ -25,8 +25,10 @@ return function (RoutingConfigurator $routes): void {
     //$routes->add('app_verify_email', '/verify/email')->controller([\App\Infrastructure\Http\Security\Controller\SecurityController::class, 'verifyUserEmail']);
 
 
+    $routes->add('select_teachers', '/select_teachers')->controller([TeacherController::class, 'selectTeachers']);
 
     $routes->add('teachers_get_all', '/teachers')->controller([TeacherController::class, 'getAll'])->methods(['GET']);
+
     $routes->add('teachers_get_by_filter', '/teachers_by_filter')->controller([TeacherController::class, 'getByFilter'])->methods(['GET']);
 
 

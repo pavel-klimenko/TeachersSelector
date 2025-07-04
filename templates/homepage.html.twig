@@ -1,11 +1,11 @@
-{% extends 'base.html.twig' %}
+{% extends '@templates_path/base.html.twig' %}
 
  {% block title %}{{ title }}{% endblock %}
 
  {% block body %}
-     {% include 'header.html.twig' %}
+     {% include '@templates_path/header.html.twig' %}
 
-     {% include 'select.teachers.html.twig' %}
+     {% include '@templates_path/select_teachers_form.html.twig' %}
 
 {#     <div class="container py-4">#}
 {#         <div class="p-5 mb-4 bg-light rounded-3">#}
@@ -35,5 +35,5 @@
 
 {#     </div>#}
 
-     {% include 'footer.html.twig' %}
+     {% include '@templates_path/footer.html.twig' %}
  {% endblock %}
