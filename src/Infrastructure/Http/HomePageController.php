@@ -11,6 +11,7 @@ use App\Infrastructure\Repository\CityRepository;
 use App\Domain\Services\HelperService;
 use App\Infrastructure\Repository\CountryRepository;
 use App\Infrastructure\Repository\ExpertiseRepository;
+use App\Infrastructure\Repository\PaymentTypesRepository;
 use App\Infrastructure\Repository\StudentRepository;
 use App\Infrastructure\Repository\TeacherRepository;
 use App\Infrastructure\Repository\UserRepository;
@@ -28,12 +29,13 @@ final class HomePageController extends AbstractController
 {
 
     public function __construct(
-//        private ExpertiseRepository $expertiseRepository,
+        private ExpertiseRepository $expertiseRepository,
+        private PaymentTypesRepository $paymentTypesRepository,
 //        private TeacherRepository $teacherRepository,
 //        private UserRepository $userRepository,
-//        private StudentRepository $studentRepository,
+        private StudentRepository $studentRepository,
 //        private CountryRepository $countryRepository,
-//        private CityRepository $cityRepository,
+        private CityRepository $cityRepository,
 //        private UserPasswordHasherInterface $userPasswordHasher,
 //        private EntityManagerInterface $entityManager
     )
@@ -48,12 +50,17 @@ final class HomePageController extends AbstractController
         // FOR STUDENT: buttom for selecting the teacher
         // FOR TEACHER: list of all platform`s expertises
 
+        $arExpertises = $this->expertiseRepository->findAll();
+        $arPaymentTypes = $this->paymentTypesRepository->findAll();
+        $citiesAmount = $this->cityRepository->count();
+        $studentsAmount = $this->studentRepository->count();
 
         return $this->render('homepage.html.twig', [
             'title' => 'Homepage',
-//            'teacher' => $teacher,
-//            'expertises' => $arExpertises,
-//            'max_teacher_expertise_rating' => 5, //TODO CONST
+            'expertises' => $arExpertises,
+            'payment_types' => $arPaymentTypes,
+            'cities_amount' => $citiesAmount,
+            'students_amount' => $studentsAmount,
         ]);
     }
 

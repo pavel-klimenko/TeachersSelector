@@ -105,13 +105,23 @@ class TeacherController extends AbstractController
     public function getAll(TeacherRepository $teacherRepository)
     {
         $allTeaches = $teacherRepository->findAll();
-
-        dump($allTeaches);
-
         return $this->render('teachers/list.html.twig', [
             'title' => 'Our teachers',
             'teachers' => $allTeaches,
             'max_teacher_common_rating' => 10 //TODO const
         ]);
+    }
+
+    #[Route('/teachers_get_by_filter', name: 'teachers_get_by_filter')]
+    public function getByFilter(TeacherRepository $teacherRepository)
+    {
+        $arTeaches = $teacherRepository->findTeachersByFilter(['rating']);
+        dd($arTeaches);
+//        $allTeaches = $teacherRepository->findAll();
+//        return $this->render('teachers/list.html.twig', [
+//            'title' => 'Our teachers',
+//            'teachers' => $allTeaches,
+//            'max_teacher_common_rating' => 10 //TODO const
+//        ]);
     }
 }

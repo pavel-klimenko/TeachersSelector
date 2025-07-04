@@ -1,0 +1,56 @@
+{% extends '@templates_path/base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    {% include '@templates_path/header.html.twig' %}
+
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h1 class="h4 mb-4 text-center">{{ title }}</h1>
+                        {% if error %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ error.messageKey|trans(error.messageData, 'security') }}
+                            </div>
+                        {% endif %}
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="inputEmail" class="form-label">Email</label>
+                                <input type="email" value="{{ last_username }}" name="_username" id="inputEmail"
+                                       class="form-control" required autofocus>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="inputPassword" class="form-label">Password</label>
+                                <input type="password" name="_password" id="inputPassword" class="form-control"
+                                       required>
+                            </div>
+
+                            <input type="hidden" name="_csrf_token"
+                                   value="{{ csrf_token('authenticate') }}"
+                            >
+
+                            <div class="d-grid">
+                                <button class="btn btn-primary" type="submit">
+                                    Login
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <small class="text-muted">
+                        Don`t you have an account? <a href="{{ path('app_register') }}">Registration</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {% include '@templates_path/footer.html.twig' %}
+{% endblock %}

@@ -15,13 +15,22 @@ return function (RoutingConfigurator $routes): void {
         ->methods(['GET']);
 
 
-    $routes->add('app_login', '/login')->controller([\App\Infrastructure\Http\Security\Controller\LoginController::class, 'index']);
-    $routes->add('app_register', '/register')->controller([\App\Infrastructure\Http\Security\Controller\RegistrationController::class, 'register']);
-    $routes->add('app_verify_email', '/verify/email')->controller([\App\Infrastructure\Http\Security\Controller\RegistrationController::class, 'verifyUserEmail']);
+    $routes->add('app_login', '/login')->controller([\App\Infrastructure\Http\Security\Controller\SecurityController::class, 'login']);
+    $routes->add('app_profile', '/profile')->controller([\App\Infrastructure\Http\Security\Controller\SecurityController::class, 'profile']);
+
+    $routes->add('app_logout', '/logout')->controller([\App\Infrastructure\Http\Security\Controller\SecurityController::class, 'logout']);
+
+
+    $routes->add('app_register', '/register')->controller([\App\Infrastructure\Http\Security\Controller\SecurityController::class, 'register']);
+    //$routes->add('app_verify_email', '/verify/email')->controller([\App\Infrastructure\Http\Security\Controller\SecurityController::class, 'verifyUserEmail']);
 
 
 
     $routes->add('teachers_get_all', '/teachers')->controller([TeacherController::class, 'getAll'])->methods(['GET']);
+    $routes->add('teachers_get_by_filter', '/teachers_by_filter')->controller([TeacherController::class, 'getByFilter'])->methods(['GET']);
+
+
+
     $routes->add('teacher_get_by_id', '/teachers/{id}')->controller([TeacherController::class, 'getById'])
         ->requirements(['id' => Requirement::DIGITS])
         ->methods(['GET']);

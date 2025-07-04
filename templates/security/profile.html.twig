@@ -1,0 +1,26 @@
+
+{% extends '@templates_path/base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+    {% include '@templates_path/header.html.twig' %}
+
+        <div class="container mt-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">You are already authorized as, {{ user.username|default(user.email) }}</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Roles:</strong>
+                        {% for role in user.roles %}
+                            <span class="badge bg-secondary">{{ role }}</span>
+                        {% endfor %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    {% include '@templates_path/footer.html.twig' %}
+{% endblock %}
