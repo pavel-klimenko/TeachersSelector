@@ -18,66 +18,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TeacherController extends AbstractController
 {
-//    public function __construct(
-//        private CreateTeacherUseCase $createTeacherUseCase
-//    ){}
-
-
-//    #[Route('/teacher-create', name: 'teacher_create')]
-//    public function create(EntityManagerInterface $em)
-//    {
-//        //TODO validate POST params
-//        //TODO move to services and repos
-//        $teacher = (new Teacher())
-//            ->setName('Oleg1')
-//            ->setAge(35)
-//            ->setGender(Genders::MALE)
-//            ->setRating(10)
-//            ->setYearsExperience(5);
-//
-//        $em->persist($teacher);
-//        $em->flush();
-//
-//        exit();
-//    }
-//    public function update(TeacherRepository $teacherRepository, EntityManagerInterface $em, int $id)
-//    {
-//        $teacher = $teacherRepository->findOneBy(['id' => $id]);
-//
-//        if (!$teacher) {
-//            throw new \RuntimeException("Teacher with id = $id not found");
-//        }
-//
-//        $name = 'Ivan';
-//        $age = 55;
-//        $gender = Genders::FEMALE;
-//        $rating = 10;
-//
-//        $teacher->setName($name)
-//            ->setAge($age)
-//            ->setGender($gender)
-//            ->setRating($rating);
-//
-//        $em->flush();
-//
-//        exit();
-//    }
-//    public function delete(TeacherRepository $teacherRepository, EntityManagerInterface $em, int $id)
-//    {
-//        $teacher = $teacherRepository->findOneBy(['id' => $id]);
-//        if (!$teacher) {
-//            throw new \RuntimeException("Teacher with id = $id not found");
-//        }
-//
-//        $em->remove($teacher);
-//        $em->flush();
-//
-//        exit();
-//    }
-
     public function getById(TeacherRepository $teacherRepository, int $id)
     {
         $teacher = $teacherRepository->findOneBy(['id' => $id]);
+
 
         $arExpertises = [];
         foreach ($teacher->getTeacherHasTeacherExpertises() as $expertise) {
@@ -107,28 +51,15 @@ class TeacherController extends AbstractController
     #[Route('/teachers', name: 'teachers_get_all')]
     public function getAll(TeacherRepository $teacherRepository)
     {
-        $allTeaches = $teacherRepository->findAll();
+        $teachers = $teacherRepository->findAll();
         return $this->render('teachers/list.html.twig', [
             'title' => 'Our teachers',
-            'teachers' => $allTeaches,
+            'teachers' => $teachers,
             'max_teacher_common_rating' => 10 //TODO const
         ]);
     }
 
-    #[Route('/teachers_get_by_filter', name: 'teachers_get_by_filter')]
-    public function getByFilter(TeacherRepository $teacherRepository)
-    {
-        $arTeaches = $teacherRepository->findTeachersByFilter(['rating']);
-        dd($arTeaches);
-//        $allTeaches = $teacherRepository->findAll();
-//        return $this->render('teachers/list.html.twig', [
-//            'title' => 'Our teachers',
-//            'teachers' => $allTeaches,
-//            'max_teacher_common_rating' => 10 //TODO const
-//        ]);
-    }
-
-    public function selectTeachers(Request $request): Response
+    public function selectTeachers(TeacherRepository $teacherRepository, Request $request): Response
     {
         $form = $this->createForm(SelectTeachersFormType::class);
         $form->handleRequest($request);
@@ -136,9 +67,26 @@ class TeacherController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Обработка данных формы
             $data = $form->getData();
-            dd($data);
 
-            //return $this->redirectToRoute('some_success_route');
+            $arFilter = [];
+            $arFilter['rating'] = $data['rating'];
+            $arFilter['maxRate'] = $data['maxHourRate'];
+            $arFilter['yearsOfExperience'] = $data['yearsExperience'];
+            $arFilter['studyingModeId'] = $data['studyingModes'];
+
+            $arFilter['expertises_ids'] = [];
+            if (!$data['expertises']->isEmpty()) {
+                foreach ($data['expertises'] as $expertise) {
+                    $arFilter['expertises_ids'][] = $expertise->getId();
+                }
+            }
+
+            $arTeaches = $teacherRepository->findTeachersByFilter($arFilter);
+            return $this->render('teachers/list.html.twig', [
+                'title' => 'Our teachers',
+                'teachers' => $arTeaches,
+                'max_teacher_common_rating' => 10 //TODO const
+            ]);
         }
 
         return $this->render('student/select_teachers.html.twig', [

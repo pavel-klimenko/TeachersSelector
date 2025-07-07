@@ -16,54 +16,44 @@ class TeacherRepository extends ServiceEntityRepository
         parent::__construct($registry, Teacher::class);
     }
 
-    public function findTeachersByFilter(array $arFilter): array
+    public function findTeachersByFilter(array $arFilter = []): array
     {
+        $query = $this->createQueryBuilder('teachers')
+            ->join('teachers.cv', 'cv');
 
-        $rating = 1;
-        $maxRate = 12;
-        $yearsOfExperience = 6;
+            if (!empty($arFilter)) {
+                if ($arFilter['rating']) {
+                    $query->andWhere('teachers.rating >= :rating')->setParameter('rating', $arFilter['rating']);
+                }
 
-        //TODO добавить строгое соответствие списку из фильтра
-        $arStudyingModesIds = [1, 2];
-        $arPaymentTypesIds = [1,2];
-        $arExpertisesIds = [6];
+                if ($arFilter['maxRate']) {
+                    //$query->join('teachers.cv', 'cv')
+                        $query->andWhere('cv.rate_per_hour <= :maxRate')
+                        ->setParameter('maxRate', $arFilter['maxRate']);
+                }
 
-        //TODO упростить и оптимизировать!
+                if ($arFilter['yearsOfExperience']) {
+                    //$query->join('teachers.cv', 'cv')
+                        $query->andWhere('cv.years_of_experience >= :yearsOfExperience')
+                        ->setParameter('yearsOfExperience', $arFilter['yearsOfExperience']);
+                }
 
-        return $this->createQueryBuilder('teachers')
-            ->where('teachers.rating > :rating')
-            ->setParameter('rating', $rating)
+                if ($arFilter['studyingModeId']) {
+                    $query->join('teachers.studying_modes', 'studying_modes')
+                        ->andWhere('studying_modes.id = :studyingModeId')
+                        ->setParameter('studyingModeId', $arFilter['studyingModeId']);
+                }
 
-            ->join('teachers.cv', 'cv')
-            ->where('cv.rate_per_hour <= :maxRate')
-            ->setParameter('maxRate', $maxRate)
+                if ($arFilter['expertises_ids'] && !empty($arFilter['expertises_ids'])) {
+                    $query->join('teachers.teacherHasTeacherExpertises', 'teacherHasTeacherExpertises')
+                        ->join('teacherHasTeacherExpertises.expertise', 'expertise')
+                        ->andWhere('expertise.id IN (:expertiseIds)')
+                        ->setParameter('expertiseIds', $arFilter['expertises_ids']);
+                }
+            }
 
-            ->where('cv.years_of_experience >= :yearsOfExperience')
-            ->setParameter('yearsOfExperience', $yearsOfExperience)
 
 
-             //filtering by studying_modes ids
-            ->join('teachers.studying_modes', 'studying_modes')
-            ->where('studying_modes.id IN (:ids)')
-            ->groupBy('teachers.id')
-            ->having('COUNT(DISTINCT studying_modes.id) = :count')
-            ->setParameter('ids', $arStudyingModesIds)
-            ->setParameter('count', count($arStudyingModesIds))
-
-             //filtering by payment_types ids
-            ->join('teachers.payment_types', 'payment_types')
-            ->where('payment_types.id IN (:ids)')
-            ->groupBy('teachers.id')
-            ->having('COUNT(DISTINCT payment_types.id) = :count')
-            ->setParameter('ids', $arPaymentTypesIds)
-            ->setParameter('count', count($arPaymentTypesIds))
-
-                //TODO не правильно работает
-//            ->join('teachers.teacherHasTeacherExpertises', 'teacherHasTeacherExpertises')
-//            ->where('teacherHasTeacherExpertises.id IN (:expertises_ids)')
-//            ->setParameter('expertises_ids', $arExpertisesIds)
-
-            ->getQuery()
-            ->getResult();
+        return $query->getQuery()->getResult();
     }
 }

@@ -37,16 +37,9 @@ class SelectTeachersFormType extends AbstractType
             ->add('studyingModes', EntityType::class, [
                 'class' => StudyingModels::class,
                 'choice_label' => 'name',
-                //'placeholder' => 'Studying modes',
+                'placeholder' => 'All',
                 'required' => true,
-                'multiple' => true,
-            ])
-            ->add('paymentTypes', EntityType::class, [
-                'class' => PaymentTypes::class,
-                'choice_label' => 'name',
-                //'placeholder' => 'Studying modes',
-                'required' => true,
-                'multiple' => true,
+                'multiple' => false,
             ])
             ->add('expertises', EntityType::class, [
                 'class' => Expertise::class,

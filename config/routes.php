@@ -26,12 +26,7 @@ return function (RoutingConfigurator $routes): void {
 
 
     $routes->add('select_teachers', '/select_teachers')->controller([TeacherController::class, 'selectTeachers']);
-
-    $routes->add('teachers_get_all', '/teachers')->controller([TeacherController::class, 'getAll'])->methods(['GET']);
-
-    $routes->add('teachers_get_by_filter', '/teachers_by_filter')->controller([TeacherController::class, 'getByFilter'])->methods(['GET']);
-
-
+    $routes->add('teachers_get_all', '/teachers')->controller([TeacherController::class, 'getAll']);
 
     $routes->add('teacher_get_by_id', '/teachers/{id}')->controller([TeacherController::class, 'getById'])
         ->requirements(['id' => Requirement::DIGITS])
