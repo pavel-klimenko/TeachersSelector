@@ -44,21 +44,21 @@ services:
       XDEBUG_MODE: debug
       XDEBUG_CONFIG: client_host=host.docker.internal
       XDEBUG_TRIGGER: 'yes'
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    volumes:
-      - ./docker/rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins
-      - ./docker/rabbitmq/config/rabbitmq.config:/etc/rabbitmq/rabbitmq.config
-    healthcheck:
-      test: [ "CMD", "rabbitmq-diagnostics", "check_running" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - internal
+#  rabbitmq:
+#    image: rabbitmq:3-management
+#    ports:
+#      - "5672:5672"
+#      - "15672:15672"
+#    volumes:
+#      - ./docker/rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins
+#      - ./docker/rabbitmq/config/rabbitmq.config:/etc/rabbitmq/rabbitmq.config
+#    healthcheck:
+#      test: [ "CMD", "rabbitmq-diagnostics", "check_running" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - internal
   pgsql:
     build:
       context: .
@@ -74,16 +74,16 @@ services:
       - internal
     volumes:
       - ./var/db-data:/var/lib/postgresql/data
-  redis:
-    image: redis:latest
-    restart: always
-#    ports:
-#      - "6379:6379"
-    command: redis-server --save 20 1 --loglevel warning
-    volumes:
-      - ./cache:/data/redis
-    networks:
-      - internal
+#  redis:
+#    image: redis:latest
+#    restart: always
+##    ports:
+##      - "6379:6379"
+#    command: redis-server --save 20 1 --loglevel warning
+#    volumes:
+#      - ./cache:/data/redis
+#    networks:
+#      - internal
 
 ###> doctrine/doctrine-bundle ###
   database:

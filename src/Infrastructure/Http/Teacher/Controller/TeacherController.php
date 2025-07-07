@@ -1,27 +1,26 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Infrastructure\Http\Teacher\Controller;
 
-//use App\Application\Teacher\CreateTeacherUseCase;
-
-use App\Domain\Entity\Teacher;
-use App\Domain\Enums\Genders;
 use App\Infrastructure\Form\SelectTeachersFormType;
 use App\Infrastructure\Repository\TeacherRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class TeacherController extends AbstractController
 {
-    public function getById(TeacherRepository $teacherRepository, int $id)
+
+
+    public function getById(SerializerInterface $serializer, TagAwareCacheInterface $cache, TeacherRepository $teacherRepository, int $id)
     {
         $teacher = $teacherRepository->findOneBy(['id' => $id]);
-
 
         $arExpertises = [];
         foreach ($teacher->getTeacherHasTeacherExpertises() as $expertise) {
