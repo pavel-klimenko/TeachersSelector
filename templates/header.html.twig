@@ -36,18 +36,19 @@
 
             <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
                 <a class="me-3 py-2 text-dark text-decoration-none" href="/">Homepage</a>
+                <a class="me-3 py-2 text-dark text-decoration-none" href="/teachers">Teachers</a>
 
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    {% if is_granted('ROLE_STUDENT') %}
+                        <a class="me-3 py-2 text-dark text-decoration-none" href="/select_teachers">Select teachers</a>
+                    {% endif %}
 
-{#                {% if is_granted('IS_AUTHENTICATED_FULLY') %}#}
-{#                    {% if is_granted('ROLE_STUDENT') %}#}
-{#                        <a class="me-3 py-2 text-dark text-decoration-none" href="/teachers">Teachers</a>#}
-{#                    {% endif %}#}
-{#                    <a class="me-3 py-2 text-dark text-decoration-none" href="/profile">Profile</a>#}
+                    <a class="me-3 py-2 text-dark text-decoration-none" href="/profile">Profile</a>
                     <a class="me-3 py-2 text-dark text-decoration-none" href="/logout">Logout</a>
-{#                {% else %}#}
-{#                    <a class="me-3 py-2 text-dark text-decoration-none" href="/login">Login</a>#}
-{#                    <a class="py-2 text-dark text-decoration-none" href="/register">Registration</a>#}
-{#                {% endif %}#}
+                {% else %}
+                    <a class="me-3 py-2 text-dark text-decoration-none" href="/login">Login</a>
+                    <a class="py-2 text-dark text-decoration-none" href="/register">Registration</a>
+                {% endif %}
 
 
 

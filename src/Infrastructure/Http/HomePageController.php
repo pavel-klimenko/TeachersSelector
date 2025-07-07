@@ -1,59 +1,43 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Infrastructure\Http;
 
-use App\Domain\Entity\Country;
-use App\Domain\Entity\Student;
-use App\Domain\Entity\TeacherHasTeacherExpertises;
-use App\Domain\Entity\User;
-use App\Domain\Enums\Genders;
 use App\Infrastructure\Repository\CityRepository;
-use App\Domain\Services\HelperService;
-use App\Infrastructure\Repository\CountryRepository;
 use App\Infrastructure\Repository\ExpertiseRepository;
 use App\Infrastructure\Repository\PaymentTypesRepository;
 use App\Infrastructure\Repository\StudentRepository;
-use App\Infrastructure\Repository\TeacherRepository;
-use App\Infrastructure\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 final class HomePageController extends AbstractController
 {
-
-    public function __construct(
-        private ExpertiseRepository $expertiseRepository,
-        private PaymentTypesRepository $paymentTypesRepository,
-//        private TeacherRepository $teacherRepository,
-//        private UserRepository $userRepository,
-        private StudentRepository $studentRepository,
-//        private CountryRepository $countryRepository,
-        private CityRepository $cityRepository,
-//        private UserPasswordHasherInterface $userPasswordHasher,
-//        private EntityManagerInterface $entityManager
-    )
-    {}
-
     #[Route('/', name: 'homepage')]
-    public function index(): Response
+    public function index(
+        CacheInterface $cache,
+        ExpertiseRepository $expertiseRepository,
+        PaymentTypesRepository $paymentTypesRepository,
+        CityRepository $cityRepository,
+        StudentRepository $studentRepository,
+    ): Response
     {
-        //TODO amount of teachers and student on the platform,
-        //
-        //
-        // FOR STUDENT: buttom for selecting the teacher
-        // FOR TEACHER: list of all platform`s expertises
+        $arExpertises = $cache->get('expertises_all', function () use ($expertiseRepository) {
+            return $expertiseRepository->findAll();
+        });
 
-        $arExpertises = $this->expertiseRepository->findAll();
-        $arPaymentTypes = $this->paymentTypesRepository->findAll();
-        $citiesAmount = $this->cityRepository->count();
-        $studentsAmount = $this->studentRepository->count();
+        $arPaymentTypes = $cache->get('payment_types_all', function () use ($paymentTypesRepository) {
+            return $paymentTypesRepository->findAll();
+        });
+
+        $citiesAmount = $cache->get('cities_amount', function () use ($cityRepository) {
+            return $cityRepository->count();
+        });
+
+        $studentsAmount = $cache->get('students_amount', function () use ($studentRepository) {
+            return $studentRepository->count();
+        });
 
         return $this->render('homepage.html.twig', [
             'title' => 'Homepage',
@@ -63,5 +47,4 @@ final class HomePageController extends AbstractController
             'students_amount' => $studentsAmount,
         ]);
     }
-
 }

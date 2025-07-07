@@ -16,6 +16,9 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use Symfony\Bundle\MakerBundle\Security;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class SecurityController extends AbstractController
 {
@@ -104,8 +107,14 @@ final class SecurityController extends AbstractController
     #[Route('/profile', name: 'app_profile')]
     public function profile(): Response
     {
+        $currentUser = $this->getUser();
+
+        if (!$currentUser) {
+            return $this->redirectToRoute('app_login');
+        }
+
         return $this->render('security/profile.html.twig', [
-            'user' => $this->getUser(),
+            'user' => $currentUser,
         ]);
     }
 

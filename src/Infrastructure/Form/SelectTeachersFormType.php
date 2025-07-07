@@ -23,11 +23,13 @@ class SelectTeachersFormType extends AbstractType
     {
         $builder
             ->add('rating', IntegerType::class, [
+                'data' => 1,
                 'label' => 'Teacher`s rating',
                 'required' => true,
             ])
             ->add('yearsExperience', IntegerType::class, [
-                'label' => 'Years of experience',
+                'data' => 2,
+                'label' => 'Minimum years of experience',
                 'required' => true,
             ])
             ->add('maxHourRate', IntegerType::class, [
@@ -44,7 +46,7 @@ class SelectTeachersFormType extends AbstractType
             ->add('expertises', EntityType::class, [
                 'class' => Expertise::class,
                 'choice_label' => 'name',
-                //'placeholder' => 'Studying modes',
+                'placeholder' => 'All',
                 'required' => true,
                 'multiple' => true,
             ]);
