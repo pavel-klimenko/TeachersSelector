@@ -3,17 +3,29 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Teacher;
+use App\Domain\Repository\TeacherRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Teacher>
  */
-class TeacherRepository extends ServiceEntityRepository
+class TeacherRepository extends ServiceEntityRepository implements TeacherRepositoryInterface, ServiceEntityRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Teacher::class);
+    }
+
+    public function getList(): array
+    {
+        return $this->findAll();
+    }
+
+    public function getTeacher(int $id): object|null
+    {
+        return $this->findOneBy(['id' => $id]);
     }
 
     public function findTeachersByFilter(array $arFilter = []): array

@@ -2,6 +2,8 @@
 
 namespace App\Infrastructure\Http\Teacher\Controller;
 
+use App\Application\Teacher\UseCase\GetAll;
+use App\Application\Teacher\UseCase\GetOne;
 use App\Infrastructure\Form\SelectTeachersFormType;
 use App\Infrastructure\Repository\TeacherRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,27 +15,44 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 final class TeacherController extends AbstractController
 {
-    public function getById(TeacherRepository $teacherRepository, int $id)
+    public function __construct(
+        private GetAll $getAllTeachersCase,
+        private GetOne $getOne,
+    ){}
+
+    public function getById(int $id)
     {
-        $teacher = $teacherRepository->findOneBy(['id' => $id]);
+        $teacher = $this->getOne->execute($id);
+
+
 
         $arExpertises = [];
-        foreach ($teacher->getTeacherHasTeacherExpertises() as $expertise) {
+        foreach ($teacher->hasTeacherExpertises as $expertise) {
             $arExpertises[$expertise->getExpertise()->getName()] = $expertise->getRating();
         }
 
         $arStudyingModes = [];
-        foreach ($teacher->getStudyingModes() as $mode) {
+        foreach ($teacher->studying_modes as $mode) {
             $arStudyingModes[] = $mode->getName();
         }
 
         $arPaymentTypes = [];
-        foreach ($teacher->getPaymentTypes() as $type) {
+        foreach ($teacher->payment_types as $type) {
             $arPaymentTypes[] = $type->getName();
         }
 
+
+        dd([
+            'title' => 'CV - '.$teacher->related_user->getName(),
+            'teacher' => $teacher,
+            'expertises' => $arExpertises,
+            'studying_modes' => $arStudyingModes,
+            'payment_types' => $arPaymentTypes,
+            'max_teacher_expertise_rating' => 5, //TODO CONST
+        ]);
+
         return $this->render('teachers/detail.html.twig', [
-            'title' => 'CV - '.$teacher->getRelatedUser()->getName(),
+            'title' => 'CV - '.$teacher->related_user->getName(),
             'teacher' => $teacher,
             'expertises' => $arExpertises,
             'studying_modes' => $arStudyingModes,
@@ -43,9 +62,9 @@ final class TeacherController extends AbstractController
     }
 
     #[Route('/teachers', name: 'teachers_get_all')]
-    public function getAll(TeacherRepository $teacherRepository)
+    public function getAll()
     {
-        $teachers = $teacherRepository->findAll();
+        $teachers = $this->getAllTeachersCase->execute();
         return $this->render('teachers/list.html.twig', [
             'title' => 'Our teachers',
             'teachers' => $teachers,
