@@ -12,9 +12,9 @@
 
                  <ul class="list-group" style="text-align: start; margin:3%;">
                      <li class="list-group-item"><b>RATE PER HOUR:</b> {{ teacher.cv.RatePerHour }}$</li>
-                     <li class="list-group-item"><b>CITY:</b> {{ teacher.RelatedUser.city.name }}</li>
-                     <li class="list-group-item"><b>GENDER:</b> {{ teacher.RelatedUser.gender.name }}</li>
-                     <li class="list-group-item"><b>AGE:</b> {{ teacher.RelatedUser.age }}</li>
+                     <li class="list-group-item"><b>CITY:</b> {{ teacher.related_user.city.name }}</li>
+                     <li class="list-group-item"><b>GENDER:</b> {{ teacher.related_user.gender.name }}</li>
+                     <li class="list-group-item"><b>AGE:</b> {{ teacher.related_user.age }}</li>
                      <li class="list-group-item"><b>YEARS EXPERIENCE:</b> {{ teacher.cv.YearsOfExperience }}</li>
                      <li class="list-group-item"><b>RATING:</b> {{ teacher.rating }}</li>
                  </ul>
@@ -72,7 +72,7 @@
                      </div>
                  </div>
 
-                 <p><a href="mailto:{{ teacher.RelatedUser.email }}">Contact the teacher via Email</a></p>
+                 <p><a href="mailto:{{ teacher.related_user.email }}">Contact the teacher via Email</a></p>
              </div>
          </div>
 

@@ -38,17 +38,17 @@
                 <a class="me-3 py-2 text-dark text-decoration-none" href="/">Homepage</a>
                 <a class="me-3 py-2 text-dark text-decoration-none" href="/teachers">Teachers</a>
 
-                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    {% if is_granted('ROLE_STUDENT') %}
+{#                {% if is_granted('IS_AUTHENTICATED_FULLY') %}#}
+{#                    {% if is_granted('ROLE_STUDENT') %}#}
                         <a class="me-3 py-2 text-dark text-decoration-none" href="/select_teachers">Select teachers</a>
-                    {% endif %}
+{#                    {% endif %}#}
 
                     <a class="me-3 py-2 text-dark text-decoration-none" href="/profile">Profile</a>
                     <a class="me-3 py-2 text-dark text-decoration-none" href="/logout">Logout</a>
-                {% else %}
+{#                {% else %}#}
                     <a class="me-3 py-2 text-dark text-decoration-none" href="/login">Login</a>
                     <a class="py-2 text-dark text-decoration-none" href="/register">Registration</a>
-                {% endif %}
+{#                {% endif %}#}
 
 
 
