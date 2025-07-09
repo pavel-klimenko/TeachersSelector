@@ -35,28 +35,6 @@ class Expertise
         $this->teacherHasTeacherExpertises = new ArrayCollection();
     }
 
-
-//    /**
-//     * @var Collection<int, TeacherHasTeacherExpertises>
-//     */
-
-//    #[ORM\OneToMany(targetEntity: TeacherHasTeacherExpertises::class, mappedBy: 'expertise')]
-//    private Collection $teacher;
-//
-//    public function __construct()
-//    {
-//        $this->teacher = new ArrayCollection();
-//    }
-
-//    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'teachers')]
-//    private Collection $teachers;
-//
-//    public function __construct()
-//    {
-//        $this->teachers = new ArrayCollection();
-//    }
-
-
     public function getId(): ?int
     {
         return $this->id;
@@ -84,83 +62,33 @@ class Expertise
         return $this;
     }
 
-//    public function getTeachers(): Collection
-//    {
-//        return $this->teachers;
-//    }
-
-//    public function addTeacher(Teacher $teacher): self
-//    {
-//        if (!$this->teachers->contains($teacher)) {
-//            $this->teachers[] = $teacher;
-//        }
-//
-//        return $this;
-//    }
-//
-//    public function removeTeacher(Teacher $teacher): self
-//    {
-//        $this->teachers->removeElement($teacher);
-//        return $this;
-//    }
-
-//    /**
-//     * @return Collection<int, TeacherHasTeacherExpertises>
-//     */
-//    public function getTeacher(): Collection
-//    {
-//        return $this->teacher;
-//    }
-//
-//    public function addTeacher(TeacherHasTeacherExpertises $teacher): static
-//    {
-//        if (!$this->teacher->contains($teacher)) {
-//            $this->teacher->add($teacher);
-//            $teacher->setExpertise($this);
-//        }
-//
-//        return $this;
-//    }
-//
-//    public function removeTeacher(TeacherHasTeacherExpertises $teacher): static
-//    {
-//        if ($this->teacher->removeElement($teacher)) {
-//            // set the owning side to null (unless already changed)
-//            if ($teacher->getExpertise() === $this) {
-//                $teacher->setExpertise(null);
-//            }
-//        }
-//
-//        return $this;
-//    }
-
-/**
- * @return Collection<int, TeacherHasTeacherExpertises>
- */
-public function getTeacherHasTeacherExpertises(): Collection
-{
-    return $this->teacherHasTeacherExpertises;
-}
-
-public function addTeacherHasTeacherExpertise(TeacherHasTeacherExpertises $teacherHasTeacherExpertise): static
-{
-    if (!$this->teacherHasTeacherExpertises->contains($teacherHasTeacherExpertise)) {
-        $this->teacherHasTeacherExpertises->add($teacherHasTeacherExpertise);
-        $teacherHasTeacherExpertise->setExpertise($this);
+    /**
+     * @return Collection<int, TeacherHasTeacherExpertises>
+     */
+    public function getTeacherHasTeacherExpertises(): Collection
+    {
+        return $this->teacherHasTeacherExpertises;
     }
 
-    return $this;
-}
-
-public function removeTeacherHasTeacherExpertise(TeacherHasTeacherExpertises $teacherHasTeacherExpertise): static
-{
-    if ($this->teacherHasTeacherExpertises->removeElement($teacherHasTeacherExpertise)) {
-        // set the owning side to null (unless already changed)
-        if ($teacherHasTeacherExpertise->getExpertise() === $this) {
-            $teacherHasTeacherExpertise->setExpertise(null);
+    public function addTeacherHasTeacherExpertise(TeacherHasTeacherExpertises $teacherHasTeacherExpertise): static
+    {
+        if (!$this->teacherHasTeacherExpertises->contains($teacherHasTeacherExpertise)) {
+            $this->teacherHasTeacherExpertises->add($teacherHasTeacherExpertise);
+            $teacherHasTeacherExpertise->setExpertise($this);
         }
+
+        return $this;
     }
 
-    return $this;
-}
+    public function removeTeacherHasTeacherExpertise(TeacherHasTeacherExpertises $teacherHasTeacherExpertise): static
+    {
+        if ($this->teacherHasTeacherExpertises->removeElement($teacherHasTeacherExpertise)) {
+            // set the owning side to null (unless already changed)
+            if ($teacherHasTeacherExpertise->getExpertise() === $this) {
+                $teacherHasTeacherExpertise->setExpertise(null);
+            }
+        }
+
+        return $this;
+    }
 }

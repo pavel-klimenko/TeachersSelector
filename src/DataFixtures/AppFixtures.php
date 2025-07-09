@@ -5,19 +5,19 @@ namespace App\DataFixtures;
 use App\Domain\Entity\City;
 use App\Domain\Entity\Country;
 use App\Domain\Entity\Expertise;
-use App\Domain\Entity\PaymentTypes;
+use App\Domain\Entity\PaymentType;
 use App\Domain\Entity\Student;
 use App\Domain\Entity\StudyingModels;
 use App\Domain\Enums\UserRoles;
 use App\Domain\Factory\CVFactory;
-use App\Domain\Factory\StudentFactory;
+//use App\Domain\Factory\StudentFactory;
 use App\Domain\Factory\TeacherFactory;
 use App\Domain\Factory\TeacherHasTeacherExpertisesFactory;
 use App\Domain\Factory\UserFactory;
 use App\Domain\Services\HelperService;
 use App\Infrastructure\Repository\CountryRepository;
 use App\Infrastructure\Repository\ExpertiseRepository;
-use App\Infrastructure\Repository\PaymentTypesRepository;
+use App\Infrastructure\Repository\PaymentTypeRepository;
 use App\Infrastructure\Repository\StudyingModelsRepository;
 use App\Infrastructure\Repository\TeacherRepository;
 use App\Infrastructure\Repository\UserRepository;
@@ -27,7 +27,7 @@ use Doctrine\Persistence\ObjectManager;
 class AppFixtures extends Fixture
 {
     public function __construct(
-        private PaymentTypesRepository $paymentTypesRepository,
+        private PaymentTypeRepository $paymentTypesRepository,
         private StudyingModelsRepository $studyingModelsRepository,
         private ExpertiseRepository $expertiseRepository,
         private CountryRepository $countryRepository,
@@ -43,7 +43,7 @@ class AppFixtures extends Fixture
 
         $arPaymentTypes = $this->helperService->getJsonList('/public/json/payment_types.json');
         foreach ($arPaymentTypes as $type) {
-            $newPaymentType = new PaymentTypes();
+            $newPaymentType = new PaymentType();
             $newPaymentType->setName($type['name'])->setCode($type['code']);
             $manager->persist($newPaymentType);
             $manager->flush();

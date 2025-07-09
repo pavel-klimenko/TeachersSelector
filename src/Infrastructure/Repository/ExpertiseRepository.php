@@ -3,32 +3,24 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Expertise;
+use App\Domain\Repository\ExpertiseRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Expertise>
  */
-class ExpertiseRepository extends ServiceEntityRepository
+class ExpertiseRepository extends ServiceEntityRepository implements ExpertiseRepositoryInterface, ServiceEntityRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Expertise::class);
     }
 
-    public function getAllIds(): array
+    public function getList(): array
     {
-        $arAllExpertises = $this->createQueryBuilder('e')
-            ->select('e.id')
-            ->getQuery()
-            ->getResult();
-
-        $arIds = [];
-        foreach ($arAllExpertises as $expertise) {
-            $arIds[] = $expertise['id'];
-        }
-
-        return $arIds;
+        return $this->findAll();
     }
 
     //    /**

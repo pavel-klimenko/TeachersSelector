@@ -3,14 +3,14 @@
 namespace App\Domain\Entity;
 
 
-use App\Infrastructure\Repository\PaymentTypesRepository;
+use App\Infrastructure\Repository\PaymentTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PaymentTypesRepository::class)]
+#[ORM\Entity(repositoryClass: PaymentTypeRepository::class)]
 #[ORM\Table(name: 'payment_types')]
-class PaymentTypes
+class PaymentType
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

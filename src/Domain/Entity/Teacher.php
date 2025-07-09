@@ -47,9 +47,9 @@ class Teacher
     private Collection $studying_modes;
 
     /**
-     * @var Collection<int, PaymentTypes>
+     * @var Collection<int, PaymentType>
      */
-    #[ORM\ManyToMany(targetEntity: PaymentTypes::class, inversedBy: 'teachers')]
+    #[ORM\ManyToMany(targetEntity: PaymentType::class, inversedBy: 'teachers')]
     private Collection $payment_types;
 
     public function __construct()
@@ -198,7 +198,7 @@ class Teacher
         return $this->payment_types;
     }
 
-    public function addPaymentType(PaymentTypes $paymentType): static
+    public function addPaymentType(PaymentType $paymentType): static
     {
         if (!$this->payment_types->contains($paymentType)) {
             $this->payment_types->add($paymentType);
@@ -207,7 +207,7 @@ class Teacher
         return $this;
     }
 
-    public function removePaymentType(PaymentTypes $paymentType): static
+    public function removePaymentType(PaymentType $paymentType): static
     {
         $this->payment_types->removeElement($paymentType);
 
