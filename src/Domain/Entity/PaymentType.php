@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'payment_types')]
 class PaymentType
 {
+    public const PAYMENT_TYPES_JSON = '/public/json/payment_types.json';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

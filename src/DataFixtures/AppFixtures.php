@@ -14,7 +14,7 @@ use App\Domain\Factory\CVFactory;
 use App\Domain\Factory\TeacherFactory;
 use App\Domain\Factory\TeacherHasTeacherExpertisesFactory;
 use App\Domain\Factory\UserFactory;
-use App\Domain\Services\HelperService;
+use App\Domain\Services\HelperServiceInterface;
 use App\Infrastructure\Repository\CountryRepository;
 use App\Infrastructure\Repository\ExpertiseRepository;
 use App\Infrastructure\Repository\PaymentTypeRepository;
@@ -27,13 +27,13 @@ use Doctrine\Persistence\ObjectManager;
 class AppFixtures extends Fixture
 {
     public function __construct(
-        private PaymentTypeRepository $paymentTypesRepository,
+        private PaymentTypeRepository    $paymentTypesRepository,
         private StudyingModelsRepository $studyingModelsRepository,
-        private ExpertiseRepository $expertiseRepository,
-        private CountryRepository $countryRepository,
-        private HelperService $helperService,
-        private UserRepository $userRepository,
-        private TeacherRepository $teacherRepository,
+        private ExpertiseRepository      $expertiseRepository,
+        private CountryRepository        $countryRepository,
+        private HelperServiceInterface   $helperService,
+        private UserRepository           $userRepository,
+        private TeacherRepository        $teacherRepository,
     )
     {}
 
@@ -43,10 +43,10 @@ class AppFixtures extends Fixture
 
         $arPaymentTypes = $this->helperService->getJsonList('/public/json/payment_types.json');
         foreach ($arPaymentTypes as $type) {
-            $newPaymentType = new PaymentType();
-            $newPaymentType->setName($type['name'])->setCode($type['code']);
-            $manager->persist($newPaymentType);
-            $manager->flush();
+//            $newPaymentType = new PaymentType();
+//            $newPaymentType->setName($type['name'])->setCode($type['code']);
+//            $manager->persist($newPaymentType);
+//            $manager->flush();
         }
 
         $arStudyingModes = $this->helperService->getJsonList('/public/json/studying_modes.json');

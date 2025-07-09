@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 namespace App\Application\PaymentType\UseCase;
+
 use App\Application\PaymentType\DTO\ResponsePaymentTypeDTO;
 use App\Domain\Repository\PaymentTypeRepositoryInterface;
 
