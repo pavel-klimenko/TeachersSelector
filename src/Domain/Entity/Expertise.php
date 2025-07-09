@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ExpertiseRepository::class)]
 class Expertise
 {
+    public const EXPERTISES_JSON = '/public/json/expertises.json';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

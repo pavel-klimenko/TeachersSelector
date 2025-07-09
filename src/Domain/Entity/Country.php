@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'countries')]
 class Country
 {
+    public const COUNTRIES_JSON = '/public/json/countries_iso_codes.json';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -64,56 +66,12 @@ class Country
         return $this->students;
     }
 
-    public function addStudent(Student $student): static
-    {
-        if (!$this->students->contains($student)) {
-            $this->students->add($student);
-            $student->setCountry($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStudent(Student $student): static
-    {
-        if ($this->students->removeElement($student)) {
-            // set the owning side to null (unless already changed)
-            if ($student->getCountry() === $this) {
-                $student->setCountry(null);
-            }
-        }
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Teacher>
      */
     public function getTeachers(): Collection
     {
         return $this->teachers;
-    }
-
-    public function addTeacher(Teacher $teacher): static
-    {
-        if (!$this->teachers->contains($teacher)) {
-            $this->teachers->add($teacher);
-            $teacher->setCountry($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTeacher(Teacher $teacher): static
-    {
-        if ($this->teachers->removeElement($teacher)) {
-            // set the owning side to null (unless already changed)
-            if ($teacher->getCountry() === $this) {
-                $teacher->setCountry(null);
-            }
-        }
-
-        return $this;
     }
 
     public function getIsoCode(): ?string

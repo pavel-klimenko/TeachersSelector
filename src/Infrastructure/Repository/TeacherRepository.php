@@ -2,10 +2,12 @@
 
 namespace App\Infrastructure\Repository;
 
+use App\Domain\Entity\PaymentType;
 use App\Domain\Entity\Teacher;
 use App\Domain\Repository\TeacherRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -13,9 +15,18 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TeacherRepository extends ServiceEntityRepository implements TeacherRepositoryInterface, ServiceEntityRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        protected EntityManagerInterface $entityManager,
+        ManagerRegistry $registry
+    )
     {
         parent::__construct($registry, Teacher::class);
+    }
+
+    public function save(Teacher $teacher): void
+    {
+        $this->entityManager->persist($teacher);
+        $this->entityManager->flush();
     }
 
     public function getList(): array

@@ -6,8 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Cache\CacheInterface;
-use App\Application\Expertise\UseCase\GetAll as GetAllExpertises;
-use App\Application\PaymentType\UseCase\GetAll as GetAllPaymentTypes;
+use App\Application\Expertise\UseCase\GetAllExpertises as GetAllExpertises;
+use App\Application\PaymentType\UseCase\GetAllPaymentTypes as GetAllPaymentTypes;
 use App\Application\City\UseCase\GetAmount as GetCitiesAmount;
 use App\Application\Student\UseCase\GetAmount as GetStudentAmount;
 
@@ -27,7 +27,7 @@ final class HomePageController extends AbstractController
         });
 
         $arPaymentTypes = $cache->get('payment_types_all', function () use ($GetAllPaymentTypesCase) {
-            return $GetAllPaymentTypesCase->execute();
+            return $GetAllPaymentTypesCase->executeDTOs();
         });
 
         $citiesAmount = $cache->get('cities_amount', function () use ($GetCitiesAmountCase) {

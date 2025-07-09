@@ -5,7 +5,7 @@ namespace App\Infrastructure\Form;
 use App\Domain\Entity\City;
 use App\Domain\Entity\Expertise;
 use App\Domain\Entity\PaymentTypes;
-use App\Domain\Entity\StudyingModels;
+use App\Domain\Entity\StudyingMode;
 use App\Infrastructure\Repository\CityRepository;
 use App\Infrastructure\Repository\StudyingModelsRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -37,7 +37,7 @@ class SelectTeachersFormType extends AbstractType
                 'required' => true,
             ])
             ->add('studyingModes', EntityType::class, [
-                'class' => StudyingModels::class,
+                'class' => StudyingMode::class,
                 'choice_label' => 'name',
                 'placeholder' => 'All',
                 'required' => true,

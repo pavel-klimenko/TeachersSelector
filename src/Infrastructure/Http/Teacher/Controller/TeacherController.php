@@ -2,9 +2,9 @@
 
 namespace App\Infrastructure\Http\Teacher\Controller;
 
-use App\Application\Teacher\UseCase\GetAll;
-use App\Application\Teacher\UseCase\GetOne;
-use App\Application\Teacher\UseCase\Select;
+use App\Application\Teacher\UseCase\GetAllTeachers;
+use App\Application\Teacher\UseCase\GetTeacher;
+use App\Application\Teacher\UseCase\SelectTeachers;
 use App\Infrastructure\Form\SelectTeachersFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,9 +14,9 @@ use Symfony\Component\Routing\Annotation\Route;
 final class TeacherController extends AbstractController
 {
     public function __construct(
-        private GetAll $getAllTeachersCase,
-        private GetOne $getOneCase,
-        private Select $selectCase,
+        private GetAllTeachers $getAllTeachersCase,
+        private GetTeacher         $getOneCase,
+        private SelectTeachers         $selectCase,
     ){}
 
     public function getById(int $id)

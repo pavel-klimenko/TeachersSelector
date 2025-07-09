@@ -4,8 +4,8 @@ namespace App\Application\PaymentType\UseCase;
 
 use App\Application\PaymentType\DTO\CreatePaymentTypeDTO;
 use App\Application\PaymentType\DTO\ResponsePaymentTypeDTO;
-use App\Domain\Repository\PaymentTypeRepositoryInterface;
 use App\Application\PaymentType\Factory\PaymentTypeFactory;
+use App\Domain\Repository\PaymentTypeRepositoryInterface;
 
 class CreatePaymentType
 {

@@ -2,11 +2,14 @@
 
 namespace App\Infrastructure\Http\Security\Controller;
 
-use App\Domain\Entity\Student;
+use App\Application\User\DTO\CreateUserDTO;
+use App\Application\User\UseCase\CreateUser;
+use App\Application\User\UseCase\GetUserRoles;
 use App\Domain\Entity\Teacher;
 use App\Domain\Entity\User;
 use App\Domain\Enums\UserRoles;
 use App\Domain\Factory\CVFactory;
+use App\Domain\Factory\StudentFactory;
 use App\Infrastructure\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,13 +18,14 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
-use Symfony\Bundle\MakerBundle\Security;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class SecurityController extends AbstractController
 {
+
+    public function __construct(
+        private CreateUser $createUserCase
+    ){}
+
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
@@ -34,25 +38,37 @@ final class SecurityController extends AbstractController
 
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
+            $password = $userPasswordHasher->hashPassword($user, $plainPassword);
+
+            $createUserDTO = new CreateUserDTO(
+                $form->get('city')->getData(),
+                $form->get('email')->getData(),
+                $userRoles,
+                $password,
+                $form->get('age')->getData(),
+                $form->get('gender')->getData(),
+                $form->get('name')->getData()
+            );
+
+            $this->createUserCase->execute($createUserDTO);
+
             // encode the plain password
-            $user
-                ->setName($form->get('name')->getData())
-                ->setEmail($form->get('email')->getData())
-                ->setAge($form->get('age')->getData())
-                ->setCity($form->get('city')->getData())
-                ->setGender($form->get('gender')->getData())
-                ->setRoles($userRoles)
-                ->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+//            $user
+//                ->setName($form->get('name')->getData())
+//                ->setEmail($form->get('email')->getData())
+//                ->setAge($form->get('age')->getData())
+//                ->setCity($form->get('city')->getData())
+//                ->setGender($form->get('gender')->getData())
+//                ->setRoles($userRoles)
+//                ->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+//
+//            $entityManager->persist($user);
+//            $entityManager->flush();
 
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            if (in_array(UserRoles::ROLE_STUDENT->name, $userRoles)) {
-                $student = new Student();
-                $student->setRelatedUser($user);
-                $entityManager->persist($student);
-                $entityManager->flush();
-            } elseif (in_array(UserRoles::ROLE_TEACHER->name, $userRoles)) {
+            if (in_array(GetUserRoles::getStudentRole(), $userRoles)) {
+                StudentFactory::createOne(['related_user' => $user]);
+            } elseif (in_array(GetUserRoles::getTeacherRole(), $userRoles)) {
+                //TODO factory доделать!
                 $teacher = new Teacher();
                 $teacher->setRelatedUser($user);
                 $teacher->setRating(1);
@@ -82,27 +98,27 @@ final class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route('/verify/email', name: 'app_verify_email')]
-    public function verifyUserEmail(Request $request): Response
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
-        // validate email confirmation link, sets User::isVerified=true and persists
-        try {
-            /** @var User $user */
-            $user = $this->getUser();
-            $this->emailVerifier->handleEmailConfirmation($request, $user);
-        } catch (VerifyEmailExceptionInterface $exception) {
-            $this->addFlash('verify_email_error', $exception->getReason());
-
-            return $this->redirectToRoute('app_register');
-        }
-
-        // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->addFlash('success', 'Your email address has been verified.');
-
-        return $this->redirectToRoute('app_register');
-    }
+//    #[Route('/verify/email', name: 'app_verify_email')]
+//    public function verifyUserEmail(Request $request): Response
+//    {
+//        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+//
+//        // validate email confirmation link, sets User::isVerified=true and persists
+//        try {
+//            /** @var User $user */
+//            $user = $this->getUser();
+//            $this->emailVerifier->handleEmailConfirmation($request, $user);
+//        } catch (VerifyEmailExceptionInterface $exception) {
+//            $this->addFlash('verify_email_error', $exception->getReason());
+//
+//            return $this->redirectToRoute('app_register');
+//        }
+//
+//        // @TODO Change the redirect on success and handle or remove the flash message in your templates
+//        $this->addFlash('success', 'Your email address has been verified.');
+//
+//        return $this->redirectToRoute('app_register');
+//    }
 
     #[Route('/profile', name: 'app_profile')]
     public function profile(): Response

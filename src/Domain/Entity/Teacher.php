@@ -41,9 +41,9 @@ class Teacher
     private ?User $related_user = null;
 
     /**
-     * @var Collection<int, StudyingModels>
+     * @var Collection<int, StudyingMode>
      */
-    #[ORM\ManyToMany(targetEntity: StudyingModels::class, inversedBy: 'teachers')]
+    #[ORM\ManyToMany(targetEntity: StudyingMode::class, inversedBy: 'teachers')]
     private Collection $studying_modes;
 
     /**
@@ -167,14 +167,14 @@ class Teacher
     }
 
     /**
-     * @return Collection<int, StudyingModels>
+     * @return Collection<int, StudyingMode>
      */
     public function getStudyingModes(): Collection
     {
         return $this->studying_modes;
     }
 
-    public function addStudyingMode(StudyingModels $studyingMode): static
+    public function addStudyingMode(StudyingMode $studyingMode): static
     {
         if (!$this->studying_modes->contains($studyingMode)) {
             $this->studying_modes->add($studyingMode);
@@ -183,7 +183,7 @@ class Teacher
         return $this;
     }
 
-    public function removeStudyingMode(StudyingModels $studyingMode): static
+    public function removeStudyingMode(StudyingMode $studyingMode): static
     {
         $this->studying_modes->removeElement($studyingMode);
 
@@ -191,7 +191,7 @@ class Teacher
     }
 
     /**
-     * @return Collection<int, PaymentTypes>
+     * @return Collection<int, PaymentType>
      */
     public function getPaymentTypes(): Collection
     {

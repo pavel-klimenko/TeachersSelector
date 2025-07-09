@@ -12,6 +12,11 @@ final class Email
         $this->assertEmailIsValid($email);
     }
 
+    public function getEmail():string
+    {
+        return $this->email;
+    }
+
     private function assertEmailIsValid(string $email):void
     {
         if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {

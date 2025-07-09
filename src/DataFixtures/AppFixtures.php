@@ -2,156 +2,161 @@
 
 namespace App\DataFixtures;
 
-use App\Domain\Entity\City;
-use App\Domain\Entity\Country;
-use App\Domain\Entity\Expertise;
-use App\Domain\Entity\PaymentType;
-use App\Domain\Entity\Student;
-use App\Domain\Entity\StudyingModels;
-use App\Domain\Enums\UserRoles;
+use App\Application\City\DTO\CreateCityDTO;
+use App\Application\City\UseCase\CreateCity;
+use App\Application\City\UseCase\GetDemoCitiesList;
+use App\Application\Country\DTO\CreateCountryDTO;
+use App\Application\Country\UseCase\CreateCountry;
+use App\Application\Country\UseCase\GetAllCountries;
+use App\Application\Country\UseCase\GetDemoCountriesList;
+use App\Application\Expertise\DTO\CreateExpertiseDTO;
+use App\Application\Expertise\UseCase\CreateExpertise;
+use App\Application\Expertise\UseCase\GetDemoExpertisesList;
+use App\Application\Expertise\UseCase\GetRandomDemoExpertises;
+use App\Application\PaymentType\DTO\CreatePaymentTypeDTO;
+use App\Application\PaymentType\UseCase\CreatePaymentType;
+use App\Application\PaymentType\UseCase\GetAllPaymentTypes;
+use App\Application\PaymentType\UseCase\GetDemoPaymentTypesList;
+use App\Application\StudyingMode\DTO\CreateStudyingModeDTO;
+use App\Application\StudyingMode\UseCase\CreateStudyingMode;
+use App\Application\StudyingMode\UseCase\GetAllStudyingModes;
+use App\Application\StudyingMode\UseCase\GetDemoStudyingModesList;
+use App\Application\Teacher\UseCase\AddPaymentTypeToTeacher;
+use App\Application\Teacher\UseCase\AddStudyingModeToTeacher;
+use App\Application\Teacher\UseCase\GetAllTeachers;
+use App\Application\User\UseCase\CurrentUserRoles;
+use App\Application\User\UseCase\GetAllUsers;
+use App\Application\User\UseCase\GetUserRoles;
 use App\Domain\Factory\CVFactory;
-//use App\Domain\Factory\StudentFactory;
+use App\Domain\Factory\StudentFactory;
 use App\Domain\Factory\TeacherFactory;
 use App\Domain\Factory\TeacherHasTeacherExpertisesFactory;
 use App\Domain\Factory\UserFactory;
-use App\Domain\Services\HelperServiceInterface;
-use App\Infrastructure\Repository\CountryRepository;
-use App\Infrastructure\Repository\ExpertiseRepository;
-use App\Infrastructure\Repository\PaymentTypeRepository;
-use App\Infrastructure\Repository\StudyingModelsRepository;
-use App\Infrastructure\Repository\TeacherRepository;
-use App\Infrastructure\Repository\UserRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
     public function __construct(
-        private PaymentTypeRepository    $paymentTypesRepository,
-        private StudyingModelsRepository $studyingModelsRepository,
-        private ExpertiseRepository      $expertiseRepository,
-        private CountryRepository        $countryRepository,
-        private HelperServiceInterface   $helperService,
-        private UserRepository           $userRepository,
-        private TeacherRepository        $teacherRepository,
+        private CreatePaymentType           $CreatePaymentTypeCase,
+        private CreateStudyingMode          $CreateStudyingModeCase,
+        private CreateCountry         $createCountryCase,
+        private CreateCity         $createCityCase,
+        private CreateExpertise          $createExpertiseCase,
+        private GetDemoExpertisesList $GetDemoExpertisesList,
+        private GetDemoCountriesList $GetDemoCountriesList,
+        private GetDemoCitiesList $getDemoCitiesList,
+        private GetAllCountries $GetAllCountriesCase,
+        private GetAllPaymentTypes $GetAllPaymentTypes,
+        private GetAllStudyingModes $GetAllStudyingModes,
+        private GetAllUsers $GetAllUsersCases,
+        private GetAllTeachers $getAllTeachersCase,
+        private GetRandomDemoExpertises $GetRandomDemoExpertises,
+        private AddStudyingModeToTeacher $addStudyingModeToTeacher,
+        private AddPaymentTypeToTeacher $addPaymentTypeToTeacher,
+        private GetDemoPaymentTypesList $demoPaymentTypesList,
+        private GetDemoStudyingModesList $demoStudyingModesList
     )
     {}
 
     public function load(ObjectManager $manager): void
     {
-        //TODO clen architecture and ValueObject, Factories
+        //TODO разбить на разные фикстуры
+        //TODO фикстуры на слой Infrastructure
 
-        $arPaymentTypes = $this->helperService->getJsonList('/public/json/payment_types.json');
-        foreach ($arPaymentTypes as $type) {
-//            $newPaymentType = new PaymentType();
-//            $newPaymentType->setName($type['name'])->setCode($type['code']);
-//            $manager->persist($newPaymentType);
-//            $manager->flush();
+
+        //TODO работает
+        $arPaymentTypes = $this->demoPaymentTypesList->execute();
+        if (!empty($arPaymentTypes)) {
+            foreach ($arPaymentTypes as $type) {
+                $CreatePaymentTypeDTO = new CreatePaymentTypeDTO($type['name'], $type['code']);
+                $this->CreatePaymentTypeCase->execute($CreatePaymentTypeDTO);
+            }
         }
 
-        $arStudyingModes = $this->helperService->getJsonList('/public/json/studying_modes.json');
-        foreach ($arStudyingModes as $mode) {
-            $newMode = new StudyingModels();
-            $newMode->setName($mode['name'])->setCode($mode['code']);
-            $manager->persist($newMode);
-            $manager->flush();
+        //TODO работает
+        $arStudyingModes = $this->demoStudyingModesList->execute();
+        if (!empty($arStudyingModes)) {
+            foreach ($arStudyingModes as $mode) {
+                $CreatePaymentTypeDTO = new CreateStudyingModeDTO($mode['name'], $mode['code']);
+                $this->CreateStudyingModeCase->execute($CreatePaymentTypeDTO);
+            }
+        }
+
+        //TODO работает
+        $arExpertises = $this->GetDemoExpertisesList->execute();
+        if (!empty($arExpertises)) {
+            foreach ($arExpertises as $expertise) {
+                $expertiseDTO = new CreateExpertiseDTO($expertise['name'], $expertise['code']);
+                $this->createExpertiseCase->execute($expertiseDTO);
+            }
+        }
+
+        //TODO работает
+        $arCountries = $this->GetDemoCountriesList->execute();
+        if (!empty($arCountries)) {
+            foreach ($arCountries as $isoCode => $name) {
+                $countryDTO = new CreateCountryDTO($name, $isoCode);
+                $this->createCountryCase->execute($countryDTO);
+            }
         }
 
 
-        $arExpertises = $this->helperService->getJsonList('/public/json/expertises.json');
-        foreach ($arExpertises as $expertise) {
-            $newExpertise = new Expertise();
-            $newExpertise->setName($expertise['name'])->setCode($expertise['code']);
-            $manager->persist($newExpertise);
-            $manager->flush();
-        }
-
-
-        $arCountries = $this->helperService->getJsonList('/public/json/countries_iso_codes.json');
-        foreach ($arCountries as $isoCode => $name) {
-            $country = new Country();
-            $country->setName($name)->setIsoCode($isoCode);
-            $manager->persist($country);
-            $manager->flush();
-        }
-
-
-        $countries = $this->countryRepository->findAll();
+        //TODO работает
+        $countries = $this->GetAllCountriesCase->executeEntities();
         $arCountries = [];
         foreach ($countries as $country) {
             $arCountries[$country->getIsoCode()] = $country;
         }
 
-        $arCities = $this->helperService->getJsonList('/public/json/cities.json');
+        $arCities = $this->getDemoCitiesList->execute();
         foreach ($arCities as $city) {
             $country = $arCountries[$city['country_iso_code']];
-            $newCity = new City();
-            $newCity->setName($city['name'])->setCode($city['code'])->setCountry($country);
-            $manager->persist($newCity);
-            $manager->flush();
+            $cityDTO = new CreateCityDTO($country, $city['name'], $city['code']);
+            $this->createCityCase->execute($cityDTO);
         }
 
 
+        //TODO работает
 
-        UserFactory::createMany(5, [
-            'roles' => [UserRoles::ROLE_USER->name, UserRoles::ROLE_STUDENT->name],
-        ]);
+        UserFactory::createMany(5, ['roles' => GetUserRoles::executeForStudent()]);
+        UserFactory::createMany(5, ['roles' => GetUserRoles::executeForTeacher()]);
 
-        UserFactory::createMany(5, [
-            'roles' => [UserRoles::ROLE_USER->name, UserRoles::ROLE_TEACHER->name],
-        ]);
 
         //TODO get Random row using Doctrine
-        $arUsers = $this->userRepository->findAll();
-
-        //TODO random genders
-
-
-        foreach ($arUsers as $user) {
-            if (in_array(UserRoles::ROLE_STUDENT->name, $user->getRoles())) {
-                $student = new Student();
-                $student->setRelatedUser($user);
-                $manager->persist($student);
-                $manager->flush();
-            } elseif (in_array(UserRoles::ROLE_TEACHER->name, $user->getRoles())) {
-                TeacherFactory::createOne(['related_user' => $user]);
+        $arUsers = $this->GetAllUsersCases->executeEntities();
+        if (!empty($arUsers)) {
+            //TODO random genders
+            foreach ($arUsers as $user) {
+                if (in_array(GetUserRoles::getStudentRole(), CurrentUserRoles::execute($user))) {
+                    StudentFactory::createOne(['related_user' => $user]);
+                } elseif (in_array(GetUserRoles::getTeacherRole(), CurrentUserRoles::execute($user))) {
+                    TeacherFactory::createOne(['related_user' => $user]);
+                }
             }
         }
 
 
-        $arTeachers = $this->teacherRepository->findAll();
 
-        //Getting up to four random teacher`s expertises
-        $arAllExpertisesIds = $this->expertiseRepository->findAll();
-        if (!empty($arAllExpertisesIds)) {
-            $min = 0;
-            $max = count($arAllExpertisesIds) - 1;
+        //TODO работает
 
-            $arRandomExpertises = [];
-            for ($i = 0; $i < 3; $i++) {
-                $arRandomExpertises[] = $arAllExpertisesIds[rand($min, $max)];
-            }
-        }
-
-        $arPaymentTypesRepository = $this->paymentTypesRepository->findAll();
-        $arStudyingModels = $this->studyingModelsRepository->findAll();
+        $arRandomExpertises = $this->GetRandomDemoExpertises->execute();
+        $arTeachers = $this->getAllTeachersCase->executeEntities();
+        $arPaymentTypes = $this->GetAllPaymentTypes->executeEntities();
+        $arStudyingMods = $this->GetAllStudyingModes->executeEntities();
 
 
         foreach ($arTeachers as $teacher) {
             CVFactory::createOne(['teacher' => $teacher]);
 
             //TODO made more random
-            foreach ($arStudyingModels as $mode) {
-                $teacher->addStudyingMode($mode);
-                $manager->persist($teacher);
-                $manager->flush();
+            foreach ($arStudyingMods as $mode) {
+                $this->addStudyingModeToTeacher->execute($teacher, $mode);
             }
 
             //TODO made more random
-            foreach ($arPaymentTypesRepository as $type) {
-                $teacher->addPaymentType($type);
-                $manager->persist($teacher);
-                $manager->flush();
+            foreach ($arPaymentTypes as $type) {
+                $this->addPaymentTypeToTeacher->execute($teacher, $type);
             }
 
             $arAttachedExpertises = [];
@@ -166,5 +171,6 @@ class AppFixtures extends Fixture
                 }
             }
         }
+
     }
 }

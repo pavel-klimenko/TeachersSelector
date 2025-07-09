@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CityRepository::class)]
 class City
 {
+    public const COUNTRIES_JSON = '/public/json/cities.json';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
