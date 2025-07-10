@@ -10,6 +10,7 @@ use App\Domain\Entity\User;
 use App\Domain\Enums\UserRoles;
 use App\Domain\Factory\CVFactory;
 use App\Domain\Factory\StudentFactory;
+use App\Domain\Factory\TeacherFactory;
 use App\Infrastructure\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -69,11 +70,18 @@ final class SecurityController extends AbstractController
                 StudentFactory::createOne(['related_user' => $user]);
             } elseif (in_array(GetUserRoles::getTeacherRole(), $userRoles)) {
                 //TODO factory доделать!
-                $teacher = new Teacher();
-                $teacher->setRelatedUser($user);
-                $teacher->setRating(1);
-                $entityManager->persist($teacher);
-                $entityManager->flush();
+//                $teacher = new Teacher();
+//                $teacher->setRelatedUser($user);
+//                $teacher->setRating(1);
+//                $entityManager->persist($teacher);
+//                $entityManager->flush();
+
+                $teacher = TeacherFactory::createOne([
+                    'related_user' => $user,
+                    'rating' => 1
+                ])->getObject();
+
+                dd($teacher);
 
                 CVFactory::createOne(['teacher' => $teacher]);
             }

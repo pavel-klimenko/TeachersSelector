@@ -2,21 +2,12 @@
 
 namespace App\Infrastructure\Form;
 
-use App\Domain\Entity\City;
 use App\Domain\Entity\Expertise;
-use App\Domain\Entity\PaymentTypes;
 use App\Domain\Entity\StudyingMode;
-use App\Infrastructure\Repository\CityRepository;
-use App\Infrastructure\Repository\StudyingModelsRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-
 class SelectTeachersFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
