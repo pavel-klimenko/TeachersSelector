@@ -52,7 +52,7 @@ final class TeacherController extends AbstractController
     #[Route('/teachers', name: 'teachers_get_all')]
     public function getAll()
     {
-        $teachers = $this->getAllTeachersCase->execute();
+        $teachers = $this->getAllTeachersCase->executeDTOs();
         return $this->render('teachers/list.html.twig', [
             'title' => 'Our teachers',
             'teachers' => $teachers,
