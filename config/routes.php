@@ -8,6 +8,10 @@ return function (RoutingConfigurator $routes): void {
     $routes->add('homepage', '/')->controller([\App\Infrastructure\Http\HomePageController::class, 'index'])
         ->methods(['GET']);
 
+    $routes->add('health-check', '/health-check')->controller([\App\Infrastructure\Http\HealthCheckAction::class, '__invoke'])
+        ->methods(['GET']);
+
+
     $routes->add('test', '/test')->controller([\App\Infrastructure\Http\TestController::class, 'index'])
         ->methods(['GET']);
 

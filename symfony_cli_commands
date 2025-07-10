@@ -8,3 +8,5 @@
 
 Создание фабрики: php bin/console make:factory
 Запуск fixtures: php bin/console doctrine:fixtures:load
+
+Запуск автотестов: php bin/phpunit
