@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Factory;
+namespace App\Infrastructure\Factory;
 
 use App\Domain\Entity\Teacher;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;

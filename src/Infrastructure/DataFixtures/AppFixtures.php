@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\Infrastructure\DataFixtures;
 
 use App\Application\City\DTO\CreateCityDTO;
 use App\Application\City\UseCase\CreateCity;
@@ -27,11 +27,11 @@ use App\Application\Teacher\UseCase\GetAllTeachers;
 use App\Application\User\UseCase\CurrentUserRoles;
 use App\Application\User\UseCase\GetAllUsers;
 use App\Application\User\UseCase\GetUserRoles;
-use App\Domain\Factory\CVFactory;
-use App\Domain\Factory\StudentFactory;
-use App\Domain\Factory\TeacherFactory;
-use App\Domain\Factory\TeacherHasTeacherExpertisesFactory;
-use App\Domain\Factory\UserFactory;
+use App\Infrastructure\Factory\CVFactory;
+use App\Infrastructure\Factory\StudentFactory;
+use App\Infrastructure\Factory\TeacherFactory;
+use App\Infrastructure\Factory\TeacherHasTeacherExpertisesFactory;
+use App\Infrastructure\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Domain\Factory;
+namespace App\Infrastructure\Factory;
 
-use App\Domain\Entity\Student;
+use App\Domain\Entity\TeacherHasTeacherExpertises;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Student>
+ * @extends PersistentProxyObjectFactory<TeacherHasTeacherExpertises>
  */
-final class StudentFactory extends PersistentProxyObjectFactory
+final class TeacherHasTeacherExpertisesFactory extends PersistentProxyObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -21,7 +21,7 @@ final class StudentFactory extends PersistentProxyObjectFactory
 
     public static function class(): string
     {
-        return Student::class;
+        return TeacherHasTeacherExpertises::class;
     }
 
     /**
@@ -32,6 +32,7 @@ final class StudentFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
+            'rating' => self::faker()->numberBetween(1, 5),
         ];
     }
 
@@ -41,7 +42,7 @@ final class StudentFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(Student $student): void {})
+            // ->afterInstantiate(function(TeacherHasTeacherExpertises $teacherHasTeacherExpertises): void {})
         ;
     }
 }

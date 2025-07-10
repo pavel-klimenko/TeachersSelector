@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Domain\Factory;
+namespace App\Infrastructure\Factory;
 
-use App\Domain\Entity\CV;
+use App\Domain\Entity\Student;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<CV>
+ * @extends PersistentProxyObjectFactory<Student>
  */
-final class CVFactory extends PersistentProxyObjectFactory
+final class StudentFactory extends PersistentProxyObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -21,7 +21,7 @@ final class CVFactory extends PersistentProxyObjectFactory
 
     public static function class(): string
     {
-        return CV::class;
+        return Student::class;
     }
 
     /**
@@ -32,10 +32,6 @@ final class CVFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'experience' => self::faker()->text(),
-            'years_of_experience' => self::faker()->numberBetween(3, 6),
-            'personal_characteristics' => self::faker()->text(),
-            'rate_per_hour' => round(self::faker()->randomFloat(null, 10, 30)),
         ];
     }
 
@@ -45,7 +41,7 @@ final class CVFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(CV $cV): void {})
+            // ->afterInstantiate(function(Student $student): void {})
         ;
     }
 }

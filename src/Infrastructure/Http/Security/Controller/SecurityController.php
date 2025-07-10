@@ -8,17 +8,17 @@ use App\Application\User\UseCase\GetUserRoles;
 use App\Domain\Entity\Teacher;
 use App\Domain\Entity\User;
 use App\Domain\Enums\UserRoles;
-use App\Domain\Factory\CVFactory;
-use App\Domain\Factory\StudentFactory;
-use App\Domain\Factory\TeacherFactory;
+use App\Infrastructure\Factory\CVFactory;
+use App\Infrastructure\Factory\StudentFactory;
+use App\Infrastructure\Factory\TeacherFactory;
 use App\Infrastructure\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 final class SecurityController extends AbstractController
 {
