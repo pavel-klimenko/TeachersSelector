@@ -17,7 +17,7 @@
                                 {{ error.messageKey|trans(error.messageData, 'security') }}
                             </div>
                         {% endif %}
-                        <form method="post">
+                        <form action="{{ path('app_login') }}" method="post">
                             <div class="mb-3">
                                 <label for="inputEmail" class="form-label">Email</label>
                                 <input type="email" value="{{ last_username }}" name="_username" id="inputEmail"

@@ -71,7 +71,7 @@ final class TeacherController extends AbstractController
             return $this->render('teachers/list.html.twig', [
                 'title' => 'Our teachers',
                 'teachers' => $teachers,
-                'max_teacher_common_rating' => 10 //TODO const
+                'max_teacher_common_rating' => Teacher::MAX_RATING
             ]);
         }
 

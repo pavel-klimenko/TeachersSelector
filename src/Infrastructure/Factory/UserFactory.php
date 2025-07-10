@@ -44,7 +44,7 @@ final class UserFactory extends PersistentProxyObjectFactory
             'city' => $minskCity, //TODO random cities
             'email' => self::faker()->email(),
             'isVerified' => true,
-            'password' => $this->userPasswordHasher->hashPassword((new User()), 'almaz'),
+            'password' => $this->userPasswordHasher->hashPassword((new User()), User::DEMO_PASSWORD),
             'roles' => [UserRoles::ROLE_USER->name],
             'name' => self::faker()->name(),
             'age' => self::faker()->numberBetween(25, 60),

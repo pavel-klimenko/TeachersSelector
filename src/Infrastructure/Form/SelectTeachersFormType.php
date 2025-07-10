@@ -2,8 +2,10 @@
 
 namespace App\Infrastructure\Form;
 
+use App\Domain\Entity\CV;
 use App\Domain\Entity\Expertise;
 use App\Domain\Entity\StudyingMode;
+use App\Domain\Entity\Teacher;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,12 +16,12 @@ class SelectTeachersFormType extends AbstractType
     {
         $builder
             ->add('rating', IntegerType::class, [
-                'data' => 1,
+                'data' => Teacher::MIN_RATING,
                 'label' => 'Teacher`s rating',
                 'required' => true,
             ])
             ->add('yearsExperience', IntegerType::class, [
-                'data' => 2,
+                'data' => CV::MIN_YEARS_EXPERIENCE,
                 'label' => 'Minimum years of experience',
                 'required' => true,
             ])

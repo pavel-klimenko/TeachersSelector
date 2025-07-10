@@ -12,6 +12,7 @@ services:
       - internal
     volumes:
       - ./:/var/www/app
+      #- ./docker/php/conf.d/custom-php.ini:/usr/local/etc/php/conf.d/custom-php.ini
   fpm1:
     build:
       context: .
