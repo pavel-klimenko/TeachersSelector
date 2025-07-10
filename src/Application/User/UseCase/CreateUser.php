@@ -4,6 +4,7 @@ namespace App\Application\User\UseCase;
 
 use App\Application\User\DTO\CreateUserDTO;
 use App\Application\User\Factory\UserFactory;
+use App\Domain\Entity\User;
 use App\Domain\Repository\UserRepositoryInterface;
 
 class CreateUser
@@ -12,9 +13,9 @@ class CreateUser
         private UserRepositoryInterface $userRepository,
     ){}
 
-    public function execute(CreateUserDTO $DTO):void
+    public function execute(CreateUserDTO $DTO):User
     {
         $newUser = UserFactory::makeObject($DTO);
-        $this->userRepository->save($newUser);
+        return $this->userRepository->save($newUser);
     }
 }

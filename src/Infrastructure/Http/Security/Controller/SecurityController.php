@@ -51,37 +51,15 @@ final class SecurityController extends AbstractController
                 $form->get('name')->getData()
             );
 
-            $this->createUserCase->execute($createUserDTO);
-
-            // encode the plain password
-//            $user
-//                ->setName($form->get('name')->getData())
-//                ->setEmail($form->get('email')->getData())
-//                ->setAge($form->get('age')->getData())
-//                ->setCity($form->get('city')->getData())
-//                ->setGender($form->get('gender')->getData())
-//                ->setRoles($userRoles)
-//                ->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
-//
-//            $entityManager->persist($user);
-//            $entityManager->flush();
+            $user = $this->createUserCase->execute($createUserDTO);
 
             if (in_array(GetUserRoles::getStudentRole(), $userRoles)) {
                 StudentFactory::createOne(['related_user' => $user]);
             } elseif (in_array(GetUserRoles::getTeacherRole(), $userRoles)) {
-                //TODO factory доделать!
-//                $teacher = new Teacher();
-//                $teacher->setRelatedUser($user);
-//                $teacher->setRating(1);
-//                $entityManager->persist($teacher);
-//                $entityManager->flush();
-
                 $teacher = TeacherFactory::createOne([
                     'related_user' => $user,
-                    'rating' => 1
-                ])->getObject();
-
-                dd($teacher);
+                    'rating' => Teacher::MIN_RATING
+                ]);
 
                 CVFactory::createOne(['teacher' => $teacher]);
             }

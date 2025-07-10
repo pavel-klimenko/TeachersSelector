@@ -44,10 +44,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->findAll();
     }
 
-    public function save(User $user): void
+    public function save(User $user): User
     {
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+
+        return $user;
     }
 
     //    /**

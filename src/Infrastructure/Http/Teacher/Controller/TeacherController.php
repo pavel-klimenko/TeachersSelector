@@ -5,6 +5,7 @@ namespace App\Infrastructure\Http\Teacher\Controller;
 use App\Application\Teacher\UseCase\GetAllTeachers;
 use App\Application\Teacher\UseCase\GetTeacher;
 use App\Application\Teacher\UseCase\SelectTeachers;
+use App\Domain\Entity\Teacher;
 use App\Infrastructure\Form\SelectTeachersFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,7 +56,7 @@ final class TeacherController extends AbstractController
         return $this->render('teachers/list.html.twig', [
             'title' => 'Our teachers',
             'teachers' => $teachers,
-            'max_teacher_common_rating' => 10 //TODO const
+            'max_teacher_common_rating' => Teacher::MAX_RATING
         ]);
     }
 
