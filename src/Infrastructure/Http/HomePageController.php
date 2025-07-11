@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Http;
 
+use App\Application\Homepage\UseCase\GetHomePageHtmlData;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,6 +21,7 @@ final class HomePageController extends AbstractController
         GetAllPaymentTypes $GetAllPaymentTypesCase,
         GetCitiesAmount $GetCitiesAmountCase,
         GetStudentAmount $GetStudentAmountCase,
+        GetHomePageHtmlData $GetHomePageHtmlData,
     ): Response
     {
         $arExpertises = $cache->get('expertises_all', function () use ($GetAllExpertisesCase) {
@@ -44,6 +46,7 @@ final class HomePageController extends AbstractController
             'payment_types' => $arPaymentTypes,
             'cities_amount' => $citiesAmount,
             'students_amount' => $studentsAmount,
+            'html_data'=> $GetHomePageHtmlData->execute()
         ]);
     }
 }

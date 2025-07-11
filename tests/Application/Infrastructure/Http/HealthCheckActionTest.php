@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Tests\Functional;
+namespace App\Tests\Application\Infrastructure\Http;
 
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 
-class HealthCheckTest extends WebTestCase
+class HealthCheckActionTest extends WebTestCase
 {
     public function test_request_responded_successful_result()
     {
