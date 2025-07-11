@@ -4,6 +4,7 @@ namespace App\Infrastructure\Http\Teacher\Controller;
 
 use App\Application\Teacher\UseCase\GetAllTeachers;
 use App\Application\Teacher\UseCase\GetTeacher;
+use App\Application\Teacher\UseCase\GetTeacherHtmlData;
 use App\Application\Teacher\UseCase\SelectTeachers;
 use App\Domain\Entity\Teacher;
 use App\Infrastructure\Form\SelectTeachersFormType;
@@ -18,6 +19,7 @@ final class TeacherController extends AbstractController
         private GetAllTeachers $getAllTeachersCase,
         private GetTeacher         $getOneCase,
         private SelectTeachers         $selectCase,
+        private GetTeacherHtmlData         $GetTeacherHtmlDataCase,
     ){}
 
     public function getById(int $id)
@@ -53,10 +55,11 @@ final class TeacherController extends AbstractController
     public function getAll()
     {
         $teachers = $this->getAllTeachersCase->executeDTOs();
+        $teacherHtmlData = $this->GetTeacherHtmlDataCase->execute();
         return $this->render('teachers/list.html.twig', [
-            'title' => 'Our teachers',
+            'title' => $teacherHtmlData['list_main_title']['content'],
             'teachers' => $teachers,
-            'max_teacher_common_rating' => Teacher::MAX_RATING
+            'max_teacher_common_rating' => Teacher::MAX_RATING,
         ]);
     }
 

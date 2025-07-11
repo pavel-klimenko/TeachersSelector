@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'teachers')]
 class Teacher
 {
+    public const LIST_TITLE = 'Our teachers';
     public const MIN_RATING = 1;
     public const MAX_RATING = 10;
 

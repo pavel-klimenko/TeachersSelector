@@ -8,15 +8,14 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class HomePageControllerTest extends WebTestCase
 {
-    public function test_homepage()
+    public function test_homepage_is_available()
     {
         $client = static::createClient();
         $client->request(Request::METHOD_GET, '/');
         $this->assertResponseIsSuccessful();
+        $arHomePageHtmlData = GetHomePageHtmlData::execute();
 
-        $homePageHtmlData = GetHomePageHtmlData::execute();
-
-        $this->assertSelectorTextContains('h4', $homePageHtmlData['main_title']['content']);
+        $this->assertSelectorTextContains('h4', $arHomePageHtmlData['main_title']['content']);
     }
 
 }

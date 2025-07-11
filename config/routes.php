@@ -11,10 +11,6 @@ return function (RoutingConfigurator $routes): void {
     $routes->add('health-check', '/health-check')->controller([\App\Infrastructure\Http\HealthCheckAction::class, '__invoke'])
         ->methods(['GET']);
 
-
-    $routes->add('test', '/test')->controller([\App\Infrastructure\Http\TestController::class, 'index'])
-        ->methods(['GET']);
-
     $routes->add('app_login', '/login')->controller([\App\Infrastructure\Http\Security\Controller\SecurityController::class, 'login']);
     $routes->add('app_profile', '/profile')->controller([\App\Infrastructure\Http\Security\Controller\SecurityController::class, 'profile']);
     $routes->add('app_logout', '/logout')->controller([\App\Infrastructure\Http\Security\Controller\SecurityController::class, 'logout']);
