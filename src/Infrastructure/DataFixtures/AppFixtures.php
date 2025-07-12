@@ -17,6 +17,7 @@ use App\Application\PaymentType\DTO\CreatePaymentTypeDTO;
 use App\Application\PaymentType\UseCase\CreatePaymentType;
 use App\Application\PaymentType\UseCase\GetAllPaymentTypes;
 use App\Application\PaymentType\UseCase\GetDemoPaymentTypesList;
+use App\Application\Student\UseCase\GetTestStudentEmail;
 use App\Application\StudyingMode\DTO\CreateStudyingModeDTO;
 use App\Application\StudyingMode\UseCase\CreateStudyingMode;
 use App\Application\StudyingMode\UseCase\GetAllStudyingModes;
@@ -24,6 +25,7 @@ use App\Application\StudyingMode\UseCase\GetDemoStudyingModesList;
 use App\Application\Teacher\UseCase\AddPaymentTypeToTeacher;
 use App\Application\Teacher\UseCase\AddStudyingModeToTeacher;
 use App\Application\Teacher\UseCase\GetAllTeachers;
+use App\Application\Teacher\UseCase\GetTestTeacherEmail;
 use App\Application\User\UseCase\CurrentUserRoles;
 use App\Application\User\UseCase\GetAllUsers;
 use App\Application\User\UseCase\GetUserRoles;
@@ -64,8 +66,6 @@ class AppFixtures extends Fixture
         //TODO разбить на разные фикстуры
         //TODO фикстуры на слой Infrastructure
 
-
-        //TODO работает
         $arPaymentTypes = $this->demoPaymentTypesList->execute();
         if (!empty($arPaymentTypes)) {
             foreach ($arPaymentTypes as $type) {
@@ -74,7 +74,6 @@ class AppFixtures extends Fixture
             }
         }
 
-        //TODO работает
         $arStudyingModes = $this->demoStudyingModesList->execute();
         if (!empty($arStudyingModes)) {
             foreach ($arStudyingModes as $mode) {
@@ -83,7 +82,6 @@ class AppFixtures extends Fixture
             }
         }
 
-        //TODO работает
         $arExpertises = $this->GetDemoExpertisesList->execute();
         if (!empty($arExpertises)) {
             foreach ($arExpertises as $expertise) {
@@ -92,7 +90,6 @@ class AppFixtures extends Fixture
             }
         }
 
-        //TODO работает
         $arCountries = $this->GetDemoCountriesList->execute();
         if (!empty($arCountries)) {
             foreach ($arCountries as $isoCode => $name) {
@@ -116,12 +113,17 @@ class AppFixtures extends Fixture
             $this->createCityCase->execute($cityDTO);
         }
 
-
-        //TODO работает
-
         UserFactory::createMany(5, ['roles' => GetUserRoles::executeForStudent()]);
-        UserFactory::createMany(5, ['roles' => GetUserRoles::executeForTeacher()]);
+        UserFactory::createMany(1, [
+            'roles' => GetUserRoles::executeForStudent(),
+            'email' => GetTestStudentEmail::execute(),
+        ]);
 
+        UserFactory::createMany(5, ['roles' => GetUserRoles::executeForTeacher()]);
+        UserFactory::createMany(1, [
+            'roles' => GetUserRoles::executeForTeacher(),
+            'email' => GetTestTeacherEmail::execute(),
+        ]);
 
         //TODO get Random row using Doctrine
         $arUsers = $this->GetAllUsersCases->executeEntities();

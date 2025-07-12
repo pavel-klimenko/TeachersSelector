@@ -23,6 +23,16 @@ class StudentRepository extends ServiceEntityRepository implements StudentReposi
         return $this->count();
     }
 
+    public function getList(): array
+    {
+        return $this->findAll();
+    }
+
+    public function getStudent(int $id): object|null
+    {
+        return $this->findOneBy(['id' => $id]);
+    }
+
 //    /**
 //     * @return Student[] Returns an array of Student objects
 //     */

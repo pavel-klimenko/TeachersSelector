@@ -11,7 +11,10 @@ class GetTeacherHtmlData
         return [
             'list_main_title' => [
                 'content' => Teacher::LIST_TITLE
-            ]
+            ],
+            'select_teachers_page_title' => [
+                'content' => Teacher::SELECT_TEACHERS_PAGE_TITLE
+            ],
         ];
     }
 }

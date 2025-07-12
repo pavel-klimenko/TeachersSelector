@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Teacher
 {
     public const LIST_TITLE = 'Our teachers';
+    public const SELECT_TEACHERS_PAGE_TITLE = 'Select the teacher';
     public const MIN_RATING = 1;
     public const MAX_RATING = 10;
 

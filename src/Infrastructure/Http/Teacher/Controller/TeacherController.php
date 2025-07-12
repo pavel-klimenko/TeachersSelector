@@ -15,12 +15,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class TeacherController extends AbstractController
 {
+
+    private array $teacherHtmlData;
+
     public function __construct(
         private GetAllTeachers $getAllTeachersCase,
         private GetTeacher         $getOneCase,
         private SelectTeachers         $selectCase,
         private GetTeacherHtmlData         $GetTeacherHtmlDataCase,
-    ){}
+    ){
+        $this->teacherHtmlData = $this->GetTeacherHtmlDataCase->execute();
+    }
 
     public function getById(int $id)
     {
@@ -55,9 +60,9 @@ final class TeacherController extends AbstractController
     public function getAll()
     {
         $teachers = $this->getAllTeachersCase->executeDTOs();
-        $teacherHtmlData = $this->GetTeacherHtmlDataCase->execute();
+
         return $this->render('teachers/list.html.twig', [
-            'title' => $teacherHtmlData['list_main_title']['content'],
+            'title' => $this->teacherHtmlData['list_main_title']['content'],
             'teachers' => $teachers,
             'max_teacher_common_rating' => Teacher::MAX_RATING,
         ]);
@@ -72,7 +77,7 @@ final class TeacherController extends AbstractController
             $teachers = $this->selectCase->execute($form->getData());
 
             return $this->render('teachers/list.html.twig', [
-                'title' => 'Our teachers',
+                'title' => $this->teacherHtmlData['list_main_title']['content'],
                 'teachers' => $teachers,
                 'max_teacher_common_rating' => Teacher::MAX_RATING
             ]);
