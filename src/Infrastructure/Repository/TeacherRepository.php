@@ -2,7 +2,6 @@
 
 namespace App\Infrastructure\Repository;
 
-use App\Domain\Entity\PaymentType;
 use App\Domain\Entity\Teacher;
 use App\Domain\Repository\TeacherRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

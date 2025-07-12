@@ -8,7 +8,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 class SecurityControllerTest extends WebTestCase
 {
-    #[\Override]
     protected function setUp(): void
     {
         $this->client = static::createClient();

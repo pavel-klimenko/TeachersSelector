@@ -12,7 +12,6 @@ use App\Infrastructure\Factory\CVFactory;
 use App\Infrastructure\Factory\StudentFactory;
 use App\Infrastructure\Factory\TeacherFactory;
 use App\Infrastructure\Form\RegistrationFormType;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,8 +27,11 @@ final class SecurityController extends AbstractController
     ){}
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher): Response
     {
+
+        //TODO using registration service
+
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
