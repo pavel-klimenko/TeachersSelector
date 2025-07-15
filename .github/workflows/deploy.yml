@@ -50,9 +50,9 @@ jobs:
         build:
           image: postgres:14.1-alpine
         env:
-          POSTGRES_DB=app
-          POSTGRES_USER=user
-          POSTGRES_PASSWORD=secret
+          POSTGRES_DB: app
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: secret
 
     steps:
           # —— Setup Github actions 🐙 —————————————————————————————————————————————
