@@ -12,55 +12,47 @@ jobs:
 #    # https://hub.docker.com/_/ubuntu/
     runs-on: ubuntu-latest
     services:
-      nginx:
-        build:
-          context: .
-          dockerfile: ./docker/nginx/Nginx.Dockerfile
-        image: balance/nginx
-        container_name: balancer-nginx
-        ports:
-          - "8096:80"
-        networks:
-          - internal
-        volumes:
-          - ./:/var/www/app
-      fpm1:
-        build:
-          context: .
-          dockerfile: ./docker/php/Fpm.Dockerfile
-        image: balance/php
-        container_name: fpm1
-        volumes:
-          - ./:/var/www/app
-          - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
-        networks:
-          - internal
-      fpm2:
-        build:
-          context: .
-          dockerfile: ./docker/php/Fpm.Dockerfile
-        image: balance/php
-        container_name: fpm2
-        volumes:
-          - ./:/var/www/app
-          - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
-        networks:
-          - internal
+#      nginx:
+#        build:
+#          context: .
+#          dockerfile: ./docker/nginx/Nginx.Dockerfile
+#        image: balance/nginx
+#        container_name: balancer-nginx
+#        ports:
+#          - "8096:80"
+#        networks:
+#          - internal
+#        volumes:
+#          - ./:/var/www/app
+#      fpm1:
+#        build:
+#          context: .
+#          dockerfile: ./docker/php/Fpm.Dockerfile
+#        image: balance/php
+#        container_name: fpm1
+#        volumes:
+#          - ./:/var/www/app
+#          - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
+#        networks:
+#          - internal
+#      fpm2:
+#        build:
+#          context: .
+#          dockerfile: ./docker/php/Fpm.Dockerfile
+#        image: balance/php
+#        container_name: fpm2
+#        volumes:
+#          - ./:/var/www/app
+#          - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
+#        networks:
+#          - internal
       pgsql:
         build:
-          context: .
-          dockerfile: ./docker/db/Db.Dockerfile
-        #image: postgres:14.1-alpine
-        environment:
-          - POSTGRES_DB=app
-          - POSTGRES_USER=user
-          - POSTGRES_PASSWORD=secret
-        ports:
-          - '5496:5432'
-        networks:
-          - internal
-        volumes:
-          - ./var/db-data:/var/lib/postgresql/data
+          image: postgres:14.1-alpine
+        env:
+          POSTGRES_DB=app
+          POSTGRES_USER=user
+          POSTGRES_PASSWORD=secret
 
     steps:
           # —— Setup Github actions 🐙 —————————————————————————————————————————————
