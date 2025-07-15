@@ -25,7 +25,7 @@ jobs:
           context: .
           file: ./docker/nginx/Nginx.Dockerfile
           push: true
-          tags: balance-nginx:latest
+          tags: pavel.klimenko.1989@gmail.com/balance-nginx:latest
 
       - name: Build and push fpm image
         uses: docker/build-push-action@v5
@@ -33,7 +33,7 @@ jobs:
           context: .
           file: ./docker/php/Fpm.Dockerfile
           push: true
-          tags: balance-php:latest
+          tags: pavel.klimenko.1989@gmail.com/balance-php:latest
 
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v1.0.0
