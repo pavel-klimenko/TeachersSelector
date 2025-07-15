@@ -59,7 +59,10 @@ jobs:
           POSTGRES_DB: teacher_selector
           POSTGRES_USER: pavel
           POSTGRES_PASSWORD: rightway
+        ports:
+        - '5496:5432'    
 
+        
     steps:
           # —— Setup Github actions 🐙 —————————————————————————————————————————————
           # https://github.com/actions/checkout (official)
