@@ -47,8 +47,7 @@ jobs:
 #        networks:
 #          - internal
       pgsql:
-        build:
-          image: postgres:14.1-alpine
+        image: postgres:14.1-alpine
         env:
           POSTGRES_DB: app
           POSTGRES_USER: user
