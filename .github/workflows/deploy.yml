@@ -74,7 +74,6 @@ jobs:
           - name: Install Dependencies
             run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-           —— Symfony 🎵 ——————————————————————————————————————————————————————————
           - name: Check Symfony requirements
             run: vendor/bin/requirements-checker
 
