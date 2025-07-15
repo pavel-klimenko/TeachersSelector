@@ -1,0 +1,106 @@
+# https://help.github.com/en/actions
+name: Full CI process for Symfony 7
+on:
+  push:
+
+#env:
+#  ES_HTTP_PORT: 9209
+
+jobs:
+  symfony:
+    name: Symfony 7 (PHP ${{ matrix.php-versions }})
+#    # https://hub.docker.com/_/ubuntu/
+    runs-on: ubuntu-latest
+    services:
+      nginx:
+        build:
+          context: .
+          dockerfile: ./docker/nginx/Nginx.Dockerfile
+        image: balance/nginx
+        container_name: balancer-nginx
+        ports:
+          - "8096:80"
+        networks:
+          - internal
+        volumes:
+          - ./:/var/www/app
+      fpm1:
+        build:
+          context: .
+          dockerfile: ./docker/php/Fpm.Dockerfile
+        image: balance/php
+        container_name: fpm1
+        volumes:
+          - ./:/var/www/app
+          - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
+        networks:
+          - internal
+      fpm2:
+        build:
+          context: .
+          dockerfile: ./docker/php/Fpm.Dockerfile
+        image: balance/php
+        container_name: fpm2
+        volumes:
+          - ./:/var/www/app
+          - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
+        networks:
+          - internal
+      pgsql:
+        build:
+          context: .
+          dockerfile: ./docker/db/Db.Dockerfile
+        #image: postgres:14.1-alpine
+        environment:
+          - POSTGRES_DB=app
+          - POSTGRES_USER=user
+          - POSTGRES_PASSWORD=secret
+        ports:
+          - '5496:5432'
+        networks:
+          - internal
+        volumes:
+          - ./var/db-data:/var/lib/postgresql/data
+
+    steps:
+          # —— Setup Github actions 🐙 —————————————————————————————————————————————
+          # https://github.com/actions/checkout (official)
+          - name: Checkout
+            uses: actions/checkout@v2
+
+          # https://github.com/shivammathur/setup-php (community)
+          - name: Setup PHP, extensions and composer with shivammathur/setup-php
+            uses: shivammathur/setup-php@v2
+            with:
+              php-version: ${{ matrix.php-versions }}
+              extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring
+            env:
+              update: true
+
+          - name: Check PHP Version
+            run: php -v
+
+          - name: Install Dependencies
+            run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+          # —— Symfony 🎵 ——————————————————————————————————————————————————————————
+#          - name: Check Symfony requirements
+#            run: vendor/bin/requirements-checker
+
+          ## —— Coding standards ✨ ————————————————————————————————————————————————
+#          - name: Coding standards checks (php_codesniffer + php-cs-fixer)
+#            run: make cs
+#            if: matrix.php-versions == '8.0'
+
+
+          ## —— Tests ✅ ———————————————————————————————————————————————————————————
+          # We use the dev env here
+#          - name: Load Doctrine fixtures and populate the Elasticsearch indexes
+#            run: |
+#              make load-fixtures
+#              make populate
+#
+#          - name: Run functionnal and unit tests
+#            run: |
+#              cp phpunit.xml.ci phpunit.xml
+#              make test-all
