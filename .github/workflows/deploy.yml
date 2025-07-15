@@ -63,8 +63,8 @@ jobs:
           - name: Setup PHP, extensions and composer with shivammathur/setup-php
             uses: shivammathur/setup-php@v2
             with:
-              php-version: ${{ matrix.php-versions }}
-              extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring
+              php-version: "8.3"
+              extensions: mbstring, libssh-dev, ctype, iconv, intl, pdo, pdo_pgsql, pgsql, libpq-dev, filter, gd, libzip-dev, json, mbstring
             env:
               update: true
 
