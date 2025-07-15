@@ -74,18 +74,25 @@ jobs:
           - name: Install Dependencies
             run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-          # —— Symfony 🎵 ——————————————————————————————————————————————————————————
-#          - name: Check Symfony requirements
-#            run: vendor/bin/requirements-checker
+           —— Symfony 🎵 ——————————————————————————————————————————————————————————
+          - name: Check Symfony requirements
+            run: vendor/bin/requirements-checker
 
-          ## —— Coding standards ✨ ————————————————————————————————————————————————
-#          - name: Coding standards checks (php_codesniffer + php-cs-fixer)
-#            run: make cs
-#            if: matrix.php-versions == '8.0'
+          - name: Creating database
+            run: php bin/console doctrine:database:create --no-interaction --env=POSTGRES_DB
+
+          - name: Migrate database
+            run: php bin/console  doctrine:migrations:migrate --no-interaction --env=POSTGRES_DB
+
+          - name: Load fixtures
+            run: php bin/console doctrine:fixtures:load --no-interaction --env=POSTGRES_DB
+
+          - name: Execute tests (Unit and Feature tests) via PHPUnit
+            run: php bin/phpunit
 
 
-          ## —— Tests ✅ ———————————————————————————————————————————————————————————
-          # We use the dev env here
+#          # —— Tests ✅ ———————————————————————————————————————————————————————————
+#           We use the dev env here
 #          - name: Load Doctrine fixtures and populate the Elasticsearch indexes
 #            run: |
 #              make load-fixtures
