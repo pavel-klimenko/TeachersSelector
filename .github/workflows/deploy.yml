@@ -49,9 +49,16 @@ jobs:
       pgsql:
         image: postgres:14.1-alpine
         env:
-          POSTGRES_DB: app
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: secret
+          POSTGRES_DB: teacher_selector
+          POSTGRES_USER: pavel
+          POSTGRES_PASSWORD: rightway
+
+      database:
+        image: postgres:${POSTGRES_VERSION:-16}-alpine
+        env:
+          POSTGRES_DB: teacher_selector
+          POSTGRES_USER: pavel
+          POSTGRES_PASSWORD: rightway
 
     steps:
           # —— Setup Github actions 🐙 —————————————————————————————————————————————
