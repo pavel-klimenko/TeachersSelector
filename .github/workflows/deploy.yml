@@ -106,17 +106,18 @@ jobs:
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
 
-#      - name: checkout
-#        uses: actions/checkout@v4
-#      - name: Transfer files
-#        uses: appleboy/scp-action@master
-#        with:
-#          host: ${{ secrets.SSH_HOST }}
-#          username: ${{ secrets.SSH_USER }}
-#          key: ${{ secrets.SSH_KEY }}
-#          port: 22
-#          source: "docker-compose.yaml,.env"
-#          target: "~/myapp"
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: Transfer files
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          source: "docker-compose.yaml,.env"
+          target: "~/myapp"
+
 #      - name: Deploy to docker compose
 #        uses: appleboy/ssh-action@v1.2.0
 #        env:
