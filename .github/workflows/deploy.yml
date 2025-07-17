@@ -106,17 +106,32 @@ jobs:
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
 
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: Transfer files
-        uses: appleboy/scp-action@master
+      - name: Set up SSH Key and Deploy my App on Server
+        uses: appleboy/ssh-action@master
+        env:
+            GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
+          #passphrase: ${{ secrets.SSH_PASSPHRASE }}
           port: 22
-          source: "docker-compose.yaml,.env"
-          target: "~/myapp"
+          script: |
+            git config --global url."https://${{ secrets.PERSONAL_GITHUB_TOKEN }}:@github.com".insteadOf "https://github.com"
+            cd chatg/
+            git pull origin master 
+
+#      - name: checkout
+#        uses: actions/checkout@v4
+#      - name: Transfer files
+#        uses: appleboy/scp-action@master
+#        with:
+#          host: ${{ secrets.SSH_HOST }}
+#          username: ${{ secrets.SSH_USER }}
+#          key: ${{ secrets.SSH_KEY }}
+#          port: 22
+#          source: "docker-compose.yaml,.env"
+#          target: "~/myapp"
 
 #      - name: Deploy to docker compose
 #        uses: appleboy/ssh-action@v1.2.0
