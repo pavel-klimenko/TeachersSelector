@@ -116,6 +116,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           #passphrase: ${{ secrets.SSH_PASSPHRASE }}
           port: 22
+          source: "docker-compose.yaml,.env"
+          target: "~/myapp"
           script: |
             git config --global url."https://${{ secrets.PERSONAL_GITHUB_TOKEN }}:@github.com".insteadOf "https://github.com"
             cd chatg/
