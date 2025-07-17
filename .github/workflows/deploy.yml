@@ -101,10 +101,10 @@ jobs:
 
     steps:
       #test
-      - name: Check SSH key format
-        run: echo "$SSH_KEY"
-        env:
-          SSH_KEY: ${{ secrets.SSH_KEY }}
+#      - name: Check SSH key format
+#        run: echo "$SSH_KEY"
+#        env:
+#          SSH_KEY: ${{ secrets.SSH_KEY }}
 
       - name: Set up SSH Key and Deploy my App on Server
         uses: appleboy/ssh-action@master
@@ -113,7 +113,8 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          #key: ${{ secrets.SSH_KEY }}
           #passphrase: ${{ secrets.SSH_PASSPHRASE }}
           port: 22
           source: "docker-compose.yaml,.env"
