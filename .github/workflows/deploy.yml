@@ -116,7 +116,7 @@ jobs:
         env:
           SYMFONY_SECRET: ${{ secrets.SYMFONY_SECRET }}
           DOCKER_USER: ${{ github.actor }}
-          DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          DOCKER_PASSWORD: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
           DOCKER_REGISTRY: ${{ env.REGISTRY }}
         with:
           envs: SYMFONY_SECRET, DOCKER_USER, DOCKER_PASSWORD, DOCKER_REGISTRY
