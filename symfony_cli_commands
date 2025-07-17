@@ -10,3 +10,6 @@
 Запуск fixtures: php bin/console doctrine:fixtures:load
 
 Запуск автотестов: php bin/phpunit
+
+
+SYMFONY_SECRET: sdfsdf5546745678675876867836346346sdfsdfsdf
