@@ -75,4 +75,5 @@ jobs:
           port: 22
           script: |
             cd ~/TeachersSelector
+            echo "Pulling latest code..."
             git pull
