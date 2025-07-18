@@ -6,21 +6,24 @@ on: [push]
 #TODO доступы все убрать в секреты!
 
 jobs:
-  deploy_to_remote_server:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking connection with remote server
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.PRODUCTION_SERVER_HOST }}
+          username: ${{ secrets.PRODUCTION_SERVER_USER }}
+          password: ${{ secrets.PRODUCTION_SERVER_PASSWORD }}
+          port: 22
+          script: whoami
+
+  deploy:
+    needs: check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-#      - name: Transfer files
-#        uses: appleboy/scp-action@master
-#        with:
-#          host: 195.133.146.184
-#          username: root
-#          password: VNahVcL9e7
-#          port: 22
-#          source: "./docker-compose.yaml,./.env,./docker/**"
-#          target: "~/myapp"
 
       - name: Update and rebuild project on the production server
         uses: appleboy/ssh-action@v1.2.0
