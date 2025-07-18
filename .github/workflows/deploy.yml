@@ -14,13 +14,13 @@ jobs:
         run: docker compose up -d --build
 
       - name: Fix permissions
-        run: docker exec -d fpm1 chown -R www-data:www-data /var/www/app/var
+        run: docker exec -d fpm1 chown -R www-data:www-data /var/www/app/var && composer install && php bin/console doctrine:migrations:migrate
 
-      - name: Install dependencies
-        run: docker exec fpm1 composer install
-
-      - name: Run migration
-        run: docker exec fpm1 php bin/console doctrine:migrations:migrate
+#      - name: Install dependencies
+#        run: docker exec fpm1 composer install
+#
+#      - name: Run migration
+#        run: docker exec fpm1 php bin/console doctrine:migrations:migrate
 
 
 #      - name: Sleep before DB init
