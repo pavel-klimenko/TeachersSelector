@@ -123,6 +123,6 @@ jobs:
             cd ~/myapp
             docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD
             docker compose -f docker-compose.yaml pull
-            docker compose -f docker-compose.yaml up app  -d
+            docker compose -f docker-compose.yaml up --build
             sleep 10
             docker compose -f docker-compose.yaml exec -u www-data app php bin/console doctrine:migrations:migrate -n
