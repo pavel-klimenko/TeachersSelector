@@ -17,7 +17,7 @@ jobs:
         run: docker exec -d fpm1 chown -R www-data:www-data /var/www/app/var
 
       - name: Install dependencies
-        run: docker exec fpm1 bash composer install
+        run: docker exec -d fpm1 composer install
 
       - name: Creating database
         run: docker exec fpm1 bash php bin/console doctrine:database:create
