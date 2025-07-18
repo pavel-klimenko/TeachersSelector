@@ -100,12 +100,6 @@ jobs:
 #    if: ${{ github.ref_name == 'develop' }}
 
     steps:
-      #test
-#      - name: Check SSH key format
-#        run: echo "$SSH_KEY"
-#        env:
-#          SSH_KEY: ${{ secrets.SSH_KEY }}
-
       - name: Set up SSH Key and Deploy my App on Server
         uses: appleboy/ssh-action@master
         env:
