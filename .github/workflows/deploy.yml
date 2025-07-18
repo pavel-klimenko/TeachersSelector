@@ -19,8 +19,20 @@ jobs:
       - name: Install dependencies
         run: docker exec fpm1 composer install
 
-      - name: Creating database
-        run: docker exec fpm1 php bin/console doctrine:database:create
+      - name: Download wait-for-it
+        run: curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+
+      - name: Make wait-for-it executable
+        run: chmod +x wait-for-it.sh
+
+      - name: Wait for pgsql inside fpm1
+        run: docker cp wait-for-it.sh fpm1:/wait-for-it.sh && \
+          docker exec fpm1 chmod +x /wait-for-it.sh && \
+          docker exec fpm1 /wait-for-it.sh pgsql:5432 --timeout=60 --strict -- echo "PostgreSQL is ready"
+
+
+#      - name: Creating database
+#        run: docker exec fpm1 php bin/console doctrine:database:create
 
 #      - name: Set up Docker Buildx
 #        uses: docker/setup-buildx-action@v3
