@@ -77,4 +77,6 @@ jobs:
             cd ~/TeachersSelector
             echo "Pulling latest code..."
             git pull
+            docker compose up -d --build
+            docker exec -it fpm1 bash
             composer install
