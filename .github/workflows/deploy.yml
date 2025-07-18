@@ -3,7 +3,7 @@ name: BuildAndDeploy
 on: [push]
 
 jobs:
-  deploy_to_remote_server:
+  deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
