@@ -20,6 +20,8 @@ jobs:
       - name: Exec into PHP-FPM container
         run: |
             docker exec -d fpm1 bash fpm1
+            chmod -R 775 /var/www/app/var
+            chown -R www-data:www-data /var/www/app/var
             composer install
 
 
