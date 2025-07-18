@@ -3,7 +3,6 @@ name: BuildAndDeploy
 on: [push]
 
 #TODO немного допилить, добавить зависимости и диагностику на стадии github
-#TODO доступы все убрать в секреты!
 
 jobs:
   check:
