@@ -97,7 +97,7 @@ jobs:
           username: root
           password: VNahVcL9e7
           port: 22
-          source: "./docker-compose.yaml,./.env"
+          source: "./docker-compose.yaml ./.env"
           target: "~/myapp"
 
 #      - name: Deploy to docker compose
