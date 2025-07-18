@@ -11,5 +11,14 @@
 
 Запуск автотестов: php bin/phpunit
 
+Список контейнеров: docker ps
+Зайти в docker контейнер: docker exec -it fpm1 bash
+
 
 SYMFONY_SECRET: sdfsdf5546745678675876867836346346sdfsdfsdf
+
+
+steps in server:
+docker compose up --build
+docker exec -it fpm1 bash
+1) composer install
