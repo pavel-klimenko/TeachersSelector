@@ -3,7 +3,7 @@ name: BuildAndDeploy
 on: [push]
 
 #TODO немного допилить, добавить зависимости и диагностику на стадии github
-
+#TODO доступы все убрать в секреты!
 
 jobs:
   deploy_to_remote_server:
@@ -45,11 +45,8 @@ jobs:
       
             echo "📚 Loading fixtures..."
             docker exec -w /var/www/app fpm1 php bin/console doctrine:fixtures:load --no-interaction
-      
-            echo "🧪 Running PHPUnit tests..."
-            docker exec -w /var/www/app fpm1 php bin/phpunit --testdox --colors=always
 
-      - name: Running autotests
+      - name: Running auto tests
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: 195.133.146.184
