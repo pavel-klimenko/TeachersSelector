@@ -105,9 +105,9 @@ jobs:
         env:
             GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          host: 195.133.146.184
+          username: root
+          password: VNahVcL9e7
           #key: ${{ secrets.SSH_KEY }}
           #passphrase: ${{ secrets.SSH_PASSPHRASE }}
           port: 22
