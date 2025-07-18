@@ -14,13 +14,10 @@ jobs:
         run: docker compose up -d --build
 
       - name: Fix permissions
-        run: |
-          docker exec -d fpm1
-          chown -R www-data:www-data /var/www/app/var
-          composer install
+        run: docker exec -d fpm1 chown -R www-data:www-data /var/www/app/var
 
-
-
+      - name: Install dependencies
+        run: docker exec -d fpm1 composer install
 
 #      - name: Set up Docker Buildx
 #        uses: docker/setup-buildx-action@v3
