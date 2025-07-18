@@ -17,11 +17,14 @@ jobs:
       - name: Build docker containers
         run: docker compose up -d --build
 
+      - name: Fix permissions
+        run: docker exec -d fpm1 chown -R www-data:www-data /var/www/app/var
+
       - name: Exec into PHP-FPM container
         run: |
-            docker exec -d fpm1 bash fpm1
-            chmod -R 775 /var/www/app/var
-            chown -R www-data:www-data /var/www/app/var
+            docker exec -d fpm1
+#            chmod -R 775 /var/www/app/var
+#            chown -R www-data:www-data /var/www/app/var
             composer install
 
 
