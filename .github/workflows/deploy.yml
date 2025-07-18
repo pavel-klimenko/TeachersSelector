@@ -39,11 +39,11 @@ jobs:
             echo "📦 Installing Composer dependencies..."
             docker exec -w /var/www/app fpm1 composer install --no-interaction --prefer-dist
       
-            echo "⚙️ Updating schema..."
+            echo "⚙️ Updating database schema..."
             docker exec -w /var/www/app fpm1 php bin/console doctrine:schema:update --force
       
             echo "📚 Loading fixtures..."
             docker exec -w /var/www/app fpm1 php bin/console doctrine:fixtures:load --no-interaction
       
             echo "🧪 Running PHPUnit tests..."
-            docker exec -w /var/www/app fpm1 php bin/phpunit
+            docker exec -w /var/www/app fpm1 php bin/phpunit --testdox --colors=always
