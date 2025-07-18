@@ -23,69 +23,61 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
 
-      - name: Build and Push nginx
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./docker/nginx/Nginx.Dockerfile
-          push: true
-          tags: ghcr.io/${{ github.repository_owner }}/balance-nginx:latest
-
-      - name: Build and Push PHP (FPM)
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./docker/php/Fpm.Dockerfile
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/balance-php:latest
-
-      - name: Build and Push PostgreSQL
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./docker/db/Db.Dockerfile
-          push: true
-          tags: ghcr.io/${{ github.repository_owner }}/balance-db:latest
+#      - name: Build and Push nginx
+#        uses: docker/build-push-action@v5
+#        with:
+#          context: .
+#          file: ./docker/nginx/Nginx.Dockerfile
+#          push: true
+#          tags: ghcr.io/${{ github.repository_owner }}/balance-nginx:latest
+#
+#      - name: Build and Push PHP (FPM)
+#        uses: docker/build-push-action@v5
+#        with:
+#          context: .
+#          file: ./docker/php/Fpm.Dockerfile
+#          push: true
+#          tags: |
+#            ghcr.io/${{ github.repository_owner }}/balance-php:latest
+#
+#      - name: Build and Push PostgreSQL
+#        uses: docker/build-push-action@v5
+#        with:
+#          context: .
+#          file: ./docker/db/Db.Dockerfile
+#          push: true
+#          tags: ghcr.io/${{ github.repository_owner }}/balance-db:latest
 
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#
+#      - name: List files
+#        run: ls -la
+#
+#      - name: Transfer files
+#        uses: appleboy/scp-action@master
+#        with:
+#          host: 195.133.146.184
+#          username: root
+#          password: VNahVcL9e7
+#          port: 22
+#          source: "./docker-compose.yaml,./.env"
+#          target: "~/myapp"
 
-      - name: List files
-        run: ls -la
-
-      - name: Transfer files
-        uses: appleboy/scp-action@master
+      - name: Deploy to docker compose
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: 195.133.146.184
           username: root
           password: VNahVcL9e7
           port: 22
-          source: "./docker-compose.yaml,./.env"
-          target: "~/myapp"
           script: |
-            echo ${{ secrets.PERSONAL_GITHUB_TOKEN }} | docker login ghcr.io -u github.actor --password-stdin
-
-#      - name: Deploy to docker compose
-#        uses: appleboy/ssh-action@v1.2.0
-#        env:
-#          SYMFONY_SECRET: sdfsdf5546745678675876867836346346sdfsdfsdf
-#          DOCKER_USER: ${{ github.actor }}
-#          DOCKER_PASSWORD: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
-#          DOCKER_REGISTRY: ghcr.io
-#        with:
-#          envs: SYMFONY_SECRET, DOCKER_USER, DOCKER_PASSWORD, DOCKER_REGISTRY
-#          host: 195.133.146.184
-#          username: root
-#          password: VNahVcL9e7
-#          port: 22
-#          script: |
-#            cd ~/myapp
-#            docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD
-#            docker compose -f docker-compose.yaml pull
-#            docker compose -f docker-compose.yaml up --build
+            cd ~/myapp
+            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+            docker compose -f docker-compose.yaml pull
+            docker compose -f docker-compose.yaml up --build
