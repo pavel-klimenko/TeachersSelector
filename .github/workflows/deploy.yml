@@ -31,11 +31,20 @@ jobs:
           port: 22
           script: |
             cd ~/TeachersSelector
-            echo "Pulling latest code..."
+            echo "📥 Pulling latest code..."
             git pull
+      
+            echo "🐳 Restarting Docker..."
             docker compose up -d --build
-            docker exec fpm1 bash
-            composer install
-            php bin/console doctrine:schema:update --force
-            php bin/console doctrine:fixtures:load --no-interaction
-            php bin/phpunit --verbose
+      
+            echo "📦 Installing Composer dependencies..."
+            docker exec -w /var/www/app fpm1 composer install --no-interaction --prefer-dist
+      
+            echo "⚙️ Updating schema..."
+            docker exec -w /var/www/app fpm1 php bin/console doctrine:schema:update --force
+      
+            echo "📚 Loading fixtures..."
+            docker exec -w /var/www/app fpm1 php bin/console doctrine:fixtures:load --no-interaction
+      
+            echo "🧪 Running PHPUnit tests..."
+            docker exec -w /var/www/app fpm1 php bin/phpunit --verbose
