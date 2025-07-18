@@ -106,24 +106,23 @@ jobs:
           source: "./docker-compose.yaml,./.env"
           target: "~/myapp"
 
-#      - name: Deploy to docker compose
-#        uses: appleboy/ssh-action@v1.2.0
-#        env:
-#          SYMFONY_SECRET: ${{ secrets.SYMFONY_SECRET }}
-#          DOCKER_USER: ${{ github.actor }}
-#          DOCKER_PASSWORD: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
-#          DOCKER_REGISTRY: ${{ env.REGISTRY }}
-#        with:
-#          envs: SYMFONY_SECRET, DOCKER_USER, DOCKER_PASSWORD, DOCKER_REGISTRY
-#          host: 195.133.146.184
-#          username: root
-#          password: VNahVcL9e7
-#          port: 22
-#          script: |
-#            cd ~/myapp
-#            envsubst < .env > .env
-#            docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD
-#            docker compose -f docker-compose.yaml pull
-#            docker compose -f docker-compose.yaml up app  -d
-#            sleep 10
-#            docker compose -f docker-compose.yaml exec -u www-data app php bin/console doctrine:migrations:migrate -n
+      - name: Deploy to docker compose
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          SYMFONY_SECRET: ${{ secrets.SYMFONY_SECRET }}
+          DOCKER_USER: ${{ github.actor }}
+          DOCKER_PASSWORD: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          DOCKER_REGISTRY: ${{ env.REGISTRY }}
+        with:
+          envs: SYMFONY_SECRET, DOCKER_USER, DOCKER_PASSWORD, DOCKER_REGISTRY
+          host: 195.133.146.184
+          username: root
+          password: VNahVcL9e7
+          port: 22
+          script: |
+            cd ~/myapp
+            docker login $DOCKER_REGISTRY -u $DOCKER_USER -p $DOCKER_PASSWORD
+            docker compose -f docker-compose.yaml pull
+            docker compose -f docker-compose.yaml up app  -d
+            sleep 10
+            docker compose -f docker-compose.yaml exec -u www-data app php bin/console doctrine:migrations:migrate -n
