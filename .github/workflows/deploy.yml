@@ -26,8 +26,8 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.PRODUCTION_SERVER_HOST }}
-          username: root
-          password: VNahVcL9e7
+          username: ${{ secrets.PRODUCTION_SERVER_USER }}
+          password: ${{ secrets.PRODUCTION_SERVER_PASSWORD }}
           port: 22
           script: |
             cd ~/TeachersSelector
