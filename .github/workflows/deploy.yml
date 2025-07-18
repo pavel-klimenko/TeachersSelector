@@ -25,7 +25,7 @@ jobs:
       - name: Update and rebuild project on the production server
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: 195.133.146.184
+          host: ${{ secrets.PRODUCTION_SERVER_HOST }}
           username: root
           password: VNahVcL9e7
           port: 22
@@ -45,15 +45,6 @@ jobs:
       
             echo "📚 Loading fixtures..."
             docker exec -w /var/www/app fpm1 php bin/console doctrine:fixtures:load --no-interaction
-
-      - name: Running auto tests
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: 195.133.146.184
-          username: root
-          password: VNahVcL9e7
-          port: 22
-          script: |
-            cd ~/TeachersSelector
+      
             echo "🧪 Running PHPUnit tests..."
             docker exec -w /var/www/app fpm1 php bin/phpunit --testdox --colors=always
