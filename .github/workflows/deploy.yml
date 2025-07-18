@@ -17,10 +17,10 @@ jobs:
       - name: Build docker containers
         run: docker compose up -d --build
 
-#      - name: Exec into PHP-FPM container
-#        run: |
-#            docker exec -it fpm1 bash
-#            composer install
+      - name: Exec into PHP-FPM container
+        run: |
+            docker exec fpm1
+            composer install
 
 
 
