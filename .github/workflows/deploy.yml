@@ -74,5 +74,5 @@ jobs:
           password: VNahVcL9e7
           port: 22
           script: |
-            cd ~/myapp
+            cd ~/TeachersSelector
             git pull
