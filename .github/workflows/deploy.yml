@@ -37,3 +37,7 @@ jobs:
             docker compose up -d --build
             docker exec -it fpm1 bash
             composer install
+            echo "Update migrations..."
+            php bin/console doctrine:schema:update --force
+            php bin/console doctrine:fixtures:load --no-interaction
+            php bin/phpunit --verbose
