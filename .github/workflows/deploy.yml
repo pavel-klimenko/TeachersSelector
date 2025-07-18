@@ -90,6 +90,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Check working directory
+        run: pwd
+
+      - name: List files
+        run: ls -la
+
       - name: Transfer files
         uses: appleboy/scp-action@master
         with:
