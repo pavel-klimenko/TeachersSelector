@@ -20,7 +20,7 @@ jobs:
         run: docker exec -d fpm1 composer install
 
       - name: Creating database
-        run: docker exec fpm1 bash php bin/console doctrine:database:create
+        run: docker exec fpm1 php bin/console doctrine:database:create
 
 #      - name: Set up Docker Buildx
 #        uses: docker/setup-buildx-action@v3
