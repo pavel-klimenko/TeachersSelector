@@ -19,25 +19,8 @@ jobs:
       - name: Install dependencies
         run: docker exec fpm1 composer install
 
-      # 2. Скачиваем wait-for-it.sh
-      - name: Download wait-for-it.sh
-        run: curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-
-      - name: Make wait-for-it.sh executable
-        run: chmod +x wait-for-it.sh
-
-      # 4. Копируем скрипт ожидания в контейнер
-      - name: Copy wait-for-it.sh into fpm1
-        run: docker cp wait-for-it.sh fpm1:/wait-for-it.sh && docker exec fpm1 chmod +x /wait-for-it.sh
-
-      # 6. Создаём базу
-      - name: Create database
-        run: docker exec -w /var/www/app fpm1 php bin/console doctrine:database:create --if-not-exists
-
-      # 7. Запускаем миграции
-      - name: Run migrations
-        run: docker exec -w /var/www/app fpm1 php bin/console doctrine:migrations:migrate --no-interaction
-
+      - name: Run migration
+        run: docker exec fpm1 php bin/console doctrine:migrations:migrate
 
 
 #      - name: Sleep before DB init
