@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250707085328 extends AbstractMigration
+final class Version20250722185753 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -35,12 +35,12 @@ final class Version20250707085328 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_AA8D1FF99D5B92F9 ON teacher_has_teacher_expertises (expertise_id)');
         $this->addSql('CREATE TABLE teachers (id SERIAL NOT NULL, related_user_id INT DEFAULT NULL, rating INT DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_ED071FF698771930 ON teachers (related_user_id)');
-        $this->addSql('CREATE TABLE teacher_studying_models (teacher_id INT NOT NULL, studying_models_id INT NOT NULL, PRIMARY KEY(teacher_id, studying_models_id))');
-        $this->addSql('CREATE INDEX IDX_987675B441807E1D ON teacher_studying_models (teacher_id)');
-        $this->addSql('CREATE INDEX IDX_987675B43C97F768 ON teacher_studying_models (studying_models_id)');
-        $this->addSql('CREATE TABLE teacher_payment_types (teacher_id INT NOT NULL, payment_types_id INT NOT NULL, PRIMARY KEY(teacher_id, payment_types_id))');
-        $this->addSql('CREATE INDEX IDX_C63831F641807E1D ON teacher_payment_types (teacher_id)');
-        $this->addSql('CREATE INDEX IDX_C63831F6CE74713F ON teacher_payment_types (payment_types_id)');
+        $this->addSql('CREATE TABLE teacher_studying_mode (teacher_id INT NOT NULL, studying_mode_id INT NOT NULL, PRIMARY KEY(teacher_id, studying_mode_id))');
+        $this->addSql('CREATE INDEX IDX_E12F3E6541807E1D ON teacher_studying_mode (teacher_id)');
+        $this->addSql('CREATE INDEX IDX_E12F3E65356AEEB9 ON teacher_studying_mode (studying_mode_id)');
+        $this->addSql('CREATE TABLE teacher_payment_type (teacher_id INT NOT NULL, payment_type_id INT NOT NULL, PRIMARY KEY(teacher_id, payment_type_id))');
+        $this->addSql('CREATE INDEX IDX_3B82346F41807E1D ON teacher_payment_type (teacher_id)');
+        $this->addSql('CREATE INDEX IDX_3B82346FDC058279 ON teacher_payment_type (payment_type_id)');
         $this->addSql('CREATE TABLE users (id SERIAL NOT NULL, city_id INT DEFAULT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, is_verified BOOLEAN NOT NULL, age INT DEFAULT NULL, gender VARCHAR(255) DEFAULT NULL, name VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_1483A5E98BAC62AF ON users (city_id)');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_IDENTIFIER_EMAIL ON users (email)');
@@ -50,10 +50,10 @@ final class Version20250707085328 extends AbstractMigration
         $this->addSql('ALTER TABLE teacher_has_teacher_expertises ADD CONSTRAINT FK_AA8D1FF941807E1D FOREIGN KEY (teacher_id) REFERENCES teachers (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE teacher_has_teacher_expertises ADD CONSTRAINT FK_AA8D1FF99D5B92F9 FOREIGN KEY (expertise_id) REFERENCES expertise (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE teachers ADD CONSTRAINT FK_ED071FF698771930 FOREIGN KEY (related_user_id) REFERENCES users (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE teacher_studying_models ADD CONSTRAINT FK_987675B441807E1D FOREIGN KEY (teacher_id) REFERENCES teachers (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE teacher_studying_models ADD CONSTRAINT FK_987675B43C97F768 FOREIGN KEY (studying_models_id) REFERENCES studying_modes (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE teacher_payment_types ADD CONSTRAINT FK_C63831F641807E1D FOREIGN KEY (teacher_id) REFERENCES teachers (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE teacher_payment_types ADD CONSTRAINT FK_C63831F6CE74713F FOREIGN KEY (payment_types_id) REFERENCES payment_types (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE teacher_studying_mode ADD CONSTRAINT FK_E12F3E6541807E1D FOREIGN KEY (teacher_id) REFERENCES teachers (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE teacher_studying_mode ADD CONSTRAINT FK_E12F3E65356AEEB9 FOREIGN KEY (studying_mode_id) REFERENCES studying_modes (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE teacher_payment_type ADD CONSTRAINT FK_3B82346F41807E1D FOREIGN KEY (teacher_id) REFERENCES teachers (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE teacher_payment_type ADD CONSTRAINT FK_3B82346FDC058279 FOREIGN KEY (payment_type_id) REFERENCES payment_types (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE users ADD CONSTRAINT FK_1483A5E98BAC62AF FOREIGN KEY (city_id) REFERENCES city (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
     }
 
@@ -67,10 +67,10 @@ final class Version20250707085328 extends AbstractMigration
         $this->addSql('ALTER TABLE teacher_has_teacher_expertises DROP CONSTRAINT FK_AA8D1FF941807E1D');
         $this->addSql('ALTER TABLE teacher_has_teacher_expertises DROP CONSTRAINT FK_AA8D1FF99D5B92F9');
         $this->addSql('ALTER TABLE teachers DROP CONSTRAINT FK_ED071FF698771930');
-        $this->addSql('ALTER TABLE teacher_studying_models DROP CONSTRAINT FK_987675B441807E1D');
-        $this->addSql('ALTER TABLE teacher_studying_models DROP CONSTRAINT FK_987675B43C97F768');
-        $this->addSql('ALTER TABLE teacher_payment_types DROP CONSTRAINT FK_C63831F641807E1D');
-        $this->addSql('ALTER TABLE teacher_payment_types DROP CONSTRAINT FK_C63831F6CE74713F');
+        $this->addSql('ALTER TABLE teacher_studying_mode DROP CONSTRAINT FK_E12F3E6541807E1D');
+        $this->addSql('ALTER TABLE teacher_studying_mode DROP CONSTRAINT FK_E12F3E65356AEEB9');
+        $this->addSql('ALTER TABLE teacher_payment_type DROP CONSTRAINT FK_3B82346F41807E1D');
+        $this->addSql('ALTER TABLE teacher_payment_type DROP CONSTRAINT FK_3B82346FDC058279');
         $this->addSql('ALTER TABLE users DROP CONSTRAINT FK_1483A5E98BAC62AF');
         $this->addSql('DROP TABLE city');
         $this->addSql('DROP TABLE countries');
@@ -81,8 +81,8 @@ final class Version20250707085328 extends AbstractMigration
         $this->addSql('DROP TABLE studying_modes');
         $this->addSql('DROP TABLE teacher_has_teacher_expertises');
         $this->addSql('DROP TABLE teachers');
-        $this->addSql('DROP TABLE teacher_studying_models');
-        $this->addSql('DROP TABLE teacher_payment_types');
+        $this->addSql('DROP TABLE teacher_studying_mode');
+        $this->addSql('DROP TABLE teacher_payment_type');
         $this->addSql('DROP TABLE users');
     }
 }

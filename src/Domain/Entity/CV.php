@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CVRepository::class)]
 class CV
 {
-    public const MIN_YEARS_EXPERIENCE = 10;
+    public const MIN_YEARS_EXPERIENCE = 1;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

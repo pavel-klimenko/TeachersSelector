@@ -17,7 +17,7 @@ class SelectTeachersFormType extends AbstractType
         $builder
             ->add('rating', IntegerType::class, [
                 'data' => Teacher::MIN_RATING,
-                'label' => 'Teacher`s rating',
+                'label' => 'Teacher`s rating from',
                 'required' => true,
             ])
             ->add('yearsExperience', IntegerType::class, [

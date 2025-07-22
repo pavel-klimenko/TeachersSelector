@@ -1,75 +1,13 @@
-1) Главная (поиск учеников (для учителя), поиск учителей (для ученика))
-   - поиск учеников (для учителя, сложный полнотекстовый поиск по разным параметрам)
-   - поиск учителей (для ученика, сложный полнотекстовый поиск по разным параметрам)
-   - регистрация (использование стандартного пакета Symfony)
-   - Описание принципа работы сервиса
-2) Список учителей (фильтр с асинхронной работой, постраничка с асинхронной работой)
-3) Список учеников (фильтр с асинхронной работой, постраничка с асинхронной работой)
-4) У ученика кнопка "Подобрать подходящего учителя"
-   - по алгоритму подбирает учителя,
-   - приходят уведомления (учителю и ученику - использовать Websocket, уведомления хранить в Redis, для уведомлений исп. очереди),
-   - появляется возможность прямого чата учителя с учеником (использовать Websocket, сообщения чата хранить в Redis, для сообщений исп. очереди)
-5) Детальные страницы ученика и учителя
-6) Разграничение прав и ролей пользователей (типа Gates в Laravel)
+# **Description:**
+
+"Teacher selector" is the platform with helps students to choose best teacher
+according to rating, experience, hour rate, teacher's expertise and studying mode.
+It connects students and experienced teachers from whole world!
 
 
-Стек технологий:
--Docker
--php 8.3+ (использовать балансировщик php-fpm upstream) +
--Symfony 7+
--Webpack
--Bootstrap
--PostgreSQL
--CI\CD (Kubernaties)
-
-Интегрировать чистую архитектуру
-Использовать профилирощик, Xdebug, PHP Unit (покрыть функционал тестами)
-
-
--Использовать в проекте 5 паттернов проектирования Gof
--Использовать индексы
--Сделать логирование (Monolog)
--Внедрить RabbitMQ exchange,
- consumer (несколько очередей, каждая очередь отвечает за свой тип сущности),
- symfony messenger
--Использовать fixtures + factories
-
-БАЗА ДАННЫХ:
-
---teachers--
-id, age, gender, name, rating, years_experience,
-country_id,
-city_id,
-
---city--
-name, code
-
---expertises--
-code, name
-
---teacher_cv--
-teacher_id
-rate_per_hour (цена за час),
-personal_characteristics
-experience
-
---students--
-id, age, gender, name, max_rate_per_hour
-studying_categories (по каким предметам нужно обучение) +,
-payment_types (типы оплаты) +,
-studying_modes (онлайн, очно, только групповой учитель) +,
-max_rate_per_hour (макс цену за час, которую готов платить ученик) +,
-
-
---teacher_expertises--
-expertise_id
-teacher_id
-rating (1 - 10)
-+
-
-//TODO - доделать (через добавление связей в сущности!)
---teacher_studying_categories-- +
---teacher_studying_modes-- +
---teacher_payment_types-- +
-
-Реализовать SQL views
+# **Install project:**
+1) Build and run docker containers: docker compose up --build
+2) Go to php-fpm container: docker exec -it fpm1 bash
+3) install packages: composer i
+4) Up migrations: php bin/console doctrine:migrations:migrate
+5) Fill the table with test data: php bin/console doctrine:fixtures:load

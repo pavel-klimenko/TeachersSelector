@@ -40,72 +40,32 @@ services:
 #      - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
     networks:
       - internal
-#    environment:
-#      PHP_IDE_CONFIG: teachers.selector.local
-#      XDEBUG_MODE: debug
-#      XDEBUG_CONFIG: client_host=host.docker.internal
-#      XDEBUG_TRIGGER: 'yes'
-#  rabbitmq:
-#    image: rabbitmq:3-management
-#    ports:
-#      - "5672:5672"
-#      - "15672:15672"
-#    volumes:
-#      - ./docker/rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins
-#      - ./docker/rabbitmq/config/rabbitmq.config:/etc/rabbitmq/rabbitmq.config
-#    healthcheck:
-#      test: [ "CMD", "rabbitmq-diagnostics", "check_running" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
-#    networks:
-#      - internal
+
+###> doctrine/doctrine-bundle ###
   pgsql:
     build:
       context: .
       dockerfile: ./docker/db/Db.Dockerfile
-    #image: postgres:14.1-alpine
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
     ports:
       - '5496:5432'
     networks:
       - internal
-    volumes:
-      - ./var/db-data:/var/lib/postgresql/data
-#  redis:
-#    image: redis:latest
-#    restart: always
-##    ports:
-##      - "6379:6379"
-#    command: redis-server --save 20 1 --loglevel warning
-#    volumes:
-#      - ./cache:/data/redis
-#    networks:
-#      - internal
-
-###> doctrine/doctrine-bundle ###
-  database:
-    image: postgres:${POSTGRES_VERSION:-16}-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_USER: ${POSTGRES_USER}
     healthcheck:
       test: ['CMD', 'pg_isready', '-d', '${POSTGRES_DB}', '-U', '${POSTGRES_USER}']
       timeout: 5s
       retries: 5
       #start_period: 60s
     volumes:
-      - database_data:/var/lib/postgresql/data:rw
+      - pgsql_data:/var/lib/postgresql/data:rw
 
 networks:
   internal:
 
 volumes:
 ###> doctrine/doctrine-bundle ###
-  database_data:
+  pgsql_data:
 ###< doctrine/doctrine-bundle ###
