@@ -4,6 +4,12 @@
 according to rating, experience, hour rate, teacher's expertise and studying mode.
 It connects students and experienced teachers from whole world!
 
+# **Technologies:**
+- PHP 8.3
+- Nginx (upstream balancing)
+- PostgreSQl
+- Symfony 7 framework
+- Docker
 
 # **Install project:**
 1) Build and run docker containers: docker compose up --build
