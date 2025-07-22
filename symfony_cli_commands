@@ -1,28 +1,10 @@
-создать Entity: php bin/console make:entity
+Create Entity: php bin/console make:entity
+Show all routes: php bin/console debug:router
 
-показать все маршруты: php bin/console debug:router
+Create migration: php bin/console make:migration
+Up migrations: php bin/console doctrine:migrations:migrate
+Update migrations: php bin/console doctrine:schema:update --force
 
-создать миграции: php bin/console make:migration
-накатить миграции: php bin/console doctrine:migrations:migrate
-обновить миграции: php bin/console doctrine:schema:update --force
-
-Создание фабрики: php bin/console make:factory
-Запуск fixtures: php bin/console doctrine:fixtures:load
-
-Запуск автотестов: php bin/phpunit
-
-Список контейнеров: docker ps
-Зайти в docker контейнер: docker exec -it fpm1 bash
-
-
-SYMFONY_SECRET: sdfsdf5546745678675876867836346346sdfsdfsdf
-
-
-steps in server:
-
-git pull
-docker compose up -d --build
-
-docker exec -it fpm1 bash
-
-    1) composer install
+Creating a factory: php bin/console make:factory
+Run fixtures: php bin/console doctrine:fixtures:load
+Run auto tests: php bin/phpunit
