@@ -1,0 +1,16 @@
+wallets (for teachers and students)
+id, user_id, currency (USD), cash - created for every user
+
+payments
+id, source_wallet_id, target_wallet_id, sum, status (in_process, canceled, approved)
+Also create logging for payments
+
+
+Payment algorithm:
+
+1) Student send money from his wallet to teacher`s wallet
+2) Create payment with status "in_process"
+3) Payment sends to a payment system (stripe and etc.)
+4) Payment system process a payment and receive a payments status (approved or canceled)
+5) If status approved we set approved status for payment and withdrow cash from student`s wallet and add cash to the teacher`s wallet.
+   If status canceled we show the error, and log it
