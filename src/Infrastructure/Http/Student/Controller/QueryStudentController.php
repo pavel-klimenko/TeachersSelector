@@ -15,14 +15,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 final class QueryStudentController extends AbstractController
 {
 
-    public function __construct(
-        private GetPaymentResponse $responder,
-        private QueryBus $queryBus,
-    ) {
-    }
+    // public function __construct(
+    //     private GetPaymentResponse $responder,
+    //     private QueryBus $queryBus,
+    // ) {
+    // }
 
     public function getPayment(Request $request, int $id) : Response
     {

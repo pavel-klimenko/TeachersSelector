@@ -6,6 +6,12 @@ namespace App\Infrastructure\Bus\Command;
 
 use App\Domain\Bus\Command\CommandBus;
 use App\Domain\Bus\Command\Command;
+use Symfony\Component\Messenger\MessageBus;
+use Symfony\Component\Messenger\Middleware\HandleMessageMiddleware;
+use Symfony\Component\Messenger\Handler\HandlersLocator;
+use App\Infrastructure\Bus\HandlerBuilder;
+use Exception;
+use InvalidArgumentException;
 
 final class InMemoryCommandBus implements CommandBus
 {
@@ -30,10 +36,8 @@ final class InMemoryCommandBus implements CommandBus
     {
         try {
             $this->bus->dispatch($command);
-        } catch (NoHandlerForMessageException $e) {
+        } catch (Exception $e) {
             throw new InvalidArgumentException(sprintf('The command has not a valid handler: %s', $command::class));
-        } catch (HandlerFailedException $e) {
-            throw $e->getPrevious();
         }
     }
 }

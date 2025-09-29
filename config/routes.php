@@ -1,11 +1,18 @@
 <?php
 
-use App\Infrastructure\Http\Teacher\Controller\CommandStudentController;
+use App\Infrastructure\Http\Student\Controller\CommandStudentController;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Component\Routing\Requirement\Requirement;
 
 return function (RoutingConfigurator $routes): void {
-    $routes->add('homepage', '/')->controller([\App\Infrastructure\Http\HomePageController::class, 'index'])
+
+
+
+    $routes->add('make-payment', '/make-payment')->controller([CommandStudentController::class, 'makePayment'])
+        ->methods(['GET']);
+
+
+    $routes->add('homepage', '/')->controller([\App\Infrastructure\Http\HomePageController::class, 'make'])
         ->methods(['GET']);
 
     $routes->add('health-check', '/health-check')->controller([\App\Infrastructure\Http\HealthCheckAction::class, '__invoke'])

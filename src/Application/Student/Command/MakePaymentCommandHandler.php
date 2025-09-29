@@ -10,16 +10,20 @@ class MakePaymentCommandHandler implements CommandHandler
 //    public function __construct(private EmailRepository $repository)
 //    {
 //    }
-//
-//    public function __invoke(CreateEmailCommand $command) : EmailId {
-//        $email = Email::createNewEmail(
-//            sender: new EmailAddress($command->sender()),
-//            addressee: new EmailAddress($command->addressee()),
-//            message: new Message($command->message()),
-//        );
-//
-//        $this->repository->save($email);
-//
-//        return $email->id();
-//    }
+
+   public function __invoke(MakePaymentCommand $command)  {
+
+
+        dd($command);
+
+    //    $email = Email::createNewEmail(
+    //        sender: new EmailAddress($command->sender()),
+    //        addressee: new EmailAddress($command->addressee()),
+    //        message: new Message($command->message()),
+    //    );
+
+       //TODO here we will create payment transaction
+    //    $this->repository->save($email);
+    //    return $email->id();
+   }
 }

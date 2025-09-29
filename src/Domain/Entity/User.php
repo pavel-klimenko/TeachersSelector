@@ -61,6 +61,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'related_user', cascade: ['persist', 'remove'])]
     private ?Teacher $teacher = null;
 
+    #[ORM\OneToOne(mappedBy: 'user_id', cascade: ['persist', 'remove'])]
+    private ?Wallet $currency = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -240,6 +243,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->teacher = $teacher;
+
+        return $this;
+    }
+
+    public function getCurrency(): ?Wallet
+    {
+        return $this->currency;
+    }
+
+    public function setCurrency(Wallet $currency): static
+    {
+        // set the owning side of the relation if necessary
+        if ($currency->getUserId() !== $this) {
+            $currency->setUserId($this);
+        }
+
+        $this->currency = $currency;
 
         return $this;
     }

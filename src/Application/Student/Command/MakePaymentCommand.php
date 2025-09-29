@@ -3,28 +3,24 @@
 namespace App\Application\Student\Command;
 
 use App\Domain\Bus\Command\Command;
+use App\Domain\Entity\User;
 
 final class MakePaymentCommand implements Command
 {
     public function __construct(
-//        private readonly string $sender,
-//        private readonly string $addressee,
-//        private readonly string $message,
+        private readonly User $user,
+        private readonly string $sum,
     ) {
     }
 
-//    public function sender(): string
-//    {
-//        return $this->sender;
-//    }
-//
-//    public function addressee(): string
-//    {
-//        return $this->addressee;
-//    }
-//
-//    public function message(): string
-//    {
-//        return $this->message;
-//    }
+   public function user(): User
+   {
+       return $this->user;
+   }
+
+   public function sum(): float
+   {
+       return $this->sum;
+   }
+
 }
