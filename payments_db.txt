@@ -1,8 +1,8 @@
 wallets (for teachers and students)
-id, user_id, currency (USD), cash - created for every user
+id, related_user, currency (USD), cash - created for every user
 
 payments
-id, source_wallet_id, target_wallet_id, sum, status (in_process, canceled, approved)
+id, source_wallet, target_wallet, sum, status (in_process, canceled, approved)
 Also create logging for payments
 
 

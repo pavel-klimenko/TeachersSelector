@@ -3,7 +3,7 @@
 namespace App\Domain\Entity;
 
 use App\Domain\Enums\PaymentStatuses;
-use App\Domain\Repository\PaymentRepository;
+use App\Infrastructure\Repository\PaymentRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PaymentRepository::class)]
@@ -14,13 +14,13 @@ class Payment
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'target_wallet_id', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'target_wallet', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Wallet $source_wallet_id = null;
+    private ?Wallet $source_wallet = null;
 
     #[ORM\OneToOne(inversedBy: 'sum', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Wallet $target_wallet_id = null;
+    private ?Wallet $target_wallet = null;
 
     #[ORM\Column]
     private ?float $sum = null;
@@ -33,26 +33,26 @@ class Payment
         return $this->id;
     }
 
-    public function getSourceWalletId(): ?Wallet
+    public function getSourceWallet(): ?Wallet
     {
-        return $this->source_wallet_id;
+        return $this->source_wallet;
     }
 
-    public function setSourceWalletId(Wallet $source_wallet_id): static
+    public function setSourceWallet(Wallet $source_wallet): static
     {
-        $this->source_wallet_id = $source_wallet_id;
+        $this->source_wallet = $source_wallet;
 
         return $this;
     }
 
-    public function getTargetWalletId(): ?Wallet
+    public function getTargetWallet(): ?Wallet
     {
-        return $this->target_wallet_id;
+        return $this->target_wallet;
     }
 
-    public function setTargetWalletId(Wallet $target_wallet_id): static
+    public function setTargetWallet(Wallet $target_wallet): static
     {
-        $this->target_wallet_id = $target_wallet_id;
+        $this->target_wallet = $target_wallet;
 
         return $this;
     }

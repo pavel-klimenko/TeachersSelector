@@ -9,40 +9,35 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: WalletRepository::class)]
 class Wallet
 {
+    const DEFAULT_CURRENCY = Currencies::USD;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'currency', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user_id = null;
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?User $related_user = null;
 
-    #[ORM\Column(enumType: Currencies::class)]
+    #[ORM\Column(nullable: true, enumType: Currencies::class)]
     private ?Currencies $currency = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $cash = null;
-
-    #[ORM\OneToOne(mappedBy: 'source_wallet_id', cascade: ['persist', 'remove'])]
-    private ?Payment $target_wallet_id = null;
-
-    #[ORM\OneToOne(mappedBy: 'target_wallet_id', cascade: ['persist', 'remove'])]
-    private ?Payment $sum = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUserId(): ?User
+    public function getRelatedUser(): ?User
     {
-        return $this->user_id;
+        return $this->related_user;
     }
 
-    public function setUserId(User $user_id): static
+    public function setRelatedUser(?User $related_user): static
     {
-        $this->user_id = $user_id;
+        $this->related_user = $related_user;
 
         return $this;
     }
@@ -52,7 +47,7 @@ class Wallet
         return $this->currency;
     }
 
-    public function setCurrency(Currencies $currency): static
+    public function setCurrency(?Currencies $currency): static
     {
         $this->currency = $currency;
 
@@ -64,43 +59,9 @@ class Wallet
         return $this->cash;
     }
 
-    public function setCash(float $cash): static
+    public function setCash(?float $cash): static
     {
         $this->cash = $cash;
-
-        return $this;
-    }
-
-    public function getTargetWalletId(): ?Payment
-    {
-        return $this->target_wallet_id;
-    }
-
-    public function setTargetWalletId(Payment $target_wallet_id): static
-    {
-        // set the owning side of the relation if necessary
-        if ($target_wallet_id->getSourceWalletId() !== $this) {
-            $target_wallet_id->setSourceWalletId($this);
-        }
-
-        $this->target_wallet_id = $target_wallet_id;
-
-        return $this;
-    }
-
-    public function getSum(): ?Payment
-    {
-        return $this->sum;
-    }
-
-    public function setSum(Payment $sum): static
-    {
-        // set the owning side of the relation if necessary
-        if ($sum->getTargetWalletId() !== $this) {
-            $sum->setTargetWalletId($this);
-        }
-
-        $this->sum = $sum;
 
         return $this;
     }

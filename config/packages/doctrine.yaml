@@ -5,6 +5,8 @@ doctrine:
             collation: utf8mb4_0900_ai_ci
             collate: utf8mb4_0900_ai_ci
         url: '%env(resolve:DATABASE_URL)%'
+        options:
+            search_path: 'public'
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)

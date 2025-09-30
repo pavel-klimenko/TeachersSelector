@@ -54,6 +54,8 @@ final class SecurityController extends AbstractController
             );
 
             $user = $this->createUserCase->execute($createUserDTO);
+            //TODO сreate USE CASE for adding a wallet to user
+            //TODO сreate new User wallet
 
             if (in_array(GetUserRoles::getStudentRole(), $userRoles)) {
                 StudentFactory::createOne(['related_user' => $user]);

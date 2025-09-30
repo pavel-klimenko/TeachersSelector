@@ -7,8 +7,11 @@ use App\Application\Teacher\UseCase\GetAllTeachers;
 use App\Application\Teacher\UseCase\GetTeacher;
 use App\Application\Teacher\UseCase\GetTeacherHtmlData;
 use App\Application\Teacher\UseCase\SelectTeachers;
+use App\Application\Wallet\DTO\CreateWalletDTO;
 use App\Domain\Entity\Teacher;
+use App\Infrastructure\Factory\WalletFactory;
 use App\Infrastructure\Form\SelectTeachersFormType;
+use App\Infrastructure\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,11 +42,17 @@ final class CommandStudentController extends AbstractController
     ) {
     }
 
-    public function makePayment(Request $request, StudentRepository $studentRepository) : Response
+    public function makePayment(Request $request, UserRepository $userRepository) : Response
     {
        try {
 
-        dd(121212);
+           $userID = 1;
+           $user = $userRepository->find($userID);
+           WalletFactory::createOne(['related_user' => $user]);
+
+
+
+
         
             // $currentUser = $studentRepository->getStudent()
             // $sum 
@@ -59,7 +68,9 @@ final class CommandStudentController extends AbstractController
            //$this->responder->loadError($e->getMessage());
        }
 //
-//        return $this->responder->response();
+        return new Response(
+            '<html><body>Lucky number: 1</body></html>'
+        );
     }
 
 }

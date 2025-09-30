@@ -1,40 +1,40 @@
 <?php
 
-namespace App\Domain\Repository;
+namespace App\Infrastructure\Repository;
 
-use App\Domain\Entity\Payment;
+use App\Domain\Entity\Wallet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Payment>
+ * @extends ServiceEntityRepository<Wallet>
  */
-class PaymentRepository extends ServiceEntityRepository
+class WalletRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Payment::class);
+        parent::__construct($registry, Wallet::class);
     }
 
     //    /**
-    //     * @return Payment[] Returns an array of Payment objects
+    //     * @return Wallet[] Returns an array of Wallet objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
+    //        return $this->createQueryBuilder('w')
+    //            ->andWhere('w.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
+    //            ->orderBy('w.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Payment
+    //    public function findOneBySomeField($value): ?Wallet
     //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
+    //        return $this->createQueryBuilder('w')
+    //            ->andWhere('w.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()

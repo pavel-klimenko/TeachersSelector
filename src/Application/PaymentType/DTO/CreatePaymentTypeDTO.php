@@ -2,7 +2,9 @@
 
 namespace App\Application\PaymentType\DTO;
 
-final class CreatePaymentTypeDTO
+use App\Domain\DTO\CreateDTOInterface;
+
+final class CreatePaymentTypeDTO implements CreateDTOInterface
 {
     public readonly string $name;
     public readonly string $code;

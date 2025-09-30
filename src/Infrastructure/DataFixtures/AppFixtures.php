@@ -34,6 +34,7 @@ use App\Infrastructure\Factory\StudentFactory;
 use App\Infrastructure\Factory\TeacherFactory;
 use App\Infrastructure\Factory\TeacherHasTeacherExpertisesFactory;
 use App\Infrastructure\Factory\UserFactory;
+use App\Infrastructure\Factory\WalletFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -130,6 +131,8 @@ class AppFixtures extends Fixture
         if (!empty($arUsers)) {
             //TODO random genders
             foreach ($arUsers as $user) {
+                WalletFactory::createOne(['related_user' => $user]);
+
                 if (in_array(GetUserRoles::getStudentRole(), CurrentUserRoles::execute($user))) {
                     StudentFactory::createOne(['related_user' => $user]);
                 } elseif (in_array(GetUserRoles::getTeacherRole(), CurrentUserRoles::execute($user))) {

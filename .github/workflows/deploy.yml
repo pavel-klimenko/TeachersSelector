@@ -1,50 +1,50 @@
-name: BuildAndDeploy
-
-on: [push]
-
-jobs:
-  check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checking connection with production server
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.PRODUCTION_SERVER_HOST }}
-          username: ${{ secrets.PRODUCTION_SERVER_USER }}
-          password: ${{ secrets.PRODUCTION_SERVER_PASSWORD }}
-          port: 22
-          script: whoami
-
-  deploy:
-    needs: check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Update and rebuild project on the production server
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.PRODUCTION_SERVER_HOST }}
-          username: ${{ secrets.PRODUCTION_SERVER_USER }}
-          password: ${{ secrets.PRODUCTION_SERVER_PASSWORD }}
-          port: 22
-          script: |
-            cd ~/TeachersSelector
-            echo "📥 Pulling latest code..."
-            git pull
-      
-            echo "🐳 Restarting Docker..."
-            docker compose up -d --build
-      
-            echo "📦 Installing Composer dependencies..."
-            docker exec -w /var/www/app fpm1 composer install --no-interaction --prefer-dist
-      
-            echo "⚙️ Updating database schema..."
-            docker exec -w /var/www/app fpm1 php bin/console doctrine:schema:update --force
-      
-            echo "📚 Loading fixtures..."
-            docker exec -w /var/www/app fpm1 php bin/console doctrine:fixtures:load --no-interaction
-      
-            echo "🧪 Running PHPUnit tests..."
-            docker exec -w /var/www/app fpm1 php bin/phpunit --testdox --colors=always
+#name: BuildAndDeploy
+#
+#on: [push]
+#
+#jobs:
+#  check:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checking connection with production server
+#        uses: appleboy/ssh-action@v1.2.0
+#        with:
+#          host: ${{ secrets.PRODUCTION_SERVER_HOST }}
+#          username: ${{ secrets.PRODUCTION_SERVER_USER }}
+#          password: ${{ secrets.PRODUCTION_SERVER_PASSWORD }}
+#          port: 22
+#          script: whoami
+#
+#  deploy:
+#    needs: check
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#
+#      - name: Update and rebuild project on the production server
+#        uses: appleboy/ssh-action@v1.2.0
+#        with:
+#          host: ${{ secrets.PRODUCTION_SERVER_HOST }}
+#          username: ${{ secrets.PRODUCTION_SERVER_USER }}
+#          password: ${{ secrets.PRODUCTION_SERVER_PASSWORD }}
+#          port: 22
+#          script: |
+#            cd ~/TeachersSelector
+#            echo "📥 Pulling latest code..."
+#            git pull
+#
+#            echo "🐳 Restarting Docker..."
+#            docker compose up -d --build
+#
+#            echo "📦 Installing Composer dependencies..."
+#            docker exec -w /var/www/app fpm1 composer install --no-interaction --prefer-dist
+#
+#            echo "⚙️ Updating database schema..."
+#            docker exec -w /var/www/app fpm1 php bin/console doctrine:schema:update --force
+#
+#            echo "📚 Loading fixtures..."
+#            docker exec -w /var/www/app fpm1 php bin/console doctrine:fixtures:load --no-interaction
+#
+#            echo "🧪 Running PHPUnit tests..."
+#            docker exec -w /var/www/app fpm1 php bin/phpunit --testdox --colors=always
