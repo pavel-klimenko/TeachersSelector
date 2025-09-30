@@ -2,18 +2,9 @@
 
 namespace App\Infrastructure\Http\Student\Controller;
 
-use App\Application\Student\Command\MakePaymentCommand;
-use App\Application\Student\Query\GetPaymentResponse;
-use App\Application\Teacher\UseCase\GetAllTeachers;
-use App\Application\Teacher\UseCase\GetTeacher;
-use App\Application\Teacher\UseCase\GetTeacherHtmlData;
-use App\Application\Teacher\UseCase\SelectTeachers;
-use App\Domain\Entity\Teacher;
-use App\Infrastructure\Form\SelectTeachersFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 
 final class QueryStudentController extends AbstractController

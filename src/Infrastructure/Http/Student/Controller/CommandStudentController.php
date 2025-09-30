@@ -2,25 +2,13 @@
 
 namespace App\Infrastructure\Http\Student\Controller;
 
-use App\Application\Student\Command\MakePaymentCommand;
-use App\Application\Teacher\UseCase\GetAllTeachers;
-use App\Application\Teacher\UseCase\GetTeacher;
-use App\Application\Teacher\UseCase\GetTeacherHtmlData;
-use App\Application\Teacher\UseCase\SelectTeachers;
-use App\Application\Wallet\DTO\CreateWalletDTO;
-use App\Domain\Entity\Teacher;
-use App\Infrastructure\Factory\WalletFactory;
-use App\Infrastructure\Form\SelectTeachersFormType;
+use App\Application\Payment\Command\MakePaymentCommand;
+use App\Domain\Bus\Command\CommandBus;
 use App\Infrastructure\Repository\UserRepository;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use App\Domain\Bus\Command\CommandBus;
-use App\Application\Student\Command\MakePaymentCommandHandler;
-use App\Domain\Entity\User;
-use App\Infrastructure\Repository\StudentRepository;
-use Exception;
 
 final class CommandStudentController extends AbstractController
 {
@@ -45,25 +33,22 @@ final class CommandStudentController extends AbstractController
     public function makePayment(Request $request, UserRepository $userRepository) : Response
     {
        try {
-
-           $userID = 1;
-           $user = $userRepository->find($userID);
-           WalletFactory::createOne(['related_user' => $user]);
+           //TODO get User and sum from Request
 
 
+           $currentUser = $userRepository->find(1); //Todo student
+           $sum = 20; //
 
+           $targetUser = $userRepository->find(9); //Todo teacher
+           //$sourceWallet = $currentUser->getWallet();
 
-        
-            // $currentUser = $studentRepository->getStudent()
-            // $sum 
-
-        //    $this->commandBus->dispatch(
-        //        new MakePaymentCommand(
-        //            user: $request->request->get('sender'),
-        //            addressee: $request->request->get('addressee'),
-        //            message: $request->request->get('message'),
-        //        ),
-        //    );
+            $this->commandBus->dispatch(
+                new MakePaymentCommand(
+                    sourceUser: $currentUser,
+                    targetUser: $targetUser,
+                    sum: $sum
+                ),
+            );
        } catch (Exception $e) {
            //$this->responder->loadError($e->getMessage());
        }

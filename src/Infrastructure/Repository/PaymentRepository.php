@@ -3,7 +3,6 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Payment;
-use App\Domain\Entity\PaymentType;
 use App\Domain\Repository\PaymentRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
@@ -20,18 +19,14 @@ class PaymentRepository extends ServiceEntityRepository implements PaymentReposi
         ManagerRegistry $registry
     )
     {
-        parent::__construct($registry, PaymentType::class);
+        parent::__construct($registry, Payment::class);
     }
 
-    public function getList(): array
-    {
-        return $this->findAll();
-    }
-
-    public function save(Payment $payment): void
+    public function save(Payment $payment): Payment
     {
         $this->entityManager->persist($payment);
         $this->entityManager->flush();
+        return $payment;
     }
 
     //    /**

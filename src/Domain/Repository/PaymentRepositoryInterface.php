@@ -6,5 +6,5 @@ use App\Domain\Entity\Payment;
 
 interface PaymentRepositoryInterface
 {
-    public function save(Payment $payment): void;
+    public function save(Payment $payment): Payment;
 }

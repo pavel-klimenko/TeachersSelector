@@ -26,7 +26,7 @@ class Payment
     private ?float $sum = null;
 
     #[ORM\Column(enumType: PaymentStatuses::class)]
-    private ?PaymentStatuses $status = null;
+    private ?PaymentStatuses $status = PaymentStatuses::IN_PROCESS;
 
     public function getId(): ?int
     {
