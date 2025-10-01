@@ -57,12 +57,19 @@ class Teacher
     #[ORM\ManyToMany(targetEntity: PaymentType::class, inversedBy: 'teachers')]
     private Collection $payment_types;
 
+    /**
+     * @var Collection<int, PersonalChat>
+     */
+    #[ORM\OneToMany(targetEntity: PersonalChat::class, mappedBy: 'teacher')]
+    private Collection $personalChats;
+
     public function __construct()
     {
         $this->teacherHasTeacherExpertises = new ArrayCollection();
         $this->expertise = new ArrayCollection();
         $this->studying_modes = new ArrayCollection();
         $this->payment_types = new ArrayCollection();
+        $this->personalChats = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -215,6 +222,36 @@ class Teacher
     public function removePaymentType(PaymentType $paymentType): static
     {
         $this->payment_types->removeElement($paymentType);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PersonalChat>
+     */
+    public function getPersonalChats(): Collection
+    {
+        return $this->personalChats;
+    }
+
+    public function addPersonalChat(PersonalChat $personalChat): static
+    {
+        if (!$this->personalChats->contains($personalChat)) {
+            $this->personalChats->add($personalChat);
+            $personalChat->setTeacher($this);
+        }
+
+        return $this;
+    }
+
+    public function removePersonalChat(PersonalChat $personalChat): static
+    {
+        if ($this->personalChats->removeElement($personalChat)) {
+            // set the owning side to null (unless already changed)
+            if ($personalChat->getTeacher() === $this) {
+                $personalChat->setTeacher(null);
+            }
+        }
 
         return $this;
     }
