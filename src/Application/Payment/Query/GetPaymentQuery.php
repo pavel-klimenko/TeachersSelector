@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Application\Student\Query;
+namespace App\Application\Payment\Query;
 
 use App\Domain\Bus\Query\Query;
 
@@ -15,3 +15,4 @@ final class GetPaymentQuery implements Query
         return $this->id;
     }
 }
+

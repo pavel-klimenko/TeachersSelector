@@ -3,7 +3,7 @@
 namespace App\Domain\Entity;
 
 use App\Domain\Enums\Currencies;
-use App\Domain\Repository\WalletRepository;
+use App\Infrastructure\Repository\WalletRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: WalletRepository::class)]

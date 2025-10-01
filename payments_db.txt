@@ -2,7 +2,7 @@ wallets (for teachers and students)
 id, related_user, currency (USD), cash - created for every user
 
 payments
-id, source_wallet, target_wallet, sum, status (in_process, canceled, approved)
+id, source_wallet, target_wallet, sum, status (in_process, canceled, approved), datetime
 Also create logging for payments
 
 

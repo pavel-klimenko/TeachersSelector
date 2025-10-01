@@ -5,8 +5,10 @@ namespace App\Domain\Entity;
 use App\Infrastructure\Repository\PersonalChatMessagesRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 
 #[ORM\Entity(repositoryClass: PersonalChatMessagesRepository::class)]
+#[HasLifecycleCallbacks]
 class PersonalChatMessages
 {
     #[ORM\Id]
@@ -23,8 +25,11 @@ class PersonalChatMessages
     #[ORM\Column(nullable: true)]
     private ?int $message_order = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $datetime = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $created_at = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $updated_at = null;
 
     public function getId(): ?int
     {
@@ -65,15 +70,26 @@ class PersonalChatMessages
         return $this;
     }
 
-    public function getDatetime(): ?\DateTimeInterface
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
     {
-        return $this->datetime;
+        $this->created_at = new \DateTimeImmutable();
+        $this->updated_at = new \DateTimeImmutable();
     }
 
-    public function setDatetime(\DateTimeInterface $datetime): static
+    #[ORM\PreUpdate]
+    public function onPreUpdate(): void
     {
-        $this->datetime = $datetime;
+        $this->updated_at = new \DateTimeImmutable();
+    }
 
-        return $this;
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_at;
     }
 }

@@ -35,7 +35,6 @@ final class CommandStudentController extends AbstractController
        try {
            //TODO get User and sum from Request
 
-
            $currentUser = $userRepository->find(1); //Todo student
            $sum = 20; //
 

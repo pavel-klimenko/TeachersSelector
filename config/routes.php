@@ -11,6 +11,9 @@ return function (RoutingConfigurator $routes): void {
     $routes->add('make-payment', '/make-payment')->controller([CommandStudentController::class, 'makePayment'])
         ->methods(['GET']);
 
+    $routes->add('get-payment', '/get-payment')->controller([\App\Infrastructure\Http\Student\Controller\QueryStudentController::class, 'getPayment'])
+        ->methods(['GET']);
+
 
     $routes->add('homepage', '/')->controller([\App\Infrastructure\Http\HomePageController::class, 'make'])
         ->methods(['GET']);

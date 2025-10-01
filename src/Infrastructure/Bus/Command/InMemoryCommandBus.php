@@ -30,13 +30,14 @@ final class InMemoryCommandBus implements CommandBus
     }
 
     /**
-     * @throws Throwable
+     * @throws InvalidArgumentException
      */
     public function dispatch(Command $command): void
     {
         try {
             $this->bus->dispatch($command);
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
+            print_r($exception->getMessage());
             throw new InvalidArgumentException(sprintf('The command has not a valid handler: %s', $command::class));
         }
     }

@@ -6,9 +6,7 @@ use ReflectionClass;
 
 final class HandlerBuilder
 {
-    /**
-     * @throws ReflectionException
-     */
+
     public static function fromCallables(iterable $callables) : array
     {
         $callablesHandlers = [];
@@ -26,9 +24,6 @@ final class HandlerBuilder
         return $callablesHandlers;
     }
 
-    /**
-     * @throws ReflectionException
-     */
     private static function extractFirstParam(object|string $class) : string|null
     {
         $reflection = new ReflectionClass($class);
