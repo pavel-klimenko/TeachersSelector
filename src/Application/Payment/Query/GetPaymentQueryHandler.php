@@ -15,6 +15,9 @@ final class GetPaymentQueryHandler implements QueryHandler
 
     public function __invoke(GetPaymentQuery $query) : QueryResponse
     {
+
+        //TODO rewrite all Queries to DBAL from ORM (use native SQL queries)
+
         $payment = $this->paymentRepository->find(
             $query->id(),
         );

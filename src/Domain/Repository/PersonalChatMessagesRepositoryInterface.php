@@ -2,9 +2,9 @@
 
 namespace App\Domain\Repository;
 
-use App\Domain\Entity\PersonalChatMessages;
+use App\Domain\Entity\PersonalChatMessage;
 
 interface PersonalChatMessagesRepositoryInterface
 {
-    public function save(PersonalChatMessages $personalChatMessage): void;
+    public function save(PersonalChatMessage $personalChatMessage): PersonalChatMessage;
 }

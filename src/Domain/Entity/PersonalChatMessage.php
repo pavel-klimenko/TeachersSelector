@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 
 #[ORM\Entity(repositoryClass: PersonalChatMessagesRepository::class)]
 #[HasLifecycleCallbacks]
-class PersonalChatMessages
+class PersonalChatMessage
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,8 +22,8 @@ class PersonalChatMessages
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?User $related_user = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $message_order = null;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $message = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $created_at = null;
@@ -47,6 +47,17 @@ class PersonalChatMessages
         return $this;
     }
 
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    public function setMessage(?string $message): static
+    {
+        $this->message = $message;
+        return $this;
+    }
+
     public function getRelatedUser(): ?User
     {
         return $this->related_user;
@@ -55,18 +66,6 @@ class PersonalChatMessages
     public function setRelatedUser(?User $related_user): static
     {
         $this->related_user = $related_user;
-        return $this;
-    }
-
-    public function getMessageOrder(): ?int
-    {
-        return $this->message_order;
-    }
-
-    public function setMessageOrder(?int $message_order): static
-    {
-        $this->message_order = $message_order;
-
         return $this;
     }
 

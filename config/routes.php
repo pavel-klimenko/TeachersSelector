@@ -7,10 +7,13 @@ use Symfony\Component\Routing\Requirement\Requirement;
 return function (RoutingConfigurator $routes): void {
 
 
-
+    //TODO CQRS (create protected API methods)
+    $routes->add('create-chat', '/create-chat')->controller([\App\Infrastructure\Http\Chats\PersonalChat\Controller\CommandPersonalChatController::class, 'createChat'])
+        ->methods(['GET']);
+    $routes->add('create-chat-message', '/create-chat-message')->controller([\App\Infrastructure\Http\Chats\PersonalChatMessages\Controller\CommandPersonalChatMessagesController::class, 'createChatMessage'])
+        ->methods(['GET']);
     $routes->add('make-payment', '/make-payment')->controller([CommandStudentController::class, 'makePayment'])
         ->methods(['GET']);
-
     $routes->add('get-payment', '/get-payment')->controller([\App\Infrastructure\Http\Student\Controller\QueryStudentController::class, 'getPayment'])
         ->methods(['GET']);
 
