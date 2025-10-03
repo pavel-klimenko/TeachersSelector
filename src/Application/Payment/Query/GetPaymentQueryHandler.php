@@ -23,6 +23,7 @@ final class GetPaymentQueryHandler implements QueryHandler
             throw new \RuntimeException('Payment not found');
         }
 
+        //TODO GetPaymentQueryResponse is already DTO. Don`t use DTO together with QueryResponse
         $dto = new ResponsePaymentDTO(
             $payment->getId(),
             $payment->getSourceWallet(),

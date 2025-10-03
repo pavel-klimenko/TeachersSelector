@@ -41,6 +41,8 @@ final class CommandStudentController extends AbstractController
            $targetUser = $userRepository->find(9); //Todo teacher
            //$sourceWallet = $currentUser->getWallet();
 
+           //TODO commands are already DTO. Don`t use DTO together with commands
+
             $this->commandBus->dispatch(
                 new MakePaymentCommand(
                     sourceUser: $currentUser,
