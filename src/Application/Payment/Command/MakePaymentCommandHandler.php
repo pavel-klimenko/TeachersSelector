@@ -10,16 +10,22 @@ use App\Domain\Enums\PaymentStatuses;
 use App\Domain\Repository\PaymentRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface; //TODO use clean architecture
 
+use App\Infrastructure\Services\StripeService;
+
+
 class MakePaymentCommandHandler implements CommandHandler
 {
     public function __construct(
         private PaymentRepositoryInterface $paymentRepository,
         private EntityManagerInterface $em,
+        private StripeService $stripeService,
     ){}
 
    public function __invoke(MakePaymentCommand $command)  {
         //TODO try catch use in the controller API methods
        try {
+            //$intent = $this->stripeService->createPaymentIntent($amount);
+
 
            $this->em->beginTransaction(); //TODO use clean architecture
 
