@@ -1,5 +1,6 @@
 <?php
 
+use App\Infrastructure\Http\Payment\Controller\PaymentController;
 use App\Infrastructure\Http\Student\Controller\CommandStudentController;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Component\Routing\Requirement\Requirement;
@@ -16,6 +17,9 @@ return function (RoutingConfigurator $routes): void {
         ->methods(['GET']);
     $routes->add('get-payment', '/get-payment')->controller([\App\Infrastructure\Http\Student\Controller\QueryStudentController::class, 'getPayment'])
         ->methods(['GET']);
+
+    $routes->add('stripe-show-payment-from', '/stripe-show-payment-from')->controller([PaymentController::class, 'showPaymentFrom'])
+        ->methods(['GET']);    
 
 
     $routes->add('homepage', '/')->controller([\App\Infrastructure\Http\HomePageController::class, 'make'])
