@@ -18,6 +18,11 @@
                             <span class="badge bg-secondary">{{ role }}</span>
                         {% endfor %}
                     </p>
+
+                    <p>
+                        <strong>USD Cash:</strong> {{ usd_cash }}
+                    </p>
+                    <a href="{{ path('stripe-show-payment-from') }}" target="_blank" class="btn btn-warning btn-lg active" role="button" aria-pressed="true">Fill the cash</a>
                 </div>
             </div>
         </div>

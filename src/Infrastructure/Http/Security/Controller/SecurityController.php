@@ -114,13 +114,16 @@ final class SecurityController extends AbstractController
     public function profile(): Response
     {
         $currentUser = $this->getUser();
-
         if (!$currentUser) {
             return $this->redirectToRoute('app_login');
         }
 
+        //TODO user may by owner of several wallets
+        $USDCash = $currentUser->getWallet()->getCash();
+
         return $this->render('security/profile.html.twig', [
             'user' => $currentUser,
+            'usd_cash' => $USDCash
         ]);
     }
 

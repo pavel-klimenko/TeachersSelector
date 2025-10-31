@@ -2,6 +2,9 @@
 
 namespace App\Infrastructure\Http\Payment\Controller;
 
+use App\Application\Payment\DTO\registerPaymentDTO;
+use App\Domain\Enums\Currencies;
+use App\Domain\Services\PaymentServiceInterface;
 use App\Infrastructure\Form\FillWalletForm;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,36 +19,49 @@ use UnexpectedValueException;
 class PaymentController extends AbstractController
 {
     #[Route('/stripe-show-payment-from', name: 'stripe-show-payment-from')]
-    public function showPaymentFrom(Request $request, FormFactoryInterface $formFactory): Response
+    public function showPaymentFrom(
+        Request $request,
+        FormFactoryInterface $formFactory,
+        PaymentServiceInterface $paymentService,
+    ): Response
     {
-        /** @var \App\Domain\Entity\User|null $user */
-        $user = $this->getUser();
+        try {
+            /** @var \App\Domain\Entity\User|null $user */
+            $user = $this->getUser();
 
-        $form = $formFactory->create(FillWalletForm::class, null, [
-            'user_email' => $user?->getEmail(),
-            'user_name' => $user?->getName(),
-        ]);
+            $form = $formFactory->create(FillWalletForm::class, null, [
+                'user_email' => $user?->getEmail(),
+                'user_name' => $user?->getName(),
+            ]);
 
-        $form->handleRequest($request);
+            $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid()) {
+                $arFormData = $form->getData();
+                $paymentDTO = new RegisterPaymentDTO(
+                    $arFormData['amount'],
+                    Currencies::USD,
+                    $arFormData['user_email'],
+                    $arFormData['user_name']
+                );
 
-            //TODO create Stripe intent and show the result
-            dd($form->getData());
+                $arRegPaymentResult = $paymentService->registerPayment($paymentDTO);
 
-//            $teachers = $this->selectCase->execute($form->getData());
-//
-//            return $this->render('teachers/list.html.twig', [
-//                'title' => $this->teacherHtmlData['list_main_title']['content'],
-//                'teachers' => $teachers,
-//                'max_teacher_common_rating' => Teacher::MAX_RATING
-//            ]);
+                return $this->render('payments/paymentRegistered.html.twig', [
+                    'title' => 'Payment registered',
+                    'registered_payment_id' => $arRegPaymentResult['id'],
+                    'amount' => $paymentDTO->sum,
+                    'currency' => $paymentDTO->currency->value,
+                ]);
+            }
+
+            return $this->render('payments/stripe/stripePaymentForm.html.twig', [
+                'title' => 'Fill the wallet',
+                'FillWalletForm' => $form->createView(),
+            ]);
+        } catch (\Exception $exception) {
+            print_r($exception);
         }
-
-        return $this->render('payments/stripe/stripePaymentForm.html.twig', [
-            'title' => 'Fill the wallet',
-            'FillWalletForm' => $form->createView(),
-        ]);
     }
 
 

@@ -2,12 +2,14 @@
 
 namespace App\Infrastructure\Services;
 
+use App\Application\Payment\DTO\RegisterPaymentDTO;
 use App\Domain\Enums\Currencies;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
+use App\Domain\Services\PaymentServiceInterface;
 
 
-class StripeService
+class StripeService implements PaymentServiceInterface
 {
     private $apiKey;
     private $stripeService;
@@ -20,31 +22,34 @@ class StripeService
         $this->stripeService->setApiKey($this->apiKey);
     }
 
-     public function createPaymentIntent(float $amount, array $arMetaData): PaymentIntent
+     public function registerPayment(RegisterPaymentDTO $DTO)
      {
          return PaymentIntent::create([
-             'amount' => $amount * 100,
-             'currency' => Currencies::USD->value,
+             'amount' => $DTO->sum * 100,
+             'currency' => $DTO->currency->value,
              'payment_method_types' => ['card'],
-             'metadata' => $arMetaData
+             'metadata' => [
+                 'User name' => $DTO->userName,
+                 'User email' => $DTO->userEmail,
+             ]
          ]);
      }
 
-     public function retrievePaymentIntent(string $id): PaymentIntent
-     {
-         return PaymentIntent::retrieve($id);
-     }
+//     public function retrievePaymentIntent(string $id): PaymentIntent
+//     {
+//         return PaymentIntent::retrieve($id);
+//     }
 
-    public function getToken()
-    {
-        $token = "";
-        $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        $codeAlphabet .= "abcdefghijklmnopqrstuvwxyz";
-        $codeAlphabet .= "0123456789";
-        $max = strlen($codeAlphabet) - 1;
-        for ($i = 0; $i < 17; $i ++) {
-            $token .= $codeAlphabet[mt_rand(0, $max)];
-        }
-        return $token;
-    }
+//    public function getToken()
+//    {
+//        $token = "";
+//        $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+//        $codeAlphabet .= "abcdefghijklmnopqrstuvwxyz";
+//        $codeAlphabet .= "0123456789";
+//        $max = strlen($codeAlphabet) - 1;
+//        for ($i = 0; $i < 17; $i ++) {
+//            $token .= $codeAlphabet[mt_rand(0, $max)];
+//        }
+//        return $token;
+//    }
 }

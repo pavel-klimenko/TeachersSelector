@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Form;
 
+use App\Domain\Enums\Currencies;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -15,6 +16,7 @@ class FillWalletForm extends AbstractType
         $builder
             ->add('amount', MoneyType::class, [
                 'label' => 'Amount',
+                'currency' => Currencies::USD->value,
                 'required' => true,
             ])
             ->add('user_email', HiddenType::class, [

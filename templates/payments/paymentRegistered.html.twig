@@ -1,0 +1,29 @@
+{% extends '@templates_path/base.html.twig' %}
+
+ {% block title %}{{ title }}{% endblock %}
+
+ {% block body %}
+     {% include '@templates_path/header.html.twig' %}
+
+     <div class="container py-5">
+         <div class="row">
+             <div class="col-md-8">
+                 <div class="card shadow-sm border-0">
+                     <div class="card-body text-start">
+                         <h3 class="card-title text-success mb-4">✅ Payment successfully registered</h3>
+
+                         <ul class="list-group list-group-flush">
+                             <li class="list-group-item">
+                                 <strong>🆔 Payment ID:</strong> {{ registered_payment_id }}
+                             </li>
+                             <li class="list-group-item">
+                                 <strong>💰 Amount:</strong> {{ amount }} <b>{{ currency }}</b>
+                             </li>
+                         </ul>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+     {% include '@templates_path/footer.html.twig' %}
+ {% endblock %}
