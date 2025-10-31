@@ -8,9 +8,7 @@ use App\Application\Payment\Factory\PaymentFactory;
 use App\Domain\Bus\Command\CommandHandler;
 use App\Domain\Enums\PaymentStatuses;
 use App\Domain\Repository\PaymentRepositoryInterface;
-use Doctrine\ORM\EntityManagerInterface; //TODO use clean architecture
-
-use App\Infrastructure\Services\StripeService;
+use Doctrine\ORM\EntityManagerInterface;
 
 
 class MakePaymentCommandHandler implements CommandHandler
@@ -18,57 +16,43 @@ class MakePaymentCommandHandler implements CommandHandler
     public function __construct(
         private PaymentRepositoryInterface $paymentRepository,
         private EntityManagerInterface $em,
-        private StripeService $stripeService,
     ){}
 
    public function __invoke(MakePaymentCommand $command)  {
         //TODO try catch use in the controller API methods
        try {
-            //$intent = $this->stripeService->createPaymentIntent($amount);
-
-
            $this->em->beginTransaction(); //TODO use clean architecture
 
-           $sourceWallet = $command->sourceUser()->getWallet();
-           $sourceCash = $sourceWallet->getCash();
-           $targetWallet = $command->targetUser()->getWallet();
-           $sum = $command->sum();
+               $sourceWallet = $command->sourceUser()->getWallet();
+               $sourceCash = $sourceWallet->getCash();
+               $targetWallet = $command->targetUser()->getWallet();
+               $sum = $command->sum();
 
-           if ($sourceCash < $sum) {
-               throw new \RuntimeException('There is no enough money in the source wallet');
-           }
+               if ($sourceCash < $sum) {
+                   throw new \RuntimeException('There is no enough money in the source wallet');
+               }
 
-           //Send sum from source wallet to target wallet
-           $sourceWallet->setCash($sourceCash - $sum);
-           $targetWallet->setCash($targetWallet->getCash() + $sum);
+               //Send sum from source wallet to target wallet
+               $sourceWallet->setCash($sourceCash - $sum);
+               $targetWallet->setCash($targetWallet->getCash() + $sum);
 
-           //Create in_process payment
-           $DTO = new CreatePaymentDTO($sourceWallet, $targetWallet, $sum);
+               //Create in_process payment
+               $DTO = new CreatePaymentDTO($sourceWallet, $targetWallet, $sum);
 
-           $payment = $this->paymentRepository->save(PaymentFactory::makeObject($DTO));
+               $payment = $this->paymentRepository->save(PaymentFactory::makeObject($DTO));
 
-           //TODO here send to the Payment system and catch response from payment system
-           $arPaymentSystemResponse = [];
-           $arPaymentSystemResponse['status'] = 'success';
-
-           if ($arPaymentSystemResponse['status'] == 'error') {
-               throw new \RuntimeException('Payment system error');
-           }
-
-           if ($arPaymentSystemResponse['status'] == 'success') {
                $createdPayment = $this->paymentRepository->find($payment->getId());
                $createdPayment->setStatus(PaymentStatuses::APPROVED);
                $createdPayment = $this->paymentRepository->save($createdPayment);
-               $this->em->commit();
 
-               return new ResponsePaymentDTO(
-                   $createdPayment->getId(),
-                   $createdPayment->getSourceWallet(),
-                   $createdPayment->getTargetWallet(),
-                   $createdPayment->getSum(),
-               );
-           }
+           $this->em->commit();
 
+           return new ResponsePaymentDTO(
+               $createdPayment->getId(),
+               $createdPayment->getSourceWallet(),
+               $createdPayment->getTargetWallet(),
+               $createdPayment->getSum(),
+           );
        } catch (\Throwable $exception) {
            $this->em->rollback();
 

@@ -2,32 +2,49 @@
 
 namespace App\Infrastructure\Http\Payment\Controller;
 
+use App\Infrastructure\Form\FillWalletForm;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
-use App\Service\StripeService;
 use Symfony\Component\HttpFoundation\Request;
 use Stripe\Webhook;
 use Stripe\Exception\SignatureVerificationException;
+use Symfony\Component\Form\FormFactoryInterface;
 use UnexpectedValueException;
 
 class PaymentController extends AbstractController
 {
-
     #[Route('/stripe-show-payment-from', name: 'stripe-show-payment-from')]
-    public function showPaymentFrom(): Response
+    public function showPaymentFrom(Request $request, FormFactoryInterface $formFactory): Response
     {
-        //$intent = $stripe->createPaymentIntent(10.00); // $10.00
-        //return new JsonResponse(['clientSecret' => 1]);
+        /** @var \App\Domain\Entity\User|null $user */
+        $user = $this->getUser();
+
+        $form = $formFactory->create(FillWalletForm::class, null, [
+            'user_email' => $user?->getEmail(),
+            'user_name' => $user?->getName(),
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            //TODO create Stripe intent and show the result
+            dd($form->getData());
+
+//            $teachers = $this->selectCase->execute($form->getData());
+//
+//            return $this->render('teachers/list.html.twig', [
+//                'title' => $this->teacherHtmlData['list_main_title']['content'],
+//                'teachers' => $teachers,
+//                'max_teacher_common_rating' => Teacher::MAX_RATING
+//            ]);
+        }
 
         return $this->render('payments/stripe/stripePaymentForm.html.twig', [
-            'title' => 'Stripe payment form',
-            // 'expertises' => $arExpertises,
-            // 'payment_types' => $arPaymentTypes,
-            // 'cities_amount' => $citiesAmount,
-            // 'students_amount' => $studentsAmount,
-            // 'html_data'=> $GetHomePageHtmlData->execute()
+            'title' => 'Fill the wallet',
+            'FillWalletForm' => $form->createView(),
         ]);
     }
 
