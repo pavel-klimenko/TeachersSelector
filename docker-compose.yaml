@@ -19,8 +19,11 @@ services:
       dockerfile: ./docker/php/Fpm.Dockerfile
     image: balance/php
     container_name: fpm1
+    ports:
+      - "8080:8080"
     volumes:
       - ./:/var/www/app
+      - ./docker/php/conf.d/swoole.ini:/usr/local/etc/php/conf.d/swoole.ini
 #      - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
     networks:
       - internal
@@ -35,8 +38,11 @@ services:
       dockerfile: ./docker/php/Fpm.Dockerfile
     image: balance/php
     container_name: fpm2
+    ports:
+      - "8081:8081"
     volumes:
       - ./:/var/www/app
+      - ./docker/php/conf.d/swoole.ini:/usr/local/etc/php/conf.d/swoole.ini
 #      - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
     networks:
       - internal

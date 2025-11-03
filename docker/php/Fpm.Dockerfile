@@ -14,4 +14,6 @@ RUN docker-php-ext-install zip \
 
 #RUN pecl install xdebug && docker-php-ext-enable xdebug && docker-php-ext-enable amqp
 
+RUN pecl install openswoole && docker-php-ext-enable openswoole
+
 WORKDIR /var/www/app

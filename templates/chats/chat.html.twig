@@ -1,0 +1,59 @@
+{% extends '@templates_path/base.html.twig' %}
+
+ {% block title %}{{ title }}{% endblock %}
+
+ {% block body %}
+     {% include '@templates_path/header.html.twig' %}
+
+     <body>
+     <div id="chat"></div>
+     <input type="text" id="message" placeholder="Type a message...">
+     <button id="sendBtn" onclick="sendMessage()" disabled>Send</button>
+
+     <script>
+         const conn = new WebSocket('ws://localhost:8080');
+
+         conn.onopen = function(e) {
+             console.log("Connection established!");
+             document.getElementById('sendBtn').disabled = false;
+         };
+         conn.onerror = function(e) {
+             console.error("WebSocket error:", e);
+         };
+         conn.onclose = function(e) {
+             console.warn("WebSocket closed:", e);
+         };
+
+         conn.onmessage = function(e) {
+             const chat = document.getElementById('chat');
+             const message = document.createElement('div');
+             message.textContent = e.data;
+             chat.appendChild(message);
+         };
+
+         function sendMessage() {
+             const input = document.getElementById('message');
+             const msg = input.value;
+
+             if (conn.readyState === WebSocket.OPEN) {
+                 conn.send(msg);
+                 input.value = '';
+             } else {
+                 console.warn("WebSocket is not open. Current state:", conn.readyState);
+             }
+         }
+     </script>
+
+     <style>
+         #chat {
+             width: 300px;
+             height: 400px;
+             border: 1px solid #ccc;
+             overflow-y: scroll;
+             margin-bottom: 10px;
+         }
+     </style>
+
+
+     {% include '@templates_path/footer.html.twig' %}
+ {% endblock %}

@@ -9,6 +9,9 @@ use App\Infrastructure\Http\Teacher\Controller\TeacherController;
 return function (RoutingConfigurator $routes): void {
 
 
+    $routes->add('open-chat', '/open-chat')->controller([\App\Infrastructure\Http\Chats\PersonalChat\Controller\ChatController::class, 'openChat'])
+        ->methods(['GET']);
+
     //TODO CQRS (create protected API methods)
     $routes->add('create-chat', '/create-chat')->controller([\App\Infrastructure\Http\Chats\PersonalChat\Controller\CommandPersonalChatController::class, 'createChat'])
         ->methods(['GET']);

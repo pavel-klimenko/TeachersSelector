@@ -6,6 +6,8 @@
 parameters:
 
 services:
+    App\Command\WebSocketServerCommand:
+        tags: ['console.command']
     App\Infrastructure\DataFixtures\AppFixtures:
         tags: [ 'doctrine.fixture.orm' ]
     App\Infrastructure\Repository\ExpertiseRepository:
