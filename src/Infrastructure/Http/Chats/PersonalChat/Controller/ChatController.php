@@ -15,6 +15,9 @@ final class ChatController extends AbstractController
 {
     public function openChat(Request $request) : Response
     {
+
+
+
         return $this->render('chats/chat.html.twig', [
             'title' => 'ChatWindow',
         ]);

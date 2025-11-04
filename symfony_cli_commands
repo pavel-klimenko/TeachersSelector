@@ -11,3 +11,9 @@ Update migrations: php bin/console doctrine:schema:update --force
 Creating a factory: php bin/console make:factory
 Run fixtures: php bin/console doctrine:fixtures:load
 Run auto tests: php bin/phpunit
+
+Run the WebSocket Server: php bin/console app:websocket-server
+
+Show processes on a port: lsof -i :8080
+Kill processes on a port: kill $(lsof -t -i :8080)
+Kill process: kill 12345

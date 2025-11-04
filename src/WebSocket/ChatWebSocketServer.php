@@ -4,18 +4,20 @@ namespace App\WebSocket;
 
 
 use Predis\Client as RedisClient;
+use Psr\Log\LoggerInterface;
 use Swoole\WebSocket\Server;
 use Swoole\Process;
+
 
 use Swoole\Coroutine\Redis;
 
 class ChatWebSocketServer
 {
-    private $redis;
+    //private $redis;
 
     public function __construct()
     {
-        $this->redis = new RedisClient();
+        //$this->redis = new RedisClient();
     }
 
     public function start()
@@ -28,12 +30,16 @@ class ChatWebSocketServer
 
         $server->on("open", function (Server $server, $request) {
             echo "Connection opened: {$request->fd}\n";
-            $server->push($request->fd, "Welcome to Swoole WebSocket Server!");
+            $server->push($request->fd, "1111Welcome to Swoole WebSocket Server!");
         });
 
         $server->on("message", function (Server $server, $frame) {
             echo "Received message: {$frame->data}\n";
-            $this->redis->publish('chat', $frame->data);
+            //TODO it is work, but need to reload a server!
+
+            //TODO devide messages into channels and save to DATA BASE
+
+            $server->push($frame->fd, json_encode(["hello", time()]));
         });
 
         $server->on("close", function (Server $server, $fd) {

@@ -35,8 +35,15 @@
              const input = document.getElementById('message');
              const msg = input.value;
 
+             // console.log(msg);
+             // console.log(conn.readyState);
+             // console.log(WebSocket.OPEN);
+
              if (conn.readyState === WebSocket.OPEN) {
+                 //console.log('Отправляем сообщение');
+
                  conn.send(msg);
+
                  input.value = '';
              } else {
                  console.warn("WebSocket is not open. Current state:", conn.readyState);
