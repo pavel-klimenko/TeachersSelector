@@ -30,7 +30,7 @@ class ChatWebSocketServer
 
         $server->on("open", function (Server $server, $request) {
             echo "Connection opened: {$request->fd}\n";
-            $server->push($request->fd, "1111Welcome to Swoole WebSocket Server!");
+            $server->push($request->fd, "Welcome to Swoole WebSocket Server!");
         });
 
         $server->on("message", function (Server $server, $frame) {

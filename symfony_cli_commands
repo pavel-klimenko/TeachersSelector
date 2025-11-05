@@ -13,7 +13,11 @@ Run fixtures: php bin/console doctrine:fixtures:load
 Run auto tests: php bin/phpunit
 
 Run the WebSocket Server: php bin/console app:websocket-server
-
 Show processes on a port: lsof -i :8080
-Kill processes on a port: kill $(lsof -t -i :8080)
+Kill processes on a port (stop websocket server): kill $(lsof -t -i :8080)
 Kill process: kill 12345
+
+Cleaning cache:
+php bin/console doctrine:cache:clear-metadata
+php bin/console doctrine:cache:clear-query
+php bin/console doctrine:cache:clear-result

@@ -36,6 +36,9 @@
 
             <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
                 <a class="me-3 py-2 text-dark text-decoration-none" href="{{ path('homepage') }}">Homepage</a>
+
+                <a class="me-3 py-2 text-dark text-decoration-none" href="{{ path('personal-chats') }}">Personal Chats</a>
+
                 <a class="me-3 py-2 text-dark text-decoration-none" href="{{ path('teachers_get_all') }}">Teachers</a>
 
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}

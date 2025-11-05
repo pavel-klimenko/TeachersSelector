@@ -21,16 +21,7 @@ class PersonalChat
     #[ORM\ManyToOne(inversedBy: 'personalChats')]
     private ?Teacher $teacher = null;
 
-    /**
-     * @var Collection<int, PersonalChatMessage>
-     */
-    #[ORM\ManyToMany(targetEntity: PersonalChatMessage::class, mappedBy: 'PersonalChat')]
-    private Collection $related_user;
 
-    public function __construct()
-    {
-        $this->related_user = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -61,30 +52,4 @@ class PersonalChat
         return $this;
     }
 
-    /**
-     * @return Collection<int, PersonalChatMessage>
-     */
-    public function getRelatedUser(): Collection
-    {
-        return $this->related_user;
-    }
-
-    public function addRelatedUser(PersonalChatMessage $relatedUser): static
-    {
-        if (!$this->related_user->contains($relatedUser)) {
-            $this->related_user->add($relatedUser);
-            $relatedUser->addPersonalChat($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRelatedUser(PersonalChatMessage $relatedUser): static
-    {
-        if ($this->related_user->removeElement($relatedUser)) {
-            $relatedUser->removePersonalChat($this);
-        }
-
-        return $this;
-    }
 }
