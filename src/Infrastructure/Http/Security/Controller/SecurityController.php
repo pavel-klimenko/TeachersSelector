@@ -119,11 +119,11 @@ final class SecurityController extends AbstractController
         }
 
         //TODO user may by owner of several wallets
-        $USDCash = $currentUser->getWallet()->getCash();
+        //$USDCash = $currentUser->getWallet()->getCash();
 
         return $this->render('security/profile.html.twig', [
             'user' => $currentUser,
-            'usd_cash' => $USDCash
+            //'usd_cash' => $USDCash
         ]);
     }
 

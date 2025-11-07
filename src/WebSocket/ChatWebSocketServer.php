@@ -7,17 +7,18 @@ use Predis\Client as RedisClient;
 use Psr\Log\LoggerInterface;
 use Swoole\WebSocket\Server;
 use Swoole\Process;
-
-
+use App\Infrastructure\Repository\UserRepository;
 use Swoole\Coroutine\Redis;
+use App\Infrastructure\Services\PersonalChatService;
 
 class ChatWebSocketServer
 {
-    //private $redis;
 
-    public function __construct()
+    private UserRepository $userRepository;
+
+    public function __construct(UserRepository $userRepository)
     {
-        //$this->redis = new RedisClient();
+        $this->userRepository = $userRepository;
     }
 
     public function start()
@@ -35,11 +36,19 @@ class ChatWebSocketServer
 
         $server->on("message", function (Server $server, $frame) {
             echo "Received message: {$frame->data}\n";
-            //TODO it is work, but need to reload a server!
 
-            //TODO devide messages into channels and save to DATA BASE
+            $data = json_decode($frame->data, true);
+            //$userId = $data['message_sender'] ?? null;
 
-            $server->push($frame->fd, json_encode(["hello", time()]));
+
+            if ($data['event'] == 'load_chat') {
+                $user = $this->userRepository->find($data['current_user_id']);
+                $personalChatService = new PersonalChatService();
+                $arWSChat = $personalChatService->loadChat($data['chat_id'], $user);
+                echo json_encode($arWSChat);
+            }
+
+            //$server->push($frame->fd, json_encode(["hello", time()]));
         });
 
         $server->on("close", function (Server $server, $fd) {

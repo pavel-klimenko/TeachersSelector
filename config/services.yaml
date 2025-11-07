@@ -8,6 +8,8 @@ parameters:
 services:
     App\Command\WebSocketServerCommand:
         tags: ['console.command']
+        arguments:
+            $userRepository: '@App\Infrastructure\Repository\UserRepository'
     App\Infrastructure\DataFixtures\AppFixtures:
         tags: [ 'doctrine.fixture.orm' ]
     App\Infrastructure\Repository\ExpertiseRepository:

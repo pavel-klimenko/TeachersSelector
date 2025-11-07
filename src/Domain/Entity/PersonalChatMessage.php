@@ -16,10 +16,10 @@ class PersonalChatMessage
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'personalChatMessages')]
     private ?PersonalChat $personal_chat = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'personalChatMessages')]
     private ?User $related_user = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -36,16 +36,8 @@ class PersonalChatMessage
         return $this->id;
     }
 
-    public function getPersonalChat(): ?PersonalChat
-    {
-        return $this->personal_chat;
-    }
 
-    public function setPersonalChat(?PersonalChat $personal_chat): static
-    {
-        $this->personal_chat = $personal_chat;
-        return $this;
-    }
+
 
     public function getMessage(): string
     {

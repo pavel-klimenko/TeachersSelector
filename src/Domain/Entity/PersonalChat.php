@@ -21,6 +21,16 @@ class PersonalChat
     #[ORM\ManyToOne(inversedBy: 'personalChats')]
     private ?Teacher $teacher = null;
 
+     /**
+     * @var Collection<int, PersonalChatMessage>
+     */
+    #[ORM\OneToMany(targetEntity: PersonalChatMessage::class, mappedBy: 'personal_chat')]
+    private Collection $personalChatMessages;
+
+    public function __construct()
+    {
+        $this->personalChatMessages = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -50,6 +60,14 @@ class PersonalChat
         $this->teacher = $teacher;
 
         return $this;
+    }
+
+        /**
+     * @return Collection<int, personalChatMessages>
+     */
+    public function getPersonalChatMessages(): Collection
+    {
+        return $this->personalChatMessages;
     }
 
 }

@@ -12,10 +12,40 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use App\Infrastructure\Services\PersonalChatService;
+use App\Infrastructure\Repository\UserRepository;
+use RuntimeException;
+
 final class ChatController extends AbstractController
 {
-    public function openChat(Request $request) : Response
+    public function openChat(UserRepository $userRepository, Request $request) : Response
     {
+
+        //TODO add into chatService
+        // $channel = 'personal_chat_1';
+        // $targetChatId = 1;
+        // $currentUserId = 5;
+
+        // $user = $userRepository->find($currentUserId);
+
+
+
+
+    
+
+        //$personalChatService = new PersonalChatService();
+
+
+
+
+        // $wsChatObject = $personalChatService->loadChat($chatId, $currentUserId);
+
+
+
+    
+
+
+
         $user = $this->getUser();
         $arCurrentUserRoles = $user->getRoles();
 
@@ -25,11 +55,19 @@ final class ChatController extends AbstractController
             //dump('STUDENT');
 
             $student = $user->getStudent();
+
+
+            //dump($student);
+
             $arUserPersonalChats = $student->getPersonalChats();
             foreach ($arUserPersonalChats as $chat) {
                 $chatId = $chat->getId();
                 $chatPartnerName = $chat->getTeacher()->getRelatedUser()->getName();
-                $arPersonalChats[$chatId] = $chatPartnerName;
+
+                $arPersonalChats[$chatId]['partner_name'] = $chatPartnerName;
+                $arPersonalChats[$chatId]['ws_channel'] = 'personal_chat_'.$chatId;
+                $arPersonalChats[$chatId]['current_user_role'] = UserRoles::ROLE_STUDENT->value;
+                $arPersonalChats[$chatId]['current_user_id'] = $user->getId();
             }
 
         } elseif (in_array(UserRoles::ROLE_TEACHER->name, $arCurrentUserRoles)) {
@@ -47,7 +85,6 @@ final class ChatController extends AbstractController
         }
 
 
-        //dd($arPersonalChats);
 
         return $this->render('chats/chat.html.twig', [
             'title' => 'My personal chats',
