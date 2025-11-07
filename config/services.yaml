@@ -10,6 +10,7 @@ services:
         tags: ['console.command']
         arguments:
             $userRepository: '@App\Infrastructure\Repository\UserRepository'
+            $personalChatRepository: '@App\Infrastructure\Repository\PersonalChatRepository'
     App\Infrastructure\DataFixtures\AppFixtures:
         tags: [ 'doctrine.fixture.orm' ]
     App\Infrastructure\Repository\ExpertiseRepository:

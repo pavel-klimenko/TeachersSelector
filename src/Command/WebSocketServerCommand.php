@@ -9,16 +9,22 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use App\Infrastructure\Repository\UserRepository;
+use App\Infrastructure\Repository\PersonalChatRepository;
 
 #[AsCommand(name: 'app:websocket-server')]
 class WebSocketServerCommand extends Command
 {
     private UserRepository $userRepository;
+    private PersonalChatRepository $personalChatRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(
+        UserRepository $userRepository,
+        PersonalChatRepository $personalChatRepository,
+    )
     {
         parent::__construct();
         $this->userRepository = $userRepository;
+        $this->personalChatRepository = $personalChatRepository;
     }
 
 
@@ -31,7 +37,7 @@ class WebSocketServerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $server = new ChatWebSocketServer($this->userRepository);
+        $server = new ChatWebSocketServer($this->userRepository, $this->personalChatRepository);
         $server->start();
         return Command::SUCCESS;
     }

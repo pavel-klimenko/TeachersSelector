@@ -70,4 +70,14 @@ class PersonalChat
         return $this->personalChatMessages;
     }
 
+    public function addPersonalChatMessage(PersonalChatMessage $message): static
+    {
+        if (!$this->personalChatMessages->contains($message)) {
+            $this->personalChatMessages->add($message);
+            $message->setPersonalChat($this);
+        }
+
+        return $this;
+    }
+
 }

@@ -83,4 +83,10 @@ class PersonalChatMessage
     {
         return $this->updated_at;
     }
+
+    public function setPersonalChat(?PersonalChat $personal_chat): static
+    {
+        $this->personal_chat = $personal_chat;
+        return $this;
+    }
 }

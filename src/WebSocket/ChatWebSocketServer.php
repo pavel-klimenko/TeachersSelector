@@ -10,15 +10,21 @@ use Swoole\Process;
 use App\Infrastructure\Repository\UserRepository;
 use Swoole\Coroutine\Redis;
 use App\Infrastructure\Services\PersonalChatService;
+use App\Infrastructure\Repository\PersonalChatRepository;
 
 class ChatWebSocketServer
 {
 
     private UserRepository $userRepository;
+    private PersonalChatRepository $personalChatRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(
+        UserRepository $userRepository,
+        PersonalChatRepository $personalChatRepository,
+    )
     {
         $this->userRepository = $userRepository;
+        $this->personalChatRepository = $personalChatRepository;
     }
 
     public function start()
@@ -41,14 +47,21 @@ class ChatWebSocketServer
             //$userId = $data['message_sender'] ?? null;
 
 
+            //TODO sending WS data using API!!! Without including repo directly here
+
+            $personalChatService = new PersonalChatService();
+
             if ($data['event'] == 'load_chat') {
                 $user = $this->userRepository->find($data['current_user_id']);
-                $personalChatService = new PersonalChatService();
                 $arWSChat = $personalChatService->loadChat($data['chat_id'], $user);
-                echo json_encode($arWSChat);
-            }
+                $wsObject = json_encode($arWSChat);
+            } else if ($data['event'] == 'add_message') {
+                $chat = $this->personalChatRepository->find($data['chat_id']);
 
-            //$server->push($frame->fd, json_encode(["hello", time()]));
+                $personalChatService->addMessageToChat($chat , $data['message_sender'],  $data['message']);
+            } 
+
+            //$server->push($frame->fd, $wsObject);
         });
 
         $server->on("close", function (Server $server, $fd) {
