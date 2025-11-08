@@ -62,7 +62,6 @@
                  </div>
 
                  <div class="chat-container col-md-6 col-lg-7 col-xl-8">
-
                       {# TODO paste chat messages here #}
                     <div id="messages-container"></div>
                      
@@ -73,19 +72,11 @@
                         
 
                      <button type="button" id="sendBtn" onclick="sendMessage()" disabled data-mdb-button-init data-mdb-ripple-init class="btn btn-info btn-rounded float-end">Send</button>
-
                  </div>
-
              </div>
-
          </div>
      </section>
 
-
-
-{#     <div id="chat"></div>#}
-{#     <input type="text" id="message" placeholder="Type a message...">#}
-{#     <button id="sendBtn" onclick="sendMessage()" disabled>Send</button>#}
 
      <script>
          const socket = new WebSocket('ws://localhost:8080');
@@ -112,7 +103,7 @@
                 let messages = '<ul class="list-unstyled">';
 
                 wsObject.MESSAGES.forEach(function(userMessage) {
-                    console.log(userMessage);
+                    //console.log(userMessage);
 
                     let image;
                     if (userMessage.TYPE == 'my') {
@@ -138,11 +129,29 @@
                 //creating messages content
 
                 messages += '</ul>';
-
-                console.log(messages);
+                //console.log(messages);
                 document.getElementById("messages-container").innerHTML = messages;
-             }
+             
+                
+            }
          };
+
+        window.addEventListener('DOMContentLoaded', function () {
+            //open the latest chat
+
+            const chatId = getCookie('latest_chat_id');
+            const chatElement = document.querySelector(`[data-chat-id="${chatId}"]`);
+
+            setTimeout(() => {
+                if (chatElement) {
+                   loadChat(chatElement);
+                }
+            }, 100);
+
+            setInterval(() => {
+                loadChat(chatElement);
+            }, 1000);
+        });
 
          function sendMessage() {
              const input = document.getElementById('message');
@@ -150,7 +159,7 @@
                  channel: 'personal_chat_1',
                  event: 'add_message',
                  chat_id: 1,
-                 message_sender: 5,
+                 current_user_id: 5,
                  message: input.value
              })
              input.value = '';
@@ -159,10 +168,7 @@
 
          function sendToWsServer(wsObject) {
              if (socket.readyState === WebSocket.OPEN) {
-
-
-                console.log(JSON.stringify(wsObject));
-
+                 //console.log(JSON.stringify(wsObject));
                  socket.send(JSON.stringify(wsObject));
              } else {
                  console.warn("WebSocket is not open. Current state:", socket.readyState);
@@ -170,29 +176,34 @@
          }
 
          function loadChat(chat) {
-             console.log("loadChat");
-
-             // const chatId = chat.dataset.chatId;
-             // const channel = chat.dataset.channel;
-             // const event = 'load_chat';
-             //
-             // console.log("Chat ID:", chatId);
-             // console.log("Channel:", channel);
-             // console.log("Event:", event);
-
-            //  console.log("Current user role:", chat.dataset.currentUserRole);
-            //  console.log("Current user id:", chat.dataset.currentUserId);
-
-
-
+             let chatId = chat.dataset.chatId;
+             setChatCookie(chatId);
+            
              sendToWsServer({
                  channel: chat.dataset.channel,
                  event: 'load_chat',
-                 chat_id: chat.dataset.chatId,
+                 chat_id: chatId,
                  current_user_id: chat.dataset.currentUserId,
              });
-
          }
+
+
+
+        function setChatCookie(chatId) {
+            // Delete old cookie
+            if (document.cookie.split(';').some((item) => item.trim().startsWith('latest_chat_id='))) {
+                document.cookie = "latest_chat_id=; path=/; max-age=0";
+            }
+
+            // set cookies for 30 days
+            document.cookie = `latest_chat_id=${chatId}; path=/; max-age=${30 * 24 * 60 * 60}`;
+        }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
      </script>
 
 

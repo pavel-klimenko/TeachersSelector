@@ -10,21 +10,28 @@ use Swoole\Process;
 use App\Infrastructure\Repository\UserRepository;
 use Swoole\Coroutine\Redis;
 use App\Infrastructure\Services\PersonalChatService;
+use App\Infrastructure\Repository\PersonalChatMessagesRepository;
 use App\Infrastructure\Repository\PersonalChatRepository;
+use App\Domain\Entity\PersonalChatMessage;
 
 class ChatWebSocketServer
 {
 
     private UserRepository $userRepository;
     private PersonalChatRepository $personalChatRepository;
+    private PersonalChatMessagesRepository $personalChatMessagesRepository;
+
+    
 
     public function __construct(
         UserRepository $userRepository,
         PersonalChatRepository $personalChatRepository,
+        PersonalChatMessagesRepository $personalChatMessagesRepository,
     )
     {
         $this->userRepository = $userRepository;
         $this->personalChatRepository = $personalChatRepository;
+        $this->personalChatMessagesRepository = $personalChatMessagesRepository;
     }
 
     public function start()
@@ -37,7 +44,7 @@ class ChatWebSocketServer
 
         $server->on("open", function (Server $server, $request) {
             echo "Connection opened: {$request->fd}\n";
-            $server->push($request->fd, "Welcome to Swoole WebSocket Server!");
+            //$server->push($request->fd, json_encode(["Welcome to Swoole WebSocket Server!"]));
         });
 
         $server->on("message", function (Server $server, $frame) {
@@ -49,19 +56,32 @@ class ChatWebSocketServer
 
             //TODO sending WS data using API!!! Without including repo directly here
 
+            //TODO devide WS message into channels, and check functionality with different users
+
+
             $personalChatService = new PersonalChatService();
 
+            $currentUser = $this->userRepository->find($data['current_user_id']);
+
             if ($data['event'] == 'load_chat') {
-                $user = $this->userRepository->find($data['current_user_id']);
-                $arWSChat = $personalChatService->loadChat($data['chat_id'], $user);
+                $arWSChat = $personalChatService->loadChat($data['chat_id'], $currentUser);
                 $wsObject = json_encode($arWSChat);
             } else if ($data['event'] == 'add_message') {
+
+                $messageSender = $currentUser;
                 $chat = $this->personalChatRepository->find($data['chat_id']);
 
-                $personalChatService->addMessageToChat($chat , $data['message_sender'],  $data['message']);
-            } 
+                $newMessage = new PersonalChatMessage();
+                $newMessage->setPersonalChat($chat)
+                ->setRelatedUser($messageSender)
+                ->setMessage($data['message']);
+                $this->personalChatMessagesRepository->save($newMessage);
 
-            //$server->push($frame->fd, $wsObject);
+                $arWSChat = $personalChatService->loadChat($data['chat_id'], $messageSender);
+                $wsObject = json_encode($arWSChat);
+            }
+
+            $server->push($frame->fd, $wsObject);
         });
 
         $server->on("close", function (Server $server, $fd) {

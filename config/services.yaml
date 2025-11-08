@@ -11,6 +11,7 @@ services:
         arguments:
             $userRepository: '@App\Infrastructure\Repository\UserRepository'
             $personalChatRepository: '@App\Infrastructure\Repository\PersonalChatRepository'
+            $personalChatMessagesRepository: '@App\Infrastructure\Repository\PersonalChatMessagesRepository'
     App\Infrastructure\DataFixtures\AppFixtures:
         tags: [ 'doctrine.fixture.orm' ]
     App\Infrastructure\Repository\ExpertiseRepository:

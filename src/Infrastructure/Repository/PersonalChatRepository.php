@@ -27,6 +27,7 @@ class PersonalChatRepository extends ServiceEntityRepository implements Personal
     {
         $this->entityManager->persist($personalChat);
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 }
 

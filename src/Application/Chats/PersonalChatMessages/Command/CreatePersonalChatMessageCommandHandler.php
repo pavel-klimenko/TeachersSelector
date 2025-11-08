@@ -9,7 +9,7 @@ use App\Domain\Repository\PersonalChatMessagesRepositoryInterface;
 class CreatePersonalChatMessageCommandHandler implements CommandHandler
 {
     public function __construct(
-        private PersonalChatMessagesRepositoryInterface $personalChatMessagesRepository,
+        public PersonalChatMessagesRepositoryInterface $personalChatMessagesRepository,
     ){}
 
    public function __invoke(CreatePersonalChatMessageCommand $command)  {

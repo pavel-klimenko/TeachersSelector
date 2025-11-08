@@ -20,13 +20,17 @@ final class CommandPersonalChatMessagesController extends AbstractController
 
     public function __construct(
         //private readonly CreateEmailResponder $responder,
-        private readonly CommandBus $commandBus,
+        public readonly CommandBus $commandBus,
     ) {
     }
 
     public function createChatMessage(Request $request, PersonalChatRepository $personalChatRepository, UserRepository $userRepository) : Response
     {
        try {
+
+            dd(12121);
+
+
            //TODO get Teacher and Student from Request
            $chat = $personalChatRepository->find(1); //Todo teacher
            $user = $userRepository->find(1); //Todo student

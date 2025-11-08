@@ -25,6 +25,7 @@ class PersonalChat
      * @var Collection<int, PersonalChatMessage>
      */
     #[ORM\OneToMany(targetEntity: PersonalChatMessage::class, mappedBy: 'personal_chat')]
+    #[ORM\OrderBy(['created_at' => 'ASC'])]
     private Collection $personalChatMessages;
 
     public function __construct()
@@ -62,7 +63,7 @@ class PersonalChat
         return $this;
     }
 
-        /**
+     /**
      * @return Collection<int, personalChatMessages>
      */
     public function getPersonalChatMessages(): Collection

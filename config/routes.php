@@ -5,6 +5,7 @@ use App\Infrastructure\Http\Student\Controller\CommandStudentController;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Component\Routing\Requirement\Requirement;
 use App\Infrastructure\Http\Teacher\Controller\TeacherController;
+use App\Application\Chats\PersonalChatMessages\Command\CreatePersonalChatMessageCommandHandler;
 
 return function (RoutingConfigurator $routes): void {
 
@@ -15,8 +16,10 @@ return function (RoutingConfigurator $routes): void {
     //TODO CQRS (create protected API methods)
     $routes->add('create-chat', '/create-chat')->controller([\App\Infrastructure\Http\Chats\PersonalChat\Controller\CommandPersonalChatController::class, 'createChat'])
         ->methods(['GET']);
-    $routes->add('create-chat-message', '/create-chat-message')->controller([\App\Infrastructure\Http\Chats\PersonalChatMessages\Controller\CommandPersonalChatMessagesController::class, 'createChatMessage'])
-        ->methods(['GET']);
+        
+    $routes->add('create-chat-message', '/api/create-chat-message')->controller([CreatePersonalChatMessageCommandHandler::class, 'createChatMessage'])
+        ->methods(['POST']);
+
     $routes->add('make-payment', '/make-payment')->controller([CommandStudentController::class, 'makePayment'])
         ->methods(['GET']);
     $routes->add('get-payment', '/get-payment')->controller([\App\Infrastructure\Http\Student\Controller\QueryStudentController::class, 'getPayment'])

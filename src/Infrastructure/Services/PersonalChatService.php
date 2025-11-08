@@ -47,32 +47,32 @@ class PersonalChatService
 
             $arChatMessages = $chatForLoad->getPersonalChatMessages()->toArray();
             if (!empty($arChatMessages)) {
-            $chatId = $chatForLoad->getId();
+                $chatId = $chatForLoad->getId();
 
-            $arWSChat['EVENT'] = 'load_chat';
-            $arWSChat['CHAT_ID'] = $chatId;
-            $arWSChat['CHANNEL'] = 'personal_chat_'.$chatId;
+                $arWSChat['EVENT'] = 'load_chat';
+                $arWSChat['CHAT_ID'] = $chatId;
+                $arWSChat['CHANNEL'] = 'personal_chat_'.$chatId;
 
-            foreach ($arChatMessages as $message) {
-                $ownerOfMessageId = $message->getRelatedUser()->getId();
+                foreach ($arChatMessages as $message) {
+                    $ownerOfMessageId = $message->getRelatedUser()->getId();
 
-                if ($ownerOfMessageId == $currentUserId) {
-                    $messageType = 'my';
-                } else {
-                    $messageType = 'partner';
+                    if ($ownerOfMessageId == $currentUserId) {
+                        $messageType = 'my';
+                    } else {
+                        $messageType = 'partner';
+                    }
+
+                    $messageOwnerID = $message->getRelatedUser()->getId();
+                    $messageOwnerName = $message->getRelatedUser()->getName();
+
+                    $arWSChat['MESSAGES'][] = [
+                        'OWNER_ID' => $messageOwnerID,
+                        'OWNER_NAME' => $messageOwnerName,
+                        'TYPE' => $messageType,
+                        'TEXT' => $message->getMessage(),
+                    ];
                 }
-
-                $messageOwnerID = $message->getRelatedUser()->getId();
-                $messageOwnerName = $message->getRelatedUser()->getName();
-
-                $arWSChat['MESSAGES'][] = [
-                    'OWNER_ID' => $messageOwnerID,
-                    'OWNER_NAME' => $messageOwnerName,
-                    'TYPE' => $messageType,
-                    'TEXT' => $message->getMessage(),
-                ];
             }
-        }
 
         return $arWSChat;
           
@@ -85,6 +85,7 @@ class PersonalChatService
 
         //TODO add message and relate to chat!
         //than return chat!
+        
 
 
 
