@@ -23,7 +23,6 @@ services:
       - "8080:8080"
     volumes:
       - ./:/var/www/app
-      - ./docker/php/conf.d/swoole.ini:/usr/local/etc/php/conf.d/swoole.ini
 #      - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
     networks:
       - internal
@@ -44,6 +43,14 @@ services:
       - ./:/var/www/app
       - ./docker/php/conf.d/swoole.ini:/usr/local/etc/php/conf.d/swoole.ini
 #      - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
+    networks:
+      - internal
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
     networks:
       - internal
 

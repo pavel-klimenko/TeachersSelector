@@ -6,20 +6,23 @@ use App\Infrastructure\Repository\TeacherHasTeacherExpertisesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TeacherHasTeacherExpertisesRepository::class)]
+#[ORM\Table(name: 'teacher_has_teacher_expertises')]
 class TeacherHasTeacherExpertises
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $rating = null;
 
-    #[ORM\ManyToOne(inversedBy: 'expertise')]
+    #[ORM\ManyToOne(targetEntity: Teacher::class, inversedBy: 'teacherHasTeacherExpertises')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Teacher $teacher = null;
 
-    #[ORM\ManyToOne(inversedBy: 'teacherHasTeacherExpertises')]
+    #[ORM\ManyToOne(targetEntity: Expertise::class, inversedBy: 'teacherHasTeacherExpertises')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Expertise $expertise = null;
 
     public function getId(): ?int
@@ -32,7 +35,7 @@ class TeacherHasTeacherExpertises
         return $this->rating;
     }
 
-    public function setRating(int $rating): static
+    public function setRating(?int $rating): static
     {
         $this->rating = $rating;
         return $this;
@@ -46,7 +49,6 @@ class TeacherHasTeacherExpertises
     public function setTeacher(?Teacher $teacher): static
     {
         $this->teacher = $teacher;
-
         return $this;
     }
 
@@ -58,7 +60,6 @@ class TeacherHasTeacherExpertises
     public function setExpertise(?Expertise $expertise): static
     {
         $this->expertise = $expertise;
-
         return $this;
     }
 }

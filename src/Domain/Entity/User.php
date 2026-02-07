@@ -9,12 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use PersonalChatBundle\Domain\Entity\ChatUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, ChatUserInterface
 {
     public const DEMO_PASSWORD = 'almaz';
     public const MIN_AGE = 16;
@@ -55,13 +56,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'user')]
     private ?City $city = null;
 
-    #[ORM\OneToOne(mappedBy: 'related_user', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'relatedUser', cascade: ['persist', 'remove'])]
     private ?Student $student = null;
 
-    #[ORM\OneToOne(mappedBy: 'related_user', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'relatedUser', cascade: ['persist', 'remove'])]
     private ?Teacher $teacher = null;
 
-    #[ORM\OneToOne(mappedBy: 'related_user', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'relatedUser', cascade: ['persist', 'remove'])]
     private ?Wallet $wallet = null;
 
     public function getId(): ?int

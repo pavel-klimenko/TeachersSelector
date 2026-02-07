@@ -1,0 +1,35 @@
+wsl --unregister Ubuntu
+docker-compose up --build
+docker compose up --build
+docker --version
+sudo apt update
+sudo apt install docker-cli
+docker --version
+docker compose up --build
+docker-compose up --build
+docker compose up --build
+docker compose up 
+docker-compose up --build
+docker compose version
+sudo apt install docker-compose
+docker compose version
+docker-compose up --build
+docker-compose down
+docker-compose up --build
+git rm --cached .env
+docker-compose -up --build
+ls -l
+docker-compose up --build
+docker-compose down
+echo ".idetifier" >> .gitignore
+git rm --cached .idetifier
+echo ".Identidier" >> .gitignore
+git rm --cached .Idetifier
+git clean -fd
+ls - l
+ls -l
+docker
+docker-compose up --build
+cp .env.example .env
+docker-compose up --build
+docker-compose down

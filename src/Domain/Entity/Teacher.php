@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'teachers')]
 class Teacher
 {
+
     public const LIST_TITLE = 'Our teachers';
     public const SELECT_TEACHERS_PAGE_TITLE = 'Select the teacher';
     public const MIN_RATING = 1;
@@ -18,69 +19,40 @@ class Teacher
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $rating = null;
 
-    #[ORM\OneToMany(targetEntity: TeacherHasTeacherExpertises::class, mappedBy: 'teachers')]
-    private $hasTeacherExpertises = null;
-
-    #[ORM\OneToOne(mappedBy: 'teacher', targetEntity: CV::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: CV::class, mappedBy: 'teacher', cascade: ['persist', 'remove'])]
     private ?CV $cv = null;
 
     /**
      * @var Collection<int, TeacherHasTeacherExpertises>
      */
-    #[ORM\OneToMany(targetEntity: TeacherHasTeacherExpertises::class, mappedBy: 'teacher')]
+    #[ORM\OneToMany(targetEntity: TeacherHasTeacherExpertises::class, mappedBy: 'teacher', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $teacherHasTeacherExpertises;
 
-    /**
-     * @var Collection<int, TeacherHasTeacherExpertises>
-     */
-    #[ORM\OneToMany(targetEntity: TeacherHasTeacherExpertises::class, mappedBy: 'teacher')]
-    private Collection $expertise;
+    #[ORM\OneToOne(inversedBy: "teacher", cascade: ['persist', 'remove'])]
+    private ?User $relatedUser = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?User $related_user = null;
-
-    /**
-     * @var Collection<int, StudyingMode>
-     */
     #[ORM\ManyToMany(targetEntity: StudyingMode::class, inversedBy: 'teachers')]
     private Collection $studying_modes;
 
-    /**
-     * @var Collection<int, PaymentType>
-     */
     #[ORM\ManyToMany(targetEntity: PaymentType::class, inversedBy: 'teachers')]
     private Collection $payment_types;
-
-    /**
-     * @var Collection<int, PersonalChat>
-     */
-    #[ORM\OneToMany(targetEntity: PersonalChat::class, mappedBy: 'teacher')]
-    private Collection $personalChats;
 
     public function __construct()
     {
         $this->teacherHasTeacherExpertises = new ArrayCollection();
-        $this->expertise = new ArrayCollection();
         $this->studying_modes = new ArrayCollection();
         $this->payment_types = new ArrayCollection();
-        $this->personalChats = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(?int $id): static
-    {
-        $this->id = $id;
-        return $this;
     }
 
     public function getRating(): ?int
@@ -91,7 +63,6 @@ class Teacher
     public function setRating(?int $rating): static
     {
         $this->rating = $rating;
-
         return $this;
     }
 
@@ -114,22 +85,21 @@ class Teacher
         return $this->teacherHasTeacherExpertises;
     }
 
-    public function addTeacherHasTeacherExpertise(TeacherHasTeacherExpertises $teacherHasTeacherExpertise): static
+    public function addTeacherHasTeacherExpertise(TeacherHasTeacherExpertises $relation): static
     {
-        if (!$this->teacherHasTeacherExpertises->contains($teacherHasTeacherExpertise)) {
-            $this->teacherHasTeacherExpertises->add($teacherHasTeacherExpertise);
-            $teacherHasTeacherExpertise->setTeacher($this);
+        if (!$this->teacherHasTeacherExpertises->contains($relation)) {
+            $this->teacherHasTeacherExpertises->add($relation);
+            $relation->setTeacher($this);
         }
 
         return $this;
     }
 
-    public function removeTeacherHasTeacherExpertise(TeacherHasTeacherExpertises $teacherHasTeacherExpertise): static
+    public function removeTeacherHasTeacherExpertise(TeacherHasTeacherExpertises $relation): static
     {
-        if ($this->teacherHasTeacherExpertises->removeElement($teacherHasTeacherExpertise)) {
-            // set the owning side to null (unless already changed)
-            if ($teacherHasTeacherExpertise->getTeacher() === $this) {
-                $teacherHasTeacherExpertise->setTeacher(null);
+        if ($this->teacherHasTeacherExpertises->removeElement($relation)) {
+            if ($relation->getTeacher() === $this) {
+                $relation->setTeacher(null);
             }
         }
 
@@ -137,44 +107,30 @@ class Teacher
     }
 
     /**
-     * @return Collection<int, TeacherHasTeacherExpertises>
+     * Удобный геттер, возвращает коллекцию Expertise, извлекая их из association entity.
+     *
+     * @return Collection<int, Expertise>
      */
-    public function getExpertise(): Collection
+    public function getExpertises(): Collection
     {
-        return $this->expertise;
-    }
-
-    public function addExpertise(TeacherHasTeacherExpertises $expertise): static
-    {
-        if (!$this->expertise->contains($expertise)) {
-            $this->expertise->add($expertise);
-            $expertise->setTeacher($this);
-        }
-
-        return $this;
-    }
-
-    public function removeExpertise(TeacherHasTeacherExpertises $expertise): static
-    {
-        if ($this->expertise->removeElement($expertise)) {
-            // set the owning side to null (unless already changed)
-            if ($expertise->getTeacher() === $this) {
-                $expertise->setTeacher(null);
+        $collection = new ArrayCollection();
+        foreach ($this->teacherHasTeacherExpertises as $rel) {
+            if ($rel->getExpertise() !== null) {
+                $collection->add($rel->getExpertise());
             }
         }
 
-        return $this;
+        return $collection;
     }
 
     public function getRelatedUser(): ?User
     {
-        return $this->related_user;
+        return $this->relatedUser;
     }
 
-    public function setRelatedUser(?User $related_user): static
+    public function setRelatedUser(?User $relatedUser): static
     {
-        $this->related_user = $related_user;
-
+        $this->relatedUser = $relatedUser;
         return $this;
     }
 
@@ -198,7 +154,6 @@ class Teacher
     public function removeStudyingMode(StudyingMode $studyingMode): static
     {
         $this->studying_modes->removeElement($studyingMode);
-
         return $this;
     }
 
@@ -222,37 +177,6 @@ class Teacher
     public function removePaymentType(PaymentType $paymentType): static
     {
         $this->payment_types->removeElement($paymentType);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, PersonalChat>
-     */
-    public function getPersonalChats(): Collection
-    {
-        return $this->personalChats;
-    }
-
-    public function addPersonalChat(PersonalChat $personalChat): static
-    {
-        if (!$this->personalChats->contains($personalChat)) {
-            $this->personalChats->add($personalChat);
-            $personalChat->setTeacher($this);
-        }
-
-        return $this;
-    }
-
-    public function removePersonalChat(PersonalChat $personalChat): static
-    {
-        if ($this->personalChats->removeElement($personalChat)) {
-            // set the owning side to null (unless already changed)
-            if ($personalChat->getTeacher() === $this) {
-                $personalChat->setTeacher(null);
-            }
-        }
-
         return $this;
     }
 }

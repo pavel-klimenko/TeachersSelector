@@ -1,0 +1,31 @@
+parameters:
+    main_app_host: '%env(string:MAIN_APP_HOST)%'
+    server_host: '%env(string:CHAT_SERVER_HOST)%'
+    web_socket_host: '%env(string:CHAT_WEB_SOCKET_HOST)%'
+    web_socket_port: '%env(CHAT_WEB_SOCKET_PORT)%'
+
+services:
+    PersonalChatBundle\:
+        resource: '../../src/'
+        autowire: true
+        autoconfigure: true
+
+    PersonalChatBundle\Infrastructure\WebSocket\ChatWebSocketServer:
+        arguments:
+            $serverHost: '%server_host%'
+            $webSocketPort: '%web_socket_port%'
+
+
+    PersonalChatBundle\Infrastructure\Bus\Command\InMemoryCommandBus:
+        arguments:
+            $commandHandlers: !tagged_iterator personal_chat.command_handler
+
+    PersonalChatBundle\Infrastructure\Bus\Query\InMemoryQueryBus:
+        arguments:
+            $queryHandlers: !tagged_iterator personal_chat.query_handler
+
+    _instanceof:
+        PersonalChatBundle\Domain\Bus\Command\CommandHandler:
+            tags: ['personal_chat.command_handler']
+        PersonalChatBundle\Domain\Bus\Query\QueryHandler:
+            tags: ['personal_chat.query_handler']

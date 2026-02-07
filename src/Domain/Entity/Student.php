@@ -3,8 +3,6 @@
 namespace App\Domain\Entity;
 
 use App\Infrastructure\Repository\StudentRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StudentRepository::class)]
@@ -17,18 +15,8 @@ class Student
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'student', cascade: ['persist', 'remove'])]
-    private ?User $related_user = null;
+    private ?User $relatedUser = null;
 
-    /**
-     * @var Collection<int, PersonalChat>
-     */
-    #[ORM\OneToMany(targetEntity: PersonalChat::class, mappedBy: 'student')]
-    private Collection $personalChats;
-
-    public function __construct()
-    {
-        $this->personalChats = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -37,21 +25,12 @@ class Student
 
     public function getRelatedUser(): ?User
     {
-        return $this->related_user;
+        return $this->relatedUser;
     }
 
-    public function setRelatedUser(?User $related_user): static
+    public function setRelatedUser(?User $relatedUser): static
     {
-        $this->related_user = $related_user;
-
+        $this->relatedUser = $relatedUser;
         return $this;
-    }
-
-    /**
-     * @return Collection<int, PersonalChat>
-     */
-    public function getPersonalChats(): Collection
-    {
-        return $this->personalChats;
     }
 }

@@ -1,0 +1,359 @@
+{% extends 'base.html.twig' %}
+
+ {% block title %}{{ title }}{% endblock %}
+
+ {% block body %}
+     {% include '@PersonalChat/header.html.twig' %}
+
+     <section>
+         <div class="container py-5">
+
+             {% if availableChatPartners|length > 0 %}
+                 <div class="col-3 mb-3">
+                     <label for="partnerSelect" class="form-label fw-bold">Start new chat</label>
+                     <select id="partnerSelect" class="form-select" onchange="startChatWithPartner(this.value)">
+                         <option value="">Choose partner...</option>
+
+                         {% for partner in availableChatPartners %}
+                             <option value="{{ partner.id }}">{{ partner.name }}</option>
+                         {% endfor %}
+                     </select>
+                 </div>
+             {% endif %}
+
+             {% if chats|length > 0 %}
+                 <div class="row">
+                     <div class="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
+                             <h5 class="fw-bold text-center text-lg-start" style="font-size: 1.4rem;">
+                                 My chats
+                             </h5>
+                             <div class="card">
+                                 <div class="card-body">
+                                     <ul class="list-unstyled mb-0">
+                                         {% for chat in chats %}
+                                             {% set partner = chat.getPartner(currentParticipantId) %}
+
+                                             <li class="p-2 border-bottom d-flex justify-content-between align-items-center">
+
+                                                 <a href="#{{ chat.id }}"
+                                                    data-chat-id="{{ chat.id }}"
+                                                    data-channel="personal_chat_{{ chat.id }}"
+                                                    data-current-participant-id="{{ currentParticipantId }}"
+                                                    class="d-flex flex-row flex-grow-1 text-decoration-none justify-content-between"
+                                                    onclick="selectChat({{ chat.id }})">
+
+                                                     <div class="d-flex flex-row">
+                                                         <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-5.webp"
+                                                              class="rounded-circle me-3 shadow-1-strong"
+                                                              width="60">
+
+                                                         <div class="pt-1">
+                                                             <p class="fw-bold mb-0 chat-partner-name">{{ partner.getName }}</p>
+
+                                                             <p class="small text-muted">
+                                                                 {% if chat.messages|length > 0 %}
+                                                                     {{ chat.getMessages|last.getMessage.get }}
+                                                                 {% endif %}
+                                                             </p>
+                                                         </div>
+                                                     </div>
+
+                                                     <div class="pt-1 text-end">
+                                                         <p class="small text-muted mb-1">
+                                                             {% if chat.messages|length > 0 %}
+                                                                 {{ chat.messages|last.createdAt|date('d.m.Y H:i') }}
+                                                             {% endif %}
+                                                         </p>
+                                                     </div>
+
+                                                 </a>
+
+                                                 <button class="btn btn-sm btn-outline-danger ms-2"
+                                                         onclick="deleteChat(event, {{ chat.id }})">
+                                                     ✕
+                                                 </button>
+                                             </li>
+                                         {% endfor %}
+                                     </ul>
+                                 </div>
+                             </div>
+                         </div>
+
+                     <div class="chat-container col-md-6 col-lg-7 col-xl-8">
+                         <div class="card">
+                             <div class="card-body d-flex flex-column" style="height: 100%;">
+
+                                 {# Messages #}
+                                 <div id="messages-container" class="flex-grow-1 overflow-auto mb-3 p-3 border rounded bg-light"  style="height: 550px;">
+                                 </div>
+
+                                 {# Textarea #}
+                                 <div class="form-outline mb-3">
+                                    <textarea class="form-control bg-body-tertiary" id="message" placeholder="Type a message..." rows="3"></textarea>
+                                 </div>
+
+
+
+                                 {# Buttons row #}
+                                 <div class="d-flex gap-2">
+                                     <button type="button"
+                                             id="sendBtn"
+                                             data-chat-id=""
+                                             data-participant-id="{{ currentParticipantId }}"
+                                             onclick="sendMessage(this)"
+                                             disabled
+                                             class="btn btn-info btn-sm w-50 btn-rounded">
+                                         Send
+                                     </button>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             {% endif %}
+         </div>
+     </section>
+
+
+
+     <script>
+         const LATEST_CHAT_ID = {{ latestChatId }};
+
+         const CURRENT_PARTICIPANT_ID = {{ currentParticipantId }};
+
+         const socket = new WebSocket('{{ ws_server_connection }}');
+
+         window.addEventListener('DOMContentLoaded', function () {
+
+             if (LATEST_CHAT_ID > 0) {
+                 //let latestChatId = getCookie('latest_chat_id');
+
+                 // if (latestChatId === undefined) {
+                 //     latestChatId = LATEST_CHAT_ID;
+                 // }
+                 selectChat(LATEST_CHAT_ID);
+
+
+                 // setInterval(() => {
+                 //     loadChat(latestChatId);
+                 // }, 5000);
+             }
+         });
+
+
+         //websocket event handlers
+
+         socket.onopen = function(e) {
+             console.log("Connection established!");
+         };
+
+         socket.onerror = function(e) {
+             console.error("WebSocket error:", e);
+         };
+
+         socket.onclose = function(e) {
+             console.warn("WebSocket closed:", e);
+         };
+
+         socket.onmessage = function(e) {
+             const wsObject = JSON.parse(e.data);
+
+             if (wsObject.event === 'chat_loaded') {
+                  renderMessages(wsObject.messages);
+                  scrollChatToBottom();
+                  allowTheSendButton();
+             }
+
+             if (wsObject.event === 'new_message') {
+                 setTimeout(() => {
+                     loadChat(wsObject.chat_id);
+                 }, 1000);
+
+                 allowTheSendButton();
+             }
+
+         };
+
+
+        function startChatWithPartner(partnerId) {
+             if (!partnerId) return;
+
+             const payload = {
+                 participantOneId: CURRENT_PARTICIPANT_ID,
+                 participantTwoId: parseInt(partnerId)
+             };
+
+             //TODO Validate api response
+             //TODO host (front host) need to be configured using .env
+
+             fetch('/personal-chat/chat', {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json'
+                 },
+                 body: JSON.stringify(payload)
+                 }).then(response => {
+                    window.location.reload();
+                 })
+                 .catch(err => {
+                     console.error('Error creating chat:', err);
+                 });
+         }
+
+        function renderMessages(messages) {
+             let html = '<ul class="list-unstyled">';
+
+             messages.forEach(msg => {
+                 const isMy = Number(msg.authorId) === Number(CURRENT_PARTICIPANT_ID);
+
+                 const avatar = isMy
+                     ? 'https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp'
+                     : 'https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-5.webp';
+
+                 html += `<li class="d-flex ${isMy ? 'justify-content-end' : 'justify-content-start'} mb-4">
+
+                ${isMy ? '' : `
+                    <img src="${avatar}" alt="avatar"
+                         class="rounded-circle d-flex align-self-start me-3 shadow-1-strong"
+                         width="60">
+                `}
+
+                <div class="card ${isMy ? 'bg-primary text-white' : ''} w-75">
+                    <div class="card-body">
+                        <p class="mb-0">${msg.message}</p>
+                    </div>
+                </div>
+
+                ${isMy ? `
+                    <img src="${avatar}" alt="avatar"
+                         class="rounded-circle d-flex align-self-start ms-3 shadow-1-strong"
+                         width="60">
+                ` : ''}
+            </li>`;
+             });
+
+             html += '</ul>';
+
+             document.getElementById("messages-container").innerHTML = html;
+         }
+
+        function scrollChatToBottom() {
+             const container = document.getElementById("messages-container");
+             container.scrollTop = container.scrollHeight;
+         }
+
+        function allowTheSendButton() {
+             setTimeout(() => {
+                 document.getElementById('sendBtn').disabled = false;
+             }, 500);
+         }
+
+        function blockTheSendButton() {
+             document.getElementById('sendBtn').disabled = true;
+        }
+
+        function sendMessage(button) {
+             blockTheSendButton();
+
+             const chatId = button.dataset.chatId;
+             const participantId = button.dataset.participantId;
+             const input = document.getElementById('message');
+
+             sendToWsServer({
+                 channel: 'personal_chat_' + chatId,
+                 event: 'add_message',
+                 chat_id: chatId,
+                 participant_id: participantId,
+                 message: input.value
+             });
+            input.value = '';
+         }
+
+        function sendToWsServer(wsObject) {
+             if (socket.readyState === WebSocket.OPEN) {
+                 socket.send(JSON.stringify(wsObject));
+             } else {
+                 console.warn("WebSocket is not open. Current state:", socket.readyState);
+             }
+         }
+
+        function loadChat(chatId) {
+             setTimeout(() => {
+                 sendToWsServer({
+                     channel: 'personal_chat_' + chatId,
+                     event: 'load_chat',
+                     chat_id: chatId,
+                 });
+             }, 100);
+         }
+
+        function deleteChat(event, chatId) {
+             event.stopPropagation();
+             event.preventDefault();
+
+             if (!confirm("Delete this chat?")) {
+                 return;
+             }
+
+             fetch(`/personal-chat/chat/${chatId}`, {
+                 method: 'DELETE'
+             }).then(response => {
+                     if (!response.ok) {
+                         throw new Error('Failed to delete chat');
+                     }
+
+                     // Удаляем элемент из DOM без перезагрузки
+                     const li = event.target.closest('li');
+                     if (li) li.remove();
+
+                     // Если удалили активный чат — перезагрузим страницу
+                     const latestChatId = getCookie('latest_chat_id');
+                     if (parseInt(latestChatId) === chatId) {
+                         setCookie('latest_chat_id', '', -1);
+                         window.location.reload();
+                     }
+                 })
+                 .catch(err => console.error('Error deleting chat:', err));
+         }
+
+
+         // function setChatCookie(chatId) {
+        //     // Delete old cookie
+        //     if (document.cookie.split(';').some((item) => item.trim().startsWith('latest_chat_id='))) {
+        //         document.cookie = "latest_chat_id=; path=/; max-age=0";
+        //     }
+        //
+        //     // set cookies for 30 days
+        //     document.cookie = `latest_chat_id=${chatId}; path=/; max-age=${30 * 24 * 60 * 60}`;
+        // }
+        //
+        // function getCookie(name) {
+        //     const value = `; ${document.cookie}`;
+        //     const parts = value.split(`; ${name}=`);
+        //     if (parts.length === 2) return parts.pop().split(';').shift();
+        // }
+
+        function selectChat(chatId) {
+            loadChat(chatId);
+            //setChatCookie(chatId);
+
+            const sendBtn = document.getElementById('sendBtn');
+            if (sendBtn) {
+                sendBtn.dataset.chatId = chatId;
+            }
+
+            scrollChatToBottom();
+        }
+     </script>
+
+     <style>
+         .chat-partner-name {
+             text-align: left !important;
+             display: block;
+             width: 100%;
+         }
+     </style>
+
+     {% include '@PersonalChat/footer.html.twig' %}
+
+ {% endblock %}

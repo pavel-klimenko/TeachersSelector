@@ -1,0 +1,44 @@
+wsl --unregister Ubuntu
+docker-compose up --build
+docker compose up --build
+docker --version
+sudo apt update
+sudo apt install docker-cli
+docker --version
+docker compose up --build
+docker-compose up --build
+docker compose up --build
+docker compose up 
+docker-compose up --build
+docker compose version
+sudo apt install docker-compose
+docker compose version
+docker-compose up --build
+docker-compose down
+docker-compose up --build
+git rm --cached .env
+docker-compose -up --build
+ls -l
+docker-compose up --build
+docker-compose down
+echo ".idetifier" >> .gitignore
+git rm --cached .idetifier
+echo ".Identidier" >> .gitignore
+git rm --cached .Idetifier
+git clean -fd
+git config --global --add safe.directory '%(prefix)///wsl.localhost/Ubuntu-WSL2/home/pavel/TeachersSelector'
+git rm --cache .env
+git rm -r --cached .env
+git rm -r --cached vendor
+ls -l
+git rm -r --cached vendor/
+git rm --cached .env
+docker-compose down
+docker-compose up --build
+docker-compose down
+docker-compose -d up --build
+docker-compose up --build
+docker-compose down
+docker-compose up --build
+docker-compose down
+docker-compose up --build

@@ -1,0 +1,28 @@
+{
+    "name": "pavel-klimenko/personal-chat-bundle",
+    "version": "1.0",
+    "type": "symfony-bundle",
+    "description": "DDD Chat Bundle for Symfony",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "PersonalChatBundle\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.2",
+        "symfony/framework-bundle": "^7.0",
+        "symfony/messenger": "^7.0",
+        "openswoole/core": "^22.2",
+        "doctrine/orm": "^3.0",
+        "symfony/uid": "^7.0",
+        "symfony/http-client-contracts": "*",
+        "symfony/http-client": "*",
+        "symfony/security-bundle": "*"
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": true
+        }
+    }
+}

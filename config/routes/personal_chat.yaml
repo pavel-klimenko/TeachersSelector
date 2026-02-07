@@ -1,0 +1,3 @@
+personal_chat_bundle:
+    resource: '../../PersonalChatBundle/src/Infrastructure/HTTP/Controller/'
+    type: attribute

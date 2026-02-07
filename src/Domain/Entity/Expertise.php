@@ -8,32 +8,32 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExpertiseRepository::class)]
+#[ORM\Table(name: 'expertises')]
 class Expertise
 {
     public const EXPERTISES_JSON = '/public/json/expertises.json';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $code = null;
-
-    #[ORM\OneToMany(targetEntity: TeacherHasTeacherExpertises::class, mappedBy: 'expertises')]
-    private $hasTeachers = null;
 
     /**
      * @var Collection<int, TeacherHasTeacherExpertises>
      */
-    #[ORM\OneToMany(targetEntity: TeacherHasTeacherExpertises::class, mappedBy: 'expertise')]
+    #[ORM\OneToMany(targetEntity: TeacherHasTeacherExpertises::class, mappedBy: 'expertise', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $teacherHasTeacherExpertises;
 
-    public function __construct()
+    public function __construct(string $name = null, string $code = null)
     {
+        $this->name = $name;
+        $this->code = $code;
         $this->teacherHasTeacherExpertises = new ArrayCollection();
     }
 
@@ -72,25 +72,42 @@ class Expertise
         return $this->teacherHasTeacherExpertises;
     }
 
-    public function addTeacherHasTeacherExpertise(TeacherHasTeacherExpertises $teacherHasTeacherExpertise): static
+    public function addTeacherHasTeacherExpertise(TeacherHasTeacherExpertises $relation): static
     {
-        if (!$this->teacherHasTeacherExpertises->contains($teacherHasTeacherExpertise)) {
-            $this->teacherHasTeacherExpertises->add($teacherHasTeacherExpertise);
-            $teacherHasTeacherExpertise->setExpertise($this);
+        if (!$this->teacherHasTeacherExpertises->contains($relation)) {
+            $this->teacherHasTeacherExpertises->add($relation);
+            $relation->setExpertise($this);
         }
 
         return $this;
     }
 
-    public function removeTeacherHasTeacherExpertise(TeacherHasTeacherExpertises $teacherHasTeacherExpertise): static
+    public function removeTeacherHasTeacherExpertise(TeacherHasTeacherExpertises $relation): static
     {
-        if ($this->teacherHasTeacherExpertises->removeElement($teacherHasTeacherExpertise)) {
-            // set the owning side to null (unless already changed)
-            if ($teacherHasTeacherExpertise->getExpertise() === $this) {
-                $teacherHasTeacherExpertise->setExpertise(null);
+        if ($this->teacherHasTeacherExpertises->removeElement($relation)) {
+            if ($relation->getExpertise() === $this) {
+                $relation->setExpertise(null);
             }
         }
 
         return $this;
+    }
+
+    /**
+     * Удобный геттер: возвращает коллекцию Teacher, извлекая их из association entity.
+     *
+     * @return Collection<int, Teacher>
+     */
+    public function getTeachers(): Collection
+    {
+        $collection = new ArrayCollection();
+        foreach ($this->teacherHasTeacherExpertises as $rel) {
+            $teacher = $rel->getTeacher();
+            if ($teacher !== null && !$collection->contains($teacher)) {
+                $collection->add($teacher);
+            }
+        }
+
+        return $collection;
     }
 }

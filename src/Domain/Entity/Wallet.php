@@ -16,8 +16,8 @@ class Wallet
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?User $related_user = null;
+    #[ORM\OneToOne(inversedBy: 'wallet', cascade: ['persist', 'remove'])]
+    private ?User $relatedUser = null;
 
     #[ORM\Column(nullable: true, enumType: Currencies::class)]
     private ?Currencies $currency = null;
@@ -32,12 +32,12 @@ class Wallet
 
     public function getRelatedUser(): ?User
     {
-        return $this->related_user;
+        return $this->relatedUser;
     }
 
-    public function setRelatedUser(?User $related_user): static
+    public function setRelatedUser(?User $relatedUser): static
     {
-        $this->related_user = $related_user;
+        $this->relatedUser = $relatedUser;
 
         return $this;
     }

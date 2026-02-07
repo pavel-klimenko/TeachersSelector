@@ -64,9 +64,6 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        //TODO разбить на разные фикстуры
-        //TODO фикстуры на слой Infrastructure
-
         $arPaymentTypes = $this->demoPaymentTypesList->execute();
         if (!empty($arPaymentTypes)) {
             foreach ($arPaymentTypes as $type) {
@@ -99,8 +96,6 @@ class AppFixtures extends Fixture
             }
         }
 
-
-        //TODO работает
         $countries = $this->GetAllCountriesCase->executeEntities();
         $arCountries = [];
         foreach ($countries as $country) {
@@ -126,10 +121,8 @@ class AppFixtures extends Fixture
             'email' => GetTestTeacherEmail::execute(),
         ]);
 
-        //TODO get Random row using Doctrine
         $arUsers = $this->GetAllUsersCases->executeEntities();
         if (!empty($arUsers)) {
-            //TODO random genders
             foreach ($arUsers as $user) {
                 WalletFactory::createOne(['related_user' => $user]);
 
@@ -141,10 +134,6 @@ class AppFixtures extends Fixture
             }
         }
 
-
-
-        //TODO работает
-
         $arRandomExpertises = $this->GetRandomDemoExpertises->execute();
         $arTeachers = $this->getAllTeachersCase->executeEntities();
         $arPaymentTypes = $this->GetAllPaymentTypes->executeEntities();
@@ -154,12 +143,10 @@ class AppFixtures extends Fixture
         foreach ($arTeachers as $teacher) {
             CVFactory::createOne(['teacher' => $teacher]);
 
-            //TODO made more random
             foreach ($arStudyingMods as $mode) {
                 $this->addStudyingModeToTeacher->execute($teacher, $mode);
             }
 
-            //TODO made more random
             foreach ($arPaymentTypes as $type) {
                 $this->addPaymentTypeToTeacher->execute($teacher, $type);
             }
