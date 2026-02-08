@@ -10,7 +10,7 @@ final class CreateChatMessageDTO
     #[Assert\Positive]
     public mixed $chatId;
 
-    #[Assert\Length(min: 2, max: 50)]
+    #[Assert\Length(min: 1)]
     public string $message;
 
     public function __construct(mixed $chatId, string $message)

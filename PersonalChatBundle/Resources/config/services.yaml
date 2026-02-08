@@ -3,6 +3,7 @@ parameters:
     server_host: '%env(string:CHAT_SERVER_HOST)%'
     web_socket_host: '%env(string:CHAT_WEB_SOCKET_HOST)%'
     web_socket_port: '%env(CHAT_WEB_SOCKET_PORT)%'
+    web_sign_secret: '%env(string:WS_SIGN_SECRET)%'
 
 services:
     PersonalChatBundle\:
@@ -11,9 +12,11 @@ services:
         autoconfigure: true
 
     PersonalChatBundle\Infrastructure\WebSocket\ChatWebSocketServer:
+        autowire: true
         arguments:
             $serverHost: '%server_host%'
             $webSocketPort: '%web_socket_port%'
+            $secretKey: '%web_sign_secret%'
 
 
     PersonalChatBundle\Infrastructure\Bus\Command\InMemoryCommandBus:

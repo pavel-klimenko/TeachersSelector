@@ -18,7 +18,8 @@
         "symfony/uid": "^7.0",
         "symfony/http-client-contracts": "*",
         "symfony/http-client": "*",
-        "symfony/security-bundle": "*"
+        "symfony/security-bundle": "*",
+        "twig/string-extra": "*"
     },
     "extra": {
         "symfony": {

@@ -20,10 +20,10 @@ class CreateChatMessageCommandHandler implements CommandHandler
 
    public function __invoke(CreateChatMessageCommand $command):void
      {
-        //TODO try catch use in the controller API methods
        try {
-           $personalChat = $this->queryBus->ask(new GetPersonalChatQuery($command->getPersonalChat()));
            $participant = $this->queryBus->ask(new GetParticipantQuery($command->getParticipant()));
+           $personalChat = $this->queryBus->ask(new GetPersonalChatQuery($command->getPersonalChat(), $participant->getId()));
+           $personalChat = $personalChat['personal_chat'];
 
            $isParticipantMemberOfChat = false;
 

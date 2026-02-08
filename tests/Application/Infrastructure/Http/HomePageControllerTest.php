@@ -6,6 +6,8 @@ use App\Application\Homepage\UseCase\GetHomePageHtmlData;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+//TODO check --display-all-issues, and fix issues
+
 class HomePageControllerTest extends WebTestCase
 {
     public function test_homepage_is_available()

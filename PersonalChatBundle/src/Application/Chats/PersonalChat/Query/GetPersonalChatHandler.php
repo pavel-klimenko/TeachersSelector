@@ -2,6 +2,7 @@
 
 namespace PersonalChatBundle\Application\Chats\PersonalChat\Query;
 
+use LogicException;
 use DomainException;
 use PersonalChatBundle\Application\Chats\Message\Factory\ChatMessagesFactory;
 use PersonalChatBundle\Domain\Bus\Query\QueryHandler;
@@ -20,6 +21,9 @@ final class GetPersonalChatHandler implements QueryHandler
         $chatId = $query->getChatId();
 
         $personalChat = $this->personalChatRepository->getById($chatId);
+        if ($personalChat === null ) {
+            throw new LogicException('Chat not found');
+        }
 
         $messages = (new ChatMessagesFactory($personalChat))->toArray();
 
@@ -37,6 +41,7 @@ final class GetPersonalChatHandler implements QueryHandler
         }
 
         return [
+            'personal_chat' => $personalChat,
             'chat_id' => $personalChat->getId(),
             'participant_one' => $participantOneId,
             'participant_two' => $participantOneId,

@@ -41,6 +41,7 @@ Bundle placed in the root directory like /PersonalChatBundle
     CHAT_WEB_SOCKET_HOST='127.0.0.1'
     CHAT_WEB_SOCKET_PORT=8101
     CHAT_SERVER_HOST=nginx
+    WS_SIGN_SECRET={secret string}
 
 4) install the bundle: composer update pavel-klimenko/personal-chat-bundle
 
@@ -58,3 +59,5 @@ Bundle placed in the root directory like /PersonalChatBundle
    php bin/console personal-chat:ws-server-start
 9) Start chat messages consumer:
    php bin/console messenger:consume personalChats -vv
+10) Add to header link to the Chat bundle page
+    <a class="...." href="{{ path('personal_chat_view') }}">{Custom chats page name}</a>

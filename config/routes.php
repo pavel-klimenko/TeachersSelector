@@ -7,11 +7,6 @@ use Symfony\Component\Routing\Requirement\Requirement;
 use App\Infrastructure\Http\Teacher\Controller\TeacherController;
 
 return function (RoutingConfigurator $routes): void {
-
-//    $routes->add('personal-chats', '/personal-chats')->controller([\App\Infrastructure\Http\Chats\PersonalChat\Controller\ChatController::class, 'openChat'])
-//        ->methods(['GET']);
-
-
 //    $routes->add('make-payment', '/make-payment')->controller([CommandStudentController::class, 'makePayment'])
 //        ->methods(['GET']);
 //    $routes->add('get-payment', '/get-payment')->controller([\App\Infrastructure\Http\Student\Controller\QueryStudentController::class, 'getPayment'])
