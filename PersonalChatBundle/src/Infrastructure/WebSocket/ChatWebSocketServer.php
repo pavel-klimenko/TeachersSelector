@@ -18,8 +18,6 @@ class ChatWebSocketServer
     private array $subscriptions = [];
     private array $sessions = [];
 
-    private ?Server $server = null;
-
 
     public function __construct(
         #[Autowire('%env(string:WS_SIGN_SECRET)%')]
