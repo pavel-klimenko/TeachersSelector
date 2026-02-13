@@ -20,10 +20,4 @@ class PersonalChatBundle extends Bundle
     public function configureRoutes(RoutingConfigurator $routes): void {
          $routes->import(__DIR__.'/Infrastructure/HTTP/Controller/', 'attribute');
     }
-
-    // public function configureRoutes(RoutingConfigurator $routes): void
-    // {
-    //     // Импортируем атрибуты из контроллеров
-    //     $routes->import(__DIR__ . '/Infrastructure/HTTP/Controller/', 'attribute');
-    // }
 }

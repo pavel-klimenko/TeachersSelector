@@ -52,7 +52,6 @@ class ChatWebSocketServer
         $server->on("message", function (Server $server, $frame) {
             $data = json_decode($frame->data, true);
 
-
             // если пришёл auth_token — верифицируем и сохраняем sessionId для этого fd
             if (!empty($data['auth_token'])) {
                 //save auth sessions for current client
@@ -62,7 +61,6 @@ class ChatWebSocketServer
                     $this->sessions[$frame->fd] = $phpSessionId;
                 }
             }
-
 
             if ($data['event'] === ChatEvents::LOAD_CHAT->value) {
                 //$this->authToken = $data['auth_token'];
@@ -82,7 +80,6 @@ class ChatWebSocketServer
                     'event' => 'new_message',
                     'chat_id' => $chatId
                 ]));
-
             }
         });
 
@@ -98,7 +95,6 @@ class ChatWebSocketServer
     private function addMessage($frame, int $chatId, string $message):void
     {
         try {
-            //$phpSessionId = $this->encryptor->decrypt($this->secretKey, $this->authToken);
 
             $phpSessionId = $this->sessions[$frame->fd];
             $url = self::HTTP_PROTOCOL.'://'.$this->serverHost.'/personal-chat/message';
@@ -119,8 +115,6 @@ class ChatWebSocketServer
     private function loadChat(Server $server, $frame, int $chatId):void
     {
         try {
-            //$phpSessionId = $this->encryptor->decrypt($this->secretKey, $this->authToken);
-
             $phpSessionId = $this->sessions[$frame->fd];
 
             $url = self::HTTP_PROTOCOL.'://'.$this->serverHost.'/personal-chat/chat/' . $chatId;
