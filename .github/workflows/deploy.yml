@@ -34,17 +34,14 @@ jobs:
             echo "📥 Pulling latest code..."
             git pull
 
-            echo "🐳 Restarting Docker..."
-            docker compose up -d --build
-
             echo "📦 Installing Composer dependencies..."
-            docker exec -w /var/www/app fpm1 composer install --no-interaction --prefer-dist
+            composer install --no-interaction --prefer-dist
 
             echo "⚙️ Updating database schema..."
-            docker exec -w /var/www/app fpm1 php bin/console doctrine:schema:update --force
+            php bin/console doctrine:migrations:migrate
 
             echo "📚 Loading fixtures..."
-            docker exec -w /var/www/app fpm1 php bin/console doctrine:fixtures:load --no-interaction
+            php bin/console doctrine:fixtures:load --no-interaction
 
             echo "🧪 Running PHPUnit tests..."
-            docker exec -w /var/www/app fpm1 php bin/phpunit --testdox --colors=always
+            php bin/phpunit --testdox --colors=always
