@@ -1599,7 +1599,7 @@
             "dist": {
                 "type": "path",
                 "url": "./PersonalChatBundle",
-                "reference": "25f530f656ddadd163d13d6587ead3601b921d15"
+                "reference": "3600fcaaf14bdcc9738bcbda5d45811aca04fea1"
             },
             "require": {
                 "doctrine/orm": "^3.0",
@@ -1610,7 +1610,8 @@
                 "symfony/http-client-contracts": "*",
                 "symfony/messenger": "^7.0",
                 "symfony/security-bundle": "*",
-                "symfony/uid": "^7.0"
+                "symfony/uid": "^7.0",
+                "twig/string-extra": "*"
             },
             "type": "symfony-bundle",
             "extra": {

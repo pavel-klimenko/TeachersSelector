@@ -13,7 +13,7 @@ It connects students and experienced teachers from whole world!
 
 
 # **Install project:**
-1) Build and run docker containers: docker compose up --build
+1) Build and run docker containers: docker compose up --build -d
 2) Go to php-fpm container: docker exec -it fpm1 bash
 3) install packages: composer i
 4) Up migrations: php bin/console doctrine:migrations:migrate
