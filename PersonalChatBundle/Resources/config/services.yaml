@@ -18,6 +18,10 @@ services:
             $webSocketPort: '%web_socket_port%'
             $secretKey: '%web_sign_secret%'
 
+    PersonalChatBundle\Application\Processors\ChainChatProcessor:
+      public: true
+      arguments:
+        $locators: []
 
     PersonalChatBundle\Infrastructure\Bus\Command\InMemoryCommandBus:
         arguments:

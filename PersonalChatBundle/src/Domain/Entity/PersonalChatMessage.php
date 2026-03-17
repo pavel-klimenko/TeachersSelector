@@ -29,9 +29,16 @@ class PersonalChatMessage
     {
         return $this->createdAt;
     }
+
     public function getAuthor(): ChatParticipant { return $this->author; }
+
     public function getMessage(): MessageVO
     {
         return new MessageVO($this->message);
+    }
+
+    public function setMessage(MessageVO $messageVO): void
+    {
+        $this->message = $messageVO->get();
     }
 }

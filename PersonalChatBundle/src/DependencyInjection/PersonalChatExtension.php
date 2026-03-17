@@ -2,6 +2,7 @@
 
 namespace PersonalChatBundle\DependencyInjection;
 
+use PersonalChatBundle\Attribute\ChatProcessor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -9,6 +10,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
 use PersonalChatBundle\Infrastructure\Bus\Command\InMemoryCommandBus;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 
 
 class PersonalChatExtension extends Extension implements PrependExtensionInterface
@@ -30,6 +32,17 @@ class PersonalChatExtension extends Extension implements PrependExtensionInterfa
         // Автоматически помечаем все классы, реализующие CommandHandler, нужным тегом
         $container->registerForAutoconfiguration(\PersonalChatBundle\Domain\Bus\Command\CommandHandler::class)
             ->addTag('personal_chat.command_handler');
+
+        // Регистрируем автоконфигурацию атрибута
+        $container->registerAttributeForAutoconfiguration(
+            ChatProcessor::class,
+            function (ChildDefinition $definition, ChatProcessor $attr) {
+                $definition->addTag('app.chat.processor', [
+                    'priority' => $attr->priority,
+                    'channel' => $attr->channel,
+                ]);
+            }
+        );
     }
 
     public function prepend(ContainerBuilder $container): void
