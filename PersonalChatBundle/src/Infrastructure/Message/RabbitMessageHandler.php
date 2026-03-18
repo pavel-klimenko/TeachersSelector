@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace PersonalChatBundle\Infrastructure\Message;
 
 use PersonalChatBundle\Application\Chats\PersonalChat\Symfony\Message\SendChatMessage;
+use PersonalChatBundle\Application\Processors\ChainChatProcessor;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use PersonalChatBundle\Domain\Repository\ChatParticipantRepositoryInterface;
 use PersonalChatBundle\Domain\Repository\PersonalChatRepositoryInterface;
@@ -15,6 +16,7 @@ final class RabbitMessageHandler
     public function __construct(
         private PersonalChatRepositoryInterface $personalChatRepository,
         private ChatParticipantRepositoryInterface $chatParticipantRepository,
+        private ChainChatProcessor $chatProcessor,
     ) {}
 
     public function __invoke(SendChatMessage $dto): void
@@ -22,7 +24,11 @@ final class RabbitMessageHandler
         $personalChat = $this->personalChatRepository->getById($dto->chatId);
         $chatParticipant = $this->chatParticipantRepository->getById($dto->authorId);
 
-        $personalChat->addMessage($chatParticipant, new MessageVO($dto->message));
-        $this->personalChatRepository->save($personalChat);
+        $message = new MessageVO($dto->message);
+
+        $processedMessage = $this->chatProcessor->handle($message);
+
+//        $personalChat->addMessage($chatParticipant, new MessageVO($dto->message));
+//        $this->personalChatRepository->save($personalChat);
     }
 }
