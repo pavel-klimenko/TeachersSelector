@@ -49,6 +49,7 @@
     "twig/twig": "^2.12|^3.23"
   },
   "require-dev": {
+    "deptrac/deptrac": "^4.5",
     "doctrine/data-fixtures": "^2.2",
     "doctrine/doctrine-fixtures-bundle": "^4.3.1",
     "phpunit/phpunit": "^12.5.9",
@@ -107,7 +108,8 @@
     ],
     "post-update-cmd": [
       "@auto-scripts"
-    ]
+    ],
+    "deptrac": "deptrac analyse --no-progress"
   },
   "conflict": {
     "symfony/symfony": "*"

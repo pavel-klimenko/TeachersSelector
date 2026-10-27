@@ -3,6 +3,24 @@ name: BuildAndDeploy
 on: [push]
 
 jobs:
+  architecture:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+
+      - name: Installing Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-scripts
+
+      - name: Checking architecture rules (Deptrac)
+        run: composer deptrac
+
   check:
     runs-on: ubuntu-latest
     steps:
@@ -16,7 +34,7 @@ jobs:
           script: whoami
 
   deploy:
-    needs: check
+    needs: [check, architecture]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
