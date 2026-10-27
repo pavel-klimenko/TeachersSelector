@@ -55,6 +55,30 @@ services:
     networks:
       - internal
 
+  grafana:
+    image: grafana/grafana:13.3.0
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      # используются в provisioning/datasources/postgres.yml
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./docker/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      pgsql:
+        condition: service_healthy
+    networks:
+      - internal
+
 ###> doctrine/doctrine-bundle ###
   pgsql:
     build:
@@ -83,3 +107,4 @@ volumes:
 ###> doctrine/doctrine-bundle ###
   pgsql_data:
 ###< doctrine/doctrine-bundle ###
+  grafana_data:

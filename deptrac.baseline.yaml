@@ -1,0 +1,32 @@
+deptrac:
+  skip_violations:
+    App\Application\Payment\Command\MakePaymentCommandHandler:
+      - Doctrine\ORM\EntityManagerInterface
+    App\Application\Teacher\DTO\ResponseTeacherDTO:
+      - Doctrine\ORM\PersistentCollection
+    App\Domain\Entity\CV:
+      - App\Infrastructure\Repository\CVRepository
+    App\Domain\Entity\City:
+      - App\Infrastructure\Repository\CityRepository
+    App\Domain\Entity\Country:
+      - App\Infrastructure\Repository\CountryRepository
+    App\Domain\Entity\Expertise:
+      - App\Infrastructure\Repository\ExpertiseRepository
+    App\Domain\Entity\Payment:
+      - App\Infrastructure\Repository\PaymentRepository
+    App\Domain\Entity\PaymentType:
+      - App\Infrastructure\Repository\PaymentTypeRepository
+    App\Domain\Entity\Student:
+      - App\Infrastructure\Repository\StudentRepository
+    App\Domain\Entity\StudyingMode:
+      - App\Infrastructure\Repository\StudyingModeRepository
+    App\Domain\Entity\Teacher:
+      - App\Infrastructure\Repository\TeacherRepository
+    App\Domain\Entity\TeacherHasTeacherExpertises:
+      - App\Infrastructure\Repository\TeacherHasTeacherExpertisesRepository
+    App\Domain\Entity\User:
+      - App\Infrastructure\Repository\UserRepository
+    App\Domain\Entity\Wallet:
+      - App\Infrastructure\Repository\WalletRepository
+    App\Domain\Services\PaymentServiceInterface:
+      - App\Application\Payment\DTO\RegisterPaymentDTO

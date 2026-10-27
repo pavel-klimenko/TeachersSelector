@@ -1,0 +1,70 @@
+# Архитектурные правила (Deptrac). Запуск: composer deptrac
+# Документация: https://qossmic.github.io/deptrac/
+# Известные нарушения, зафиксированные до введения правил, лежат в deptrac.baseline.yaml.
+# Новые нарушения роняют сборку; старые нужно устранять и удалять из baseline.
+imports:
+  - deptrac.baseline.yaml
+
+deptrac:
+  paths:
+    - ./src
+
+  exclude_files:
+    - '#.*/Kernel\.php$#'
+
+  # Тип use включён, чтобы ловить импорты запрещённых слоёв даже без использования класса.
+  analyser:
+    types:
+      - class
+      - function
+      - use
+
+  layers:
+    # --- Слои приложения (чистая архитектура) ---
+    - name: Domain
+      collectors:
+        - type: directory
+          value: src/Domain/.*
+    - name: Application
+      collectors:
+        - type: directory
+          value: src/Application/.*
+    - name: Infrastructure
+      collectors:
+        - type: directory
+          value: src/Infrastructure/.*
+
+    # --- Внешние библиотеки ---
+    - name: DoctrineOrm
+      collectors:
+        - type: classLike
+          value: ^Doctrine\\(ORM|DBAL|Persistence|Common)\\
+    - name: Symfony
+      collectors:
+        - type: classLike
+          value: ^Symfony\\
+    - name: PersonalChat
+      collectors:
+        - type: classLike
+          value: ^PersonalChatBundle\\
+
+  ruleset:
+    # Domain — ядро: не зависит от Application и Infrastructure.
+    # Допускаются атрибуты маппинга Doctrine, Symfony Security/Validator и контракт чат-бандла.
+    Domain:
+      - DoctrineOrm
+      - Symfony
+      - PersonalChat
+
+    # Application зависит только от Domain (через интерфейсы).
+    # Doctrine/Symfony в use case'ах запрещены — используй интерфейсы репозиториев/шин из Domain.
+    Application:
+      - Domain
+
+    # Infrastructure реализует интерфейсы Domain и вызывает use case'ы Application.
+    Infrastructure:
+      - Domain
+      - Application
+      - DoctrineOrm
+      - Symfony
+      - PersonalChat

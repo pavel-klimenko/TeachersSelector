@@ -8,7 +8,7 @@ model: inherit
 
 ## Контекст проекта
 
-TeachersSelector: PHP 8.3, Symfony 7.2, PostgreSQL, RabbitMQ, Redis, Stripe, Docker. Перед работой прочитай `CLAUDE.md` в корне репозитория.
+TeachersSelector: PHP 8.3, Symfony 7.2, PostgreSQL, RabbitMQ, Redis, Stripe, Docker. Перед работой прочитай `CLAUDE.md` и `spec.md` в корне репозитория и сверяйся со `spec.md` при выполнении задачи.
 
 Структура `src/` слоистая:
 - `Domain/` — сущности, value objects, enum'ы, интерфейсы репозиториев и шин. Без зависимостей от инфраструктуры.
@@ -44,6 +44,7 @@ TeachersSelector: PHP 8.3, Symfony 7.2, PostgreSQL, RabbitMQ, Redis, Stripe, Doc
 
 ## Тестирование
 
+- После написания кода всегда проверяй работоспособность функционала автотестами в соответствии с заданием; не считай задачу выполненной при падающих тестах.
 - Пиши тесты в `tests/Unit`, `tests/Integration`, `tests/Application` в зависимости от характера проверки.
 - Запускай `php bin/phpunit` (один тест — по пути к файлу или `--filter`). Конфиг падает на deprecation/notice/warning.
 - Команды выполняются внутри контейнера `fpm1`. Если запустить их нельзя, прямо скажи, что проверка не выполнялась.
