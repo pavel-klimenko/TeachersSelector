@@ -10,7 +10,8 @@
 - **Кэш:** Redis (`predis`).
 - **Платежи:** Stripe (`stripe/stripe-php`, `Infrastructure/Services/StripeService`).
 - **Чат:** `PersonalChatBundle/` (path-репозиторий), OpenSwoole + `ratchet/pawl`, WebSocket-сервер.
-- **Окружение:** Docker (Nginx, два php-fpm — `fpm1` и `fpm2`, PostgreSQL, RabbitMQ).
+- **Окружение:** Docker (Nginx, два php-fpm — `fpm1` и `fpm2`, PostgreSQL, RabbitMQ, Grafana).
+- **Мониторинг/дашборды:** Grafana 13.3.0 (`http://localhost:3000`), источник данных PostgreSQL и дашборд создаются provisioning'ом из `docker/grafana/`; JSON дашбордов лежат в `docker/grafana/dashboards/`, правки делай в файлах, а не в UI (`allowUiUpdates: false`).
 - **Dev:** PHPUnit 12, `zenstruck/foundry`, `doctrine-fixtures-bundle`, `maker-bundle`, `browser-kit`, `css-selector`, `web-profiler-bundle`.
 - **Деплой:** GitHub Actions (`.github/workflows/deploy.yml`), по SSH: git pull / composer install / обновление схемы.
 

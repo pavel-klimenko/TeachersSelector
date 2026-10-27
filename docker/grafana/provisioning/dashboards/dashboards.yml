@@ -1,0 +1,13 @@
+apiVersion: 1
+
+# Grafana сама подхватывает все *.json из этого каталога (и перечитывает раз в 30 секунд).
+providers:
+  - name: TeachersSelector
+    orgId: 1
+    folder: TeachersSelector
+    type: file
+    disableDeletion: false
+    allowUiUpdates: false
+    updateIntervalSeconds: 30
+    options:
+      path: /var/lib/grafana/dashboards
