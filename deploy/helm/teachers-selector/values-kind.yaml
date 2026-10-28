@@ -1,0 +1,17 @@
+# Локальная проверка в kind: инфраструктура внутри кластера, локальные образы.
+web:
+  replicas: 2
+
+infra:
+  enabled: true
+
+config:
+  CHAT_WEB_SOCKET_HOST: localhost
+
+secrets:
+  APP_SECRET: kind-app-secret-change-me
+  WS_SIGN_SECRET: kind-ws-sign-secret-change-me
+  STRIPE_SECRET_KEY: sk_test_placeholder
+  DATABASE_URL: "postgresql://teachers:teachers@ts-pgsql:5432/teachers?serverVersion=14&charset=utf8"
+  MESSENGER_TRANSPORT_DSN: "amqp://guest:guest@ts-rabbitmq:5672/%2f/messages"
+  REDIS_URL: "redis://ts-redis:6379"

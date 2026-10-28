@@ -1,0 +1,102 @@
+image:
+  php:
+    repository: teachers-selector/php
+    tag: dev
+  nginx:
+    repository: teachers-selector/nginx
+    tag: dev
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+web:
+  replicas: 2
+  # nginx - лёгкий; php-fpm считается из расчёта ~40 МБ на воркер (pm.max_children * 40 МБ <= memory limit)
+  resources:
+    nginx:
+      requests: { cpu: 25m, memory: 16Mi }
+      limits: { memory: 64Mi }
+    php:
+      requests: { cpu: 200m, memory: 192Mi }
+      limits: { memory: 384Mi }
+  fpm:
+    maxChildren: 8
+    startServers: 2
+    minSpareServers: 2
+    maxSpareServers: 4
+    # перезапуск воркера после N запросов - защита от утечек памяти
+    maxRequests: 500
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
+
+worker:
+  replicas: 1
+  # транспорты Messenger; personalChats регистрирует PersonalChatBundle
+  transports: [async, personalChats]
+  resources:
+    requests: { cpu: 50m, memory: 128Mi }
+    limits: { memory: 256Mi }
+
+# WebSocket-сервер хранит подписки в памяти процесса -> только 1 реплика
+chat:
+  enabled: true
+  replicas: 1
+  port: 8080
+  resources:
+    requests: { cpu: 50m, memory: 96Mi }
+    limits: { memory: 256Mi }
+
+migrations:
+  enabled: true
+  maxAttempts: 30
+  resources:
+    requests: { cpu: 50m, memory: 128Mi }
+    limits: { memory: 256Mi }
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+ingress:
+  enabled: false
+  className: nginx
+  host: teachers.selector.local
+  # отдельный хост для WebSocket чата (пусто = не публиковать)
+  chatHost: ""
+  annotations: {}
+
+# Не секретные переменные окружения
+config:
+  APP_ENV: prod
+  APP_DEBUG: "0"
+  # адрес WebSocket для браузера
+  CHAT_WEB_SOCKET_HOST: chat.teachers.selector.local
+  CHAT_WEB_SOCKET_PORT: "8080"
+  MAILER_DSN: "null://null"
+  STRIPE_WEBHOOK_ENDPOINT: ""
+
+# Секреты. В проде используйте existingSecret с теми же ключами.
+secrets:
+  existingSecret: ""
+  APP_SECRET: ""
+  DATABASE_URL: ""
+  MESSENGER_TRANSPORT_DSN: ""
+  REDIS_URL: ""
+  WS_SIGN_SECRET: ""
+  STRIPE_SECRET_KEY: ""
+
+# PostgreSQL / RabbitMQ / Redis внутри релиза - ТОЛЬКО для dev/kind (без постоянного хранилища).
+# В проде отключите и укажите внешние сервисы в secrets.*.
+infra:
+  enabled: false
+  postgres:
+    image: postgres:14.1-alpine
+    db: teachers
+    user: teachers
+    password: teachers
+  rabbitmq:
+    image: rabbitmq:3-management
+  redis:
+    image: redis:7-alpine

@@ -1,0 +1,95 @@
+{{- if .Values.infra.enabled }}
+# DEV ONLY: без PVC, данные теряются при перезапуске пода.
+{{- $pg := .Values.infra.postgres }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-pgsql
+  labels: {{- include "ts.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: ts-pgsql}
+  template:
+    metadata:
+      labels: {app: ts-pgsql}
+    spec:
+      containers:
+        - name: postgres
+          image: {{ $pg.image }}
+          env:
+            - {name: POSTGRES_DB, value: {{ $pg.db | quote }}}
+            - {name: POSTGRES_USER, value: {{ $pg.user | quote }}}
+            - {name: POSTGRES_PASSWORD, value: {{ $pg.password | quote }}}
+          ports: [{containerPort: 5432}]
+          readinessProbe:
+            exec: {command: ["pg_isready", "-U", {{ $pg.user | quote }}, "-d", {{ $pg.db | quote }}]}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-pgsql
+spec:
+  selector: {app: ts-pgsql}
+  ports: [{port: 5432}]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-rabbitmq
+  labels: {{- include "ts.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: ts-rabbitmq}
+  template:
+    metadata:
+      labels: {app: ts-rabbitmq}
+    spec:
+      containers:
+        - name: rabbitmq
+          image: {{ .Values.infra.rabbitmq.image }}
+          ports: [{containerPort: 5672}, {containerPort: 15672}]
+          readinessProbe:
+            exec: {command: ["rabbitmq-diagnostics", "-q", "ping"]}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-rabbitmq
+spec:
+  selector: {app: ts-rabbitmq}
+  ports:
+    - {name: amqp, port: 5672}
+    - {name: management, port: 15672}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-redis
+  labels: {{- include "ts.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: ts-redis}
+  template:
+    metadata:
+      labels: {app: ts-redis}
+    spec:
+      containers:
+        - name: redis
+          image: {{ .Values.infra.redis.image }}
+          ports: [{containerPort: 6379}]
+          readinessProbe:
+            exec: {command: ["redis-cli", "ping"]}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-redis
+spec:
+  selector: {app: ts-redis}
+  ports: [{port: 6379}]
+{{- end }}

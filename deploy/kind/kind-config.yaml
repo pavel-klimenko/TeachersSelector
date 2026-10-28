@@ -1,0 +1,16 @@
+# Лёгкий одноузловой кластер для локальной проверки чарта (WSL2: 2 CPU / 4 GB).
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    # kubeadm >= 1.29 ждёт API-сервер всего ~30 с (создание admin ClusterRoleBinding) и падает на слабых
+    # машинах; 1.28 ждёт здоровья control plane до 4 минут. Нода и легче по памяти.
+    image: kindest/node:v1.28.15
+    kubeadmConfigPatches:
+      - |
+        kind: ClusterConfiguration
+        etcd:
+          local:
+            extraArgs:
+              # одноразовый dev-кластер: fsync на медленном диске WSL тормозит каждую запись в etcd
+              unsafe-no-fsync: "true"

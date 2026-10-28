@@ -1,0 +1,6 @@
+apiVersion: v2
+name: teachers-selector
+description: TeachersSelector - web (nginx + php-fpm), messenger worker, chat WebSocket server, migrations
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

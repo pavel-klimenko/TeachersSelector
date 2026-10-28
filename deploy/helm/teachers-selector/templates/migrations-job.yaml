@@ -1,0 +1,41 @@
+{{- if .Values.migrations.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "ts.fullname" . }}-migrations
+  labels: {{- include "ts.labels" . | nindent 4 }}
+  annotations:
+    # post-install: БД из infra создаётся раньше; pre-upgrade: схема обновляется до выката новых подов
+    "helm.sh/hook": post-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      labels: {{- include "ts.selector" (dict "root" . "component" "migrations") | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      {{- include "ts.pullSecrets" . | nindent 6 }}
+      securityContext:
+        runAsUser: 33
+        runAsGroup: 33
+      containers:
+        - name: migrations
+          image: {{ include "ts.phpImage" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom: {{- include "ts.envFrom" . | nindent 12 }}
+          {{- with .Values.migrations.resources }}
+          resources: {{- toYaml . | nindent 12 }}
+          {{- end }}
+          command:
+            - sh
+            - -c
+            - |
+              # БД может ещё стартовать - повторяем ограниченное число раз
+              i=0
+              until php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration; do
+                i=$((i+1))
+                [ "$i" -ge {{ .Values.migrations.maxAttempts }} ] && { echo "migrations failed"; exit 1; }
+                sleep 5
+              done
+{{- end }}

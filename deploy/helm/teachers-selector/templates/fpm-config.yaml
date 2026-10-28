@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ts.fullname" . }}-fpm
+  labels: {{- include "ts.labels" . | nindent 4 }}
+data:
+  zz-tuning.conf: |
+    [www]
+    pm = dynamic
+    pm.max_children = {{ .Values.web.fpm.maxChildren }}
+    pm.start_servers = {{ .Values.web.fpm.startServers }}
+    pm.min_spare_servers = {{ .Values.web.fpm.minSpareServers }}
+    pm.max_spare_servers = {{ .Values.web.fpm.maxSpareServers }}
+    pm.max_requests = {{ .Values.web.fpm.maxRequests }}

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ts.fullname" . }}-worker
+  labels: {{- include "ts.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.worker.replicas }}
+  selector:
+    matchLabels: {{- include "ts.selector" (dict "root" . "component" "worker") | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "ts.selector" (dict "root" . "component" "worker") | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+    spec:
+      {{- include "ts.pullSecrets" . | nindent 6 }}
+      # даём воркеру дообработать текущее сообщение после SIGTERM
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        runAsUser: 33
+        runAsGroup: 33
+      containers:
+        - name: worker
+          image: {{ include "ts.phpImage" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # воркер перезапускается по лимитам времени/памяти - Kubernetes поднимет его снова
+          command: ["php", "bin/console", "messenger:consume", {{- range .Values.worker.transports }} {{ . | quote }},{{- end }} "--time-limit=3600", "--memory-limit=200M", "-vv"]
+          envFrom: {{- include "ts.envFrom" . | nindent 12 }}
+          {{- with .Values.worker.resources }}
+          resources: {{- toYaml . | nindent 12 }}
+          {{- end }}

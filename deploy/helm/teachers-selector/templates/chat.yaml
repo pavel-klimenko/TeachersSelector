@@ -1,0 +1,54 @@
+{{- if .Values.chat.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ts.fullname" . }}-chat
+  labels: {{- include "ts.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.chat.replicas }}
+  selector:
+    matchLabels: {{- include "ts.selector" (dict "root" . "component" "chat") | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "ts.selector" (dict "root" . "component" "chat") | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+    spec:
+      {{- include "ts.pullSecrets" . | nindent 6 }}
+      securityContext:
+        runAsUser: 33
+        runAsGroup: 33
+      containers:
+        - name: chat-ws
+          image: {{ include "ts.phpImage" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["php", "bin/console", "personal-chat:ws-server-start"]
+          envFrom: {{- include "ts.envFrom" . | nindent 12 }}
+          env:
+            - name: CHAT_WEB_SOCKET_PORT
+              value: {{ .Values.chat.port | quote }}
+          ports:
+            - name: ws
+              containerPort: {{ .Values.chat.port }}
+          readinessProbe:
+            tcpSocket: { port: ws }
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket: { port: ws }
+            periodSeconds: 10
+          {{- with .Values.chat.resources }}
+          resources: {{- toYaml . | nindent 12 }}
+          {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ts.fullname" . }}-chat
+  labels: {{- include "ts.labels" . | nindent 4 }}
+spec:
+  selector: {{- include "ts.selector" (dict "root" . "component" "chat") | nindent 4 }}
+  ports:
+    - name: ws
+      port: {{ .Values.chat.port }}
+      targetPort: ws
+{{- end }}
