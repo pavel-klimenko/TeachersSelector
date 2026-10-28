@@ -55,6 +55,17 @@ services:
     networks:
       - internal
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    networks:
+      - internal
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      timeout: 5s
+      retries: 5
+
   grafana:
     image: grafana/grafana:13.3.0
     container_name: grafana
