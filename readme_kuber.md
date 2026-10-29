@@ -55,12 +55,14 @@ Kubernetes-часть лежит отдельно в `deploy/` и production-о�
 # 1. Собрать образы (php собирается долго: компиляция openswoole, 5-15 минут)
 docker build -f docker/php/Prod.Dockerfile       -t teachers-selector/php:dev .
 docker build -f docker/nginx/Prod.Nginx.Dockerfile -t teachers-selector/nginx:dev .
+# образ с dev-зависимостями для загрузки тестовых данных (только dev/kind; слой base берётся из кэша)
+docker build -f docker/php/Prod.Dockerfile --target fixtures -t teachers-selector/php-fixtures:dev .
 
 # 2. Создать кластер
 kind create cluster --name ts --config deploy/kind/kind-config.yaml
 
 # 3. Загрузить образы в кластер (нода не ходит в Docker Hub)
-kind load docker-image teachers-selector/php:dev teachers-selector/nginx:dev --name ts
+kind load docker-image teachers-selector/php:dev teachers-selector/nginx:dev teachers-selector/php-fixtures:dev --name ts
 
 # 4. Образ RabbitMQ (kind load не умеет мультиплатформенные образы, поэтому через save)
 docker pull rabbitmq:3-management
@@ -87,9 +89,11 @@ kubectl port-forward svc/ts-rabbitmq 15672   # RabbitMQ UI: http://localhost:156
 ```
 
 Проверка: `curl localhost:8096/health-check` → `{"status":"ok"}`.
-БД после установки **пустая** (фикстуры не загружаются): при необходимости
-`kubectl exec deploy/ts-web -c php-fpm -- php bin/console doctrine:fixtures:load --no-interaction`
-(фикстуры — dev-зависимость и в prod-образ не входят; для тестовых данных соберите образ с dev-зависимостями).
+Тестовые данные загружает Job `ts-fixtures` (хук post-install/post-upgrade, после миграций), он включён в
+`values-kind.yaml` (`fixtures.enabled: true`). Он выполняет `doctrine:fixtures:load`, то есть **стирает БД и заполняет заново** при каждом
+`helm install`/`helm upgrade`. Чтобы обновить релиз, не трогая данные: `helm upgrade ... --set fixtures.enabled=false`.
+Перезагрузить тестовые данные: `helm upgrade ts deploy/helm/teachers-selector -f deploy/helm/teachers-selector/values-kind.yaml`.
+В prod-образе команды `doctrine:fixtures:load` нет (бандл только для dev/test), а чарт не даёт включить фикстуры без `infra.enabled=true`.
 
 ## 6. Повседневное управление
 
@@ -163,6 +167,8 @@ kind delete cluster --name ts   # удалить кластер целиком
 | worker в `CrashLoopBackOff` | Нет соединения с RabbitMQ: проверьте `kubectl get pod -l app=ts-rabbitmq` и `kubectl logs deploy/ts-worker --previous` |
 | `kubectl top` → `Metrics API not available` | Не установлен metrics-server (нужен и для HPA) |
 | Кластер/сборки тормозят, swap | WSL упирается в память (`~/.wslconfig`: `memory=4GB`). Остановите лишнее (`docker compose stop`) или увеличьте лимит |
+| `There are no commands defined in the "doctrine:fixtures" namespace` | Фикстуры запускают в prod-образе, где dev-бандлов нет. Используйте Job `ts-fixtures` (образ `teachers-selector/php-fixtures`, стадия `fixtures`) |
+| БД пустая после перезапуска ноды kind / Docker | Postgres в kind без постоянного хранилища (`emptyDir`). Выполните `helm upgrade` (миграции + фикстуры) |
 | Пользователя «выкидывает» между запросами | Сессии должны быть в Redis: проверьте `REDIS_URL` и `kubectl exec deploy/ts-redis -- redis-cli --scan` |
 
 ## 12. Что не сделано / не проверено

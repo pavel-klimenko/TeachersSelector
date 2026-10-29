@@ -35,6 +35,22 @@ COPY . .
 RUN composer dump-autoload --no-dev --classmap-authoritative --no-scripts
 
 
+# Только для dev/kind: образ с dev-зависимостями (DoctrineFixturesBundle, Foundry) для Job загрузки фикстур.
+# Сборка: docker build -f docker/php/Prod.Dockerfile --target fixtures -t teachers-selector/php-fixtures:dev .
+FROM vendor AS vendor-dev
+
+RUN composer install --no-scripts --no-interaction --prefer-dist
+
+
+FROM base AS fixtures
+
+COPY --from=vendor-dev /var/www/app /var/www/app
+
+RUN printf 'APP_ENV=dev\n' > .env \
+    && mkdir -p var && chown -R www-data:www-data var
+
+
+# app должна оставаться последней стадией: сборка без --target даёт production-образ
 FROM base AS app
 
 COPY --from=vendor /var/www/app /var/www/app

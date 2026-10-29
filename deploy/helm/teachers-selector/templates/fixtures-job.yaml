@@ -1,0 +1,41 @@
+{{- if .Values.fixtures.enabled }}
+{{- if not .Values.infra.enabled }}
+{{- fail "fixtures.enabled=true стирает БД (doctrine:fixtures:load): разрешено только вместе с infra.enabled=true (dev/kind)" }}
+{{- end }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "ts.fullname" . }}-fixtures
+  labels: {{- include "ts.labels" . | nindent 4 }}
+  annotations:
+    # после Job миграций (weight 0); при каждом install/upgrade БД заполняется заново
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      labels: {{- include "ts.selector" (dict "root" . "component" "fixtures") | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      {{- include "ts.pullSecrets" . | nindent 6 }}
+      securityContext:
+        runAsUser: 33
+        runAsGroup: 33
+      containers:
+        - name: fixtures
+          image: {{ .Values.image.fixtures.repository }}:{{ .Values.image.fixtures.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom: {{- include "ts.envFrom" . | nindent 12 }}
+          # DoctrineFixturesBundle и Foundry доступны только в APP_ENV=dev; env приоритетнее envFrom
+          env:
+            - name: APP_ENV
+              value: dev
+            - name: APP_DEBUG
+              value: "0"
+          command: ["php", "bin/console", "doctrine:fixtures:load", "--no-interaction"]
+          {{- with .Values.fixtures.resources }}
+          resources: {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}

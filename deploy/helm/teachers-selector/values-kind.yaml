@@ -5,6 +5,10 @@ web:
 infra:
   enabled: true
 
+# Тестовые данные при каждом install/upgrade; чтобы сохранить данные: --set fixtures.enabled=false
+fixtures:
+  enabled: true
+
 config:
   CHAT_WEB_SOCKET_HOST: localhost
 

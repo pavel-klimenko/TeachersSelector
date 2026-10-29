@@ -5,6 +5,10 @@ image:
   nginx:
     repository: teachers-selector/nginx
     tag: dev
+  # Только для dev/kind (Job фикстур): собирается стадией fixtures из docker/php/Prod.Dockerfile
+  fixtures:
+    repository: teachers-selector/php-fixtures
+    tag: dev
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -54,6 +58,13 @@ migrations:
   resources:
     requests: { cpu: 50m, memory: 128Mi }
     limits: { memory: 256Mi }
+
+# Загрузка тестовых данных (doctrine:fixtures:load стирает БД!). Только вместе с infra.enabled=true.
+fixtures:
+  enabled: false
+  resources:
+    requests: { cpu: 50m, memory: 128Mi }
+    limits: { memory: 384Mi }
 
 podDisruptionBudget:
   enabled: true
