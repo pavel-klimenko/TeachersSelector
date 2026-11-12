@@ -1,6 +1,19 @@
 {{- if .Values.infra.enabled }}
-# DEV ONLY: без PVC, данные теряются при перезапуске пода.
+# DEV ONLY. Postgres хранит данные в PVC при infra.postgres.persistence.enabled, иначе они теряются при пересоздании пода.
 {{- $pg := .Values.infra.postgres }}
+{{- if $pg.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ts-pgsql-data
+  labels: {{- include "ts.labels" . | nindent 4 }}
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: {{ $pg.persistence.size }}
+---
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -8,16 +21,35 @@ metadata:
   labels: {{- include "ts.labels" . | nindent 4 }}
 spec:
   replicas: 1
+  {{- if $pg.persistence.enabled }}
+  # один каталог данных - один postgres: старый под должен остановиться до старта нового
+  strategy:
+    type: Recreate
+  {{- end }}
   selector:
     matchLabels: {app: ts-pgsql}
   template:
     metadata:
       labels: {app: ts-pgsql}
     spec:
+      {{- if $pg.persistence.enabled }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: ts-pgsql-data
+      {{- end }}
       containers:
         - name: postgres
           image: {{ $pg.image }}
+          {{- if $pg.persistence.enabled }}
+          volumeMounts:
+            - {name: data, mountPath: /var/lib/postgresql/data}
+          {{- end }}
           env:
+            {{- if $pg.persistence.enabled }}
+            # подкаталог: в корне тома может лежать lost+found, initdb на непустом каталоге падает
+            - {name: PGDATA, value: /var/lib/postgresql/data/pgdata}
+            {{- end }}
             - {name: POSTGRES_DB, value: {{ $pg.db | quote }}}
             - {name: POSTGRES_USER, value: {{ $pg.user | quote }}}
             - {name: POSTGRES_PASSWORD, value: {{ $pg.password | quote }}}

@@ -4,6 +4,9 @@ web:
 
 infra:
   enabled: true
+  postgres:
+    persistence:
+      enabled: true
 
 # Тестовые данные при каждом install/upgrade; чтобы сохранить данные: --set fixtures.enabled=false
 fixtures:

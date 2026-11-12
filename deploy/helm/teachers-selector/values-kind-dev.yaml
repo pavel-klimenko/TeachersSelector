@@ -1,0 +1,11 @@
+# Dev-окружение в kind: применять поверх values-kind.yaml
+#   helm upgrade ts deploy/helm/teachers-selector -f deploy/helm/teachers-selector/values-kind.yaml -f deploy/helm/teachers-selector/values-kind-dev.yaml
+# Нужен образ с dev-зависимостями: docker build -f docker/php/Prod.Dockerfile --target fixtures -t teachers-selector/php-fixtures:dev .
+# (prod-образ собран с --no-dev, в нём нет WebProfiler/Foundry/Fixtures, и APP_ENV=dev там падает)
+image:
+  php:
+    repository: teachers-selector/php-fixtures
+
+config:
+  APP_ENV: dev
+  APP_DEBUG: "1"

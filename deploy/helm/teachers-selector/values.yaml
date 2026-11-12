@@ -107,6 +107,10 @@ infra:
     db: teachers
     user: teachers
     password: teachers
+    # PVC для данных Postgres (иначе БД пустеет при пересоздании пода, например после перезапуска ноды kind)
+    persistence:
+      enabled: false
+      size: 1Gi
   rabbitmq:
     image: rabbitmq:3-management
   redis:

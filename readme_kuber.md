@@ -23,7 +23,7 @@ Kubernetes-часть лежит отдельно в `deploy/` и production-о�
 | `worker` | обработчик очередей Messenger (`async`, `personalChats`) | 1+ |
 | `chat` | WebSocket-сервер чата (Swoole). Подписки хранятся **в памяти процесса** | **строго 1** |
 | `migrations` | Job-хук: миграции БД перед выкатом | одноразово |
-| `ts-pgsql`, `ts-rabbitmq`, `ts-redis` | инфраструктура **только для dev** (без постоянного хранилища) | 1 |
+| `ts-pgsql`, `ts-rabbitmq`, `ts-redis` | инфраструктура **только для dev** (PostgreSQL — с PVC, RabbitMQ и Redis без постоянного хранилища) | 1 |
 
 Один и тот же PHP-образ (`teachers-selector/php`) запускается в разных ролях — отличается только команда.
 Конфигурация приходит из ConfigMap (не секретное) и Secret (секретное) как переменные окружения.
@@ -39,7 +39,8 @@ Kubernetes-часть лежит отдельно в `deploy/` и production-о�
 | `deploy/kind/kind-config.yaml` | Конфиг локального кластера (нода 1.28.15, etcd без fsync) |
 | `deploy/helm/teachers-selector/` | Helm-чарт (шаблоны в `templates/`) |
 | `values.yaml` | Значения по умолчанию (ресурсы, реплики, FPM, ingress) |
-| `values-kind.yaml` | Переопределения для kind: инфраструктура в кластере, **тестовые** секреты |
+| `values-kind.yaml` | Переопределения для kind: инфраструктура в кластере (Postgres с PVC), **тестовые** секреты |
+| `values-kind-dev.yaml` | Dev-окружение (`APP_ENV=dev`, `APP_DEBUG=1`, образ с dev-зависимостями), накладывается поверх `values-kind.yaml` |
 
 Сессии и кэш приложения хранятся в Redis (`REDIS_URL`) — иначе при нескольких репликах пользователя разлогинивало бы.
 
@@ -94,6 +95,25 @@ kubectl port-forward svc/ts-rabbitmq 15672   # RabbitMQ UI: http://localhost:156
 `helm install`/`helm upgrade`. Чтобы обновить релиз, не трогая данные: `helm upgrade ... --set fixtures.enabled=false`.
 Перезагрузить тестовые данные: `helm upgrade ts deploy/helm/teachers-selector -f deploy/helm/teachers-selector/values-kind.yaml`.
 В prod-образе команды `doctrine:fixtures:load` нет (бандл только для dev/test), а чарт не даёт включить фикстуры без `infra.enabled=true`.
+
+### Dev-окружение (страницы ошибок с трассировкой, web-profiler)
+
+По умолчанию сайт работает в `prod`: ошибка выглядит как «Oops! An Error Occurred / 500» без подробностей.
+Причину смотрите в логах: `kubectl logs deploy/ts-web -c php-fpm --tail=50`. Чтобы увидеть её в браузере, включите dev:
+
+```bash
+# нужен образ с dev-зависимостями (см. шаг 1 установки) и загруженный в kind
+helm upgrade ts deploy/helm/teachers-selector \
+  -f deploy/helm/teachers-selector/values-kind.yaml \
+  -f deploy/helm/teachers-selector/values-kind-dev.yaml
+kubectl exec deploy/ts-web -c php-fpm -- printenv APP_ENV APP_DEBUG    # dev 1
+# вернуться в prod: тот же helm upgrade без второго -f
+```
+
+Нельзя просто поставить `APP_ENV=dev` на prod-образе: он собран с `composer install --no-dev`, а dev-бандлы (WebProfiler, Foundry,
+Fixtures) в `config/bundles.php` включены только для dev/test, поэтому приложение упадёт. Поэтому в dev-режиме используется образ
+`teachers-selector/php-fixtures`. Побочные эффекты: образ ~1 ГБ, первый запрос каждого пода медленнее (прогрев `var/cache/dev`),
+страницы тяжелее из-за панели профайлера. Режим dev **не исправляет** сами ошибки, а только показывает их.
 
 ## 6. Повседневное управление
 
@@ -168,10 +188,27 @@ kind delete cluster --name ts   # удалить кластер целиком
 | `kubectl top` → `Metrics API not available` | Не установлен metrics-server (нужен и для HPA) |
 | Кластер/сборки тормозят, swap | WSL упирается в память (`~/.wslconfig`: `memory=4GB`). Остановите лишнее (`docker compose stop`) или увеличьте лимит |
 | `There are no commands defined in the "doctrine:fixtures" namespace` | Фикстуры запускают в prod-образе, где dev-бандлов нет. Используйте Job `ts-fixtures` (образ `teachers-selector/php-fixtures`, стадия `fixtures`) |
-| БД пустая после перезапуска ноды kind / Docker | Postgres в kind без постоянного хранилища (`emptyDir`). Выполните `helm upgrade` (миграции + фикстуры) |
+| Главная отдаёт 500 / в логе `relation "..." does not exist` | БД пустая (нет таблиц). Выполните `helm upgrade` с `values-kind.yaml` (миграции + фикстуры). Postgres теперь хранит данные в PVC и должен переживать перезапуск ноды; пустая БД означает, что релиз ставился без `infra.postgres.persistence.enabled` |
+| Переход существующего релиза на PVC: `strategy.rollingUpdate: Forbidden` | Один раз выполните `kubectl patch deploy ts-pgsql --type=merge -p '{"spec":{"strategy":{"type":"Recreate","rollingUpdate":null}}}'`; затем `helm upgrade --set fixtures.enabled=false`, дождитесь Postgres и повторите `helm upgrade` (первый upgrade применяет миграции ещё к старой БД). На свежей установке не нужно |
+| `kubectl port-forward` перестал работать после `helm upgrade` | Он привязан к конкретному поду, а поды пересоздались. Перезапустите команду (Ctrl+C и снова) |
 | Пользователя «выкидывает» между запросами | Сессии должны быть в Redis: проверьте `REDIS_URL` и `kubectl exec deploy/ts-redis -- redis-cli --scan` |
+| IDE / `kubectl` не подключаются после перезапуска Docker или ноды | Docker выдаёт новый порт API-серверу kind. Выполните `kind export kubeconfig --name ts` и обновите kubeconfig в IDE |
 
-## 12. Что не сделано / не проверено
+## 12. Подключение PhpStorm (плагин Kubernetes)
+
+PhpStorm на Windows, проект и кластер в WSL. kubeconfig лежит в WSL (`~/.kube/config`, контекст `kind-ts`), сертификаты в нём
+встроены, а при `networkingMode=mirrored` (`.wslconfig`) адрес `127.0.0.1` доступен и из Windows.
+
+1. `Settings → Plugins` → включить **Kubernetes** (для подсветки шаблонов чарта — ещё **Helm** и **Go Template**), перезапустить IDE.
+2. `Settings → Build, Execution, Deployment → Kubernetes` → kubeconfig `\\wsl$\Ubuntu-WSL2\home\pavel\.kube\config`, контекст `kind-ts`.
+   Если IDE требует `kubectl`/`helm` для Windows — установите их в Windows или работайте через терминал WSL (шаг 5).
+3. Окно **Services** (`Alt+8`) → «+» → **Kubernetes** → контекст `kind-ts`. Видны поды, Deployments, Services и Jobs релиза `ts`.
+4. Из окна можно смотреть логи подов, открывать shell в контейнере, описание ресурса, пробрасывать порты и править манифесты.
+5. Терминал в WSL: `Settings → Tools → Terminal → Shell path` = `wsl.exe -d Ubuntu-WSL2`, тогда `kubectl`, `helm`, `kind` из этой инструкции работают прямо в IDE.
+
+Пункты меню могут отличаться в зависимости от версии PhpStorm. Xdebug в подах не настроен (в prod-образе xdebug нет).
+
+## 13. Что не сделано / не проверено
 
 - CI/CD: `.github/workflows/deploy.yml` по-прежнему деплоит по SSH. Сборка образов и `helm upgrade` в GitHub Actions не настроены.
 - Не проверялись: Ingress, HPA, обработка реального сообщения из очереди, вход реального пользователя и сам чат.
